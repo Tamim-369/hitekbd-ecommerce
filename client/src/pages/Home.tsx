@@ -12,7 +12,7 @@ export default function Home() {
         {/* Featured Products */}
         <section className="mb-16">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
               Featured Products
             </h2>
             <button className="text-indigo-600 hover:text-indigo-500 font-medium">

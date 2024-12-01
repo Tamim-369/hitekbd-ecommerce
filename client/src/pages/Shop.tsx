@@ -4,6 +4,8 @@ import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
 import ProductSort from '../components/ProductSort';
 import Pagination from '../components/Pagination';
+import ProductContainer from '../components/ProductContainer';
+import ShopProductContainer from '../components/ShopProductContainer';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -74,7 +76,7 @@ export default function Shop() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="lg:grid lg:grid-cols-4 lg:gap-8">
+      <div className="lg:grid lg:grid-cols-5 lg:gap-8">
         {/* Filters - Left Sidebar */}
         <div className="hidden lg:block">
           <ProductFilters
@@ -92,9 +94,9 @@ export default function Shop() {
         </div>
 
         {/* Product Grid */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-4">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
               All Products ({filteredProducts.length})
             </h1>
             <ProductSort sortBy={sortBy} onSortChange={setSortBy} />
@@ -102,15 +104,17 @@ export default function Shop() {
 
           {paginatedProducts.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">No products found matching your criteria.</p>
+              <p className="text-gray-500">
+                No products found matching your criteria.
+              </p>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {paginatedProducts.map((product) => (
+              <ShopProductContainer>
+                {paginatedProducts.map(product => (
                   <ProductCard key={product.id} {...product} />
                 ))}
-              </div>
+              </ShopProductContainer>
 
               <div className="mt-8">
                 <Pagination
