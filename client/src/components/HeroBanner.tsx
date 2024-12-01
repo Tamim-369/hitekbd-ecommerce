@@ -1,5 +1,3 @@
-import { ArrowRight } from 'lucide-react';
-
 export default function HeroBanner() {
   return (
     <div className="relative w-full">

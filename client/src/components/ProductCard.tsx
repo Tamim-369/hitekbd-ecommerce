@@ -56,7 +56,7 @@ export default function ProductCard({
       </div>
       <button
         onClick={handleAddToCart}
-        className="mt-2 w-full  py-2 rounded-lg button-gradient flex items-center justify-center gap-2"
+        className="mt-2 w-full py-2 rounded-lg button-gradient flex items-center justify-center gap-2 min-[680px]:text-sm min-[680px]:font-normal text-xs font-bold"
       >
         <ShoppingCart size={18} />
         Add to Cart
