@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.button-gradient {
+  @apply text-white bg-gradient-to-br from-[#37c3fa] to-[#c937fb] hover:bg-indigo-700 focus:outline-none;
+}
