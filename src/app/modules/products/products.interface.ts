@@ -1,12 +1,13 @@
 import { Model, Types } from 'mongoose';
-
-export type IProducts = {
-  images: string;
-  title: string;
+  
+  export type IProducts = {
+    title: string;
   description: string;
+  image: Array<string>;
+  details: Array<Object>;
   price: number;
   discountedPrice: number;
-  features: Array<string>
-};
-
-export type ProductsModel = Model<IProducts>;
+  stockAmount: number
+  };
+  
+  export type ProductsModel = Model<IProducts>;

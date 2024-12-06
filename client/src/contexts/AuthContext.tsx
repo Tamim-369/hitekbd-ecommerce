@@ -13,7 +13,13 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  signup: (
+    email: string,
+    password: string,
+    name: string,
+    address: string,
+    phone: string
+  ) => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
 }
 
@@ -38,15 +44,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const signup = async (email: string, password: string, name: string) => {
-    // Simulate API call
-    const mockUser = {
-      id: '1',
-      name,
-      email,
-      phone: '',
-      address: '',
-    };
+  const signup = async (
+    email: string,
+    password: string,
+    name: string,
+    phone: string,
+    address: string
+  ) => {
+    const createResponse = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password, name, phone, address }),
+    });
     setUser(mockUser);
   };
 

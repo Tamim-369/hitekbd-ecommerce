@@ -14,7 +14,8 @@
     "build": "yarn && yarn run tsc",
     "build:builder": "cd templateHelper && yarn build",
     "push": "git add . && git commit -m 'making some changes' && git push",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "builder": "./builder-cli/executable/builder"
   },
   "keywords": [],
   "author": "",

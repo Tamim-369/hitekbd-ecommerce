@@ -5,7 +5,15 @@ import { StatusCodes } from 'http-status-codes';
 import { ProductsService } from './products.service';
 
 const createProducts = catchAsync(async (req: Request, res: Response) => {
-  const result = await ProductsService.createProducts(req.body);
+  let image: Array<string> = [];
+  if (req.files && 'image' in req.files && req.files.image[0]) {
+    image.push('/images/' + req.files.image[0].filename);
+  }
+  const data = {
+    ...req.body,
+    image,
+  };
+  const result = await ProductsService.createProducts(data);
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
     success: true,
@@ -19,7 +27,11 @@ const getAllProductss = catchAsync(async (req: Request, res: Response) => {
   const page = req.query.page || null;
   const limit = req.query.limit || null;
 
-  const result = await ProductsService.getAllProductss(search as string, page as number | null, limit as number | null);
+  const result = await ProductsService.getAllProductss(
+    search as string,
+    page as number | null,
+    limit as number | null
+  );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -39,6 +51,10 @@ const getProductsById = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateProducts = catchAsync(async (req: Request, res: Response) => {
+  if (req.files && 'image' in req.files && req.files.image[0]) {
+    req.body.image.push('/images/' + req.files.image[0].filename);
+  }
+
   const result = await ProductsService.updateProducts(req.params.id, req.body);
   sendResponse(res, {
     statusCode: StatusCodes.OK,

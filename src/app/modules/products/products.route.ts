@@ -4,21 +4,23 @@ import { USER_ROLES } from '../../../enums/user';
 import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { ProductsValidation } from './products.validation';
-
+import fileUploadHandler from '../../middlewares/fileUploadHandler';
 const router = express.Router();
 
 router.post(
   '/create',
+  // change the role according to your preferences
   auth(USER_ROLES.ADMIN),
-  validateRequest(ProductsValidation.createProductsZodSchema),
+  fileUploadHandler(),
   ProductsController.createProducts
 );
 router.get('/', ProductsController.getAllProductss);
 router.get('/:id', ProductsController.getProductsById);
 router.patch(
   '/:id',
+  // change the role according to your preferences
   auth(USER_ROLES.ADMIN),
-  validateRequest(ProductsValidation.updateProductsZodSchema),
+  fileUploadHandler(),
   ProductsController.updateProducts
 );
 router.delete(

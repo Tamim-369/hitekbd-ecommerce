@@ -25,7 +25,13 @@ export default function Signup() {
       return;
     }
     try {
-      await signup(formData.email, formData.password, formData.name);
+      await signup(
+        formData.email,
+        formData.password,
+        formData.name,
+        formData.address,
+        formData.phone
+      );
       showSuccess('Account created successfully!');
       navigate('/');
     } catch (error) {
@@ -53,6 +59,7 @@ export default function Signup() {
           <Input
             label="Full name"
             type="text"
+            name="name"
             required
             value={formData.name}
             onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -61,6 +68,7 @@ export default function Signup() {
           <Input
             label="Email address"
             type="email"
+            name="email"
             required
             value={formData.email}
             onChange={e => setFormData({ ...formData, email: e.target.value })}
@@ -68,6 +76,7 @@ export default function Signup() {
           <Input
             label="Phone Number"
             type="text"
+            name="phone"
             required
             value={formData.phone}
             onChange={e => setFormData({ ...formData, phone: e.target.value })}
@@ -75,6 +84,7 @@ export default function Signup() {
           <Input
             label="Address"
             type="text"
+            name="address"
             required
             value={formData.address}
             onChange={e =>
@@ -84,6 +94,7 @@ export default function Signup() {
           <Input
             label="Password"
             type="password"
+            name="password"
             required
             value={formData.password}
             onChange={e =>
