@@ -183,14 +183,6 @@ export default function Profile() {
               <h2 className="text-2xl font-semibold text-gray-900">
                 Personal Information
               </h2>
-              {!isEditing && !loading && (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Edit
-                </button>
-              )}
             </div>
 
             {loading ? (
