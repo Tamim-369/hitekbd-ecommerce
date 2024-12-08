@@ -1,6 +1,7 @@
 import { ApiURL } from './baseApi';
 
 export interface Product {
+  _id: string;
   id: number;
   title: string;
   price: number | null;

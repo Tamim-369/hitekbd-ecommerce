@@ -91,7 +91,12 @@ export default function Profile() {
   const [passwords, setPasswords] = useState({
     currentPassword: '',
     newPassword: '',
+    confirmPassword: '',
   });
+
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const handleSettingChange = (setting: keyof typeof settings) => {
     setSettings(prev => ({
@@ -106,6 +111,35 @@ export default function Profile() {
       ...prev,
       [name]: value,
     }));
+    // Clear any previous error/success messages when user starts typing
+    setPasswordError(null);
+    setPasswordSuccess(null);
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setIsChangingPassword(true);
+      setPasswordError(null);
+      setPasswordSuccess(null);
+
+      await api.auth.changePassword(
+        passwords.currentPassword,
+        passwords.newPassword,
+        passwords.confirmPassword
+      );
+
+      setPasswordSuccess('Password changed successfully');
+      setPasswords({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
+    } catch (err: any) {
+      setPasswordError(err.message || 'Failed to change password');
+    } finally {
+      setIsChangingPassword(false);
+    }
   };
 
   const getStatusColor = (status: Order['status']) => {
@@ -258,41 +292,21 @@ export default function Profile() {
       case 'settings':
         return (
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
               Account Settings
             </h2>
-            <form className="space-y-6" onSubmit={e => e.preventDefault()}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input
-                  label="Email Notifications"
-                  type="checkbox"
-                  checked={settings.emailNotifications}
-                  onChange={() => handleSettingChange('emailNotifications')}
-                />
-                <Input
-                  label="SMS Notifications"
-                  type="checkbox"
-                  checked={settings.smsNotifications}
-                  onChange={() => handleSettingChange('smsNotifications')}
-                />
-                <Input
-                  label="Two-Factor Authentication"
-                  type="checkbox"
-                  checked={settings.twoFactorAuth}
-                  onChange={() => handleSettingChange('twoFactorAuth')}
-                />
-                <Input
-                  label="Newsletter Subscription"
-                  type="checkbox"
-                  checked={settings.newsletter}
-                  onChange={() => handleSettingChange('newsletter')}
-                />
-              </div>
+            <form className="space-y-6" onSubmit={handlePasswordSubmit}>
               <div className="border-t border-gray-200 pt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Password
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {passwordError && (
+                  <div className="text-red-600 mb-4">{passwordError}</div>
+                )}
+                {passwordSuccess && (
+                  <div className="text-green-600 mb-4">{passwordSuccess}</div>
+                )}
+                <div className="space-y-4">
                   <Input
                     label="Current Password"
                     type="password"
@@ -307,15 +321,25 @@ export default function Profile() {
                     value={passwords.newPassword}
                     onChange={handlePasswordChange}
                   />
+                  <Input
+                    label="Confirm New Password"
+                    type="password"
+                    name="confirmPassword"
+                    value={passwords.confirmPassword}
+                    onChange={handlePasswordChange}
+                  />
                 </div>
-              </div>
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
-                >
-                  Save Changes
-                </button>
+                <div className="mt-4">
+                  <button
+                    type="submit"
+                    disabled={isChangingPassword}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors disabled:bg-indigo-400"
+                  >
+                    {isChangingPassword
+                      ? 'Changing Password...'
+                      : 'Change Password'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

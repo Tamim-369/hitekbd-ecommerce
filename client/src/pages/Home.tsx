@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom';
 import HeroBanner from '../components/HeroBanner';
 import ProductCard from '../components/ProductCard';
 import ProductContainer from '../components/ProductContainer';
-import { featuredProducts, latestProducts } from '../data/products';
+import { featuredProducts, latestProducts, Product } from '../data/products';
 
 export default function Home() {
   console.log(featuredProducts);
@@ -16,9 +17,12 @@ export default function Home() {
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
               Featured Products
             </h2>
-            <button className="text-indigo-600 hover:text-indigo-500 font-medium">
+            <Link
+              to={'/shop'}
+              className="text-indigo-600 hover:text-indigo-500 font-medium"
+            >
               View All
-            </button>
+            </Link>
           </div>
           <ProductContainer>
             {featuredProducts &&
@@ -55,12 +59,15 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-gray-900">
               Latest Products
             </h2>
-            <button className="text-indigo-600 hover:text-indigo-500 font-medium">
+            <Link
+              to={'/shop'}
+              className="text-indigo-600 hover:text-indigo-500 font-medium"
+            >
               View All
-            </button>
+            </Link>
           </div>
           <ProductContainer>
-            {latestProducts.map(product => (
+            {latestProducts.map((product: any) => (
               <ProductCard key={product.id} {...product} />
             ))}
           </ProductContainer>
