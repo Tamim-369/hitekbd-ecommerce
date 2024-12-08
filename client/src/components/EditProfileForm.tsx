@@ -9,10 +9,12 @@ interface EditProfileFormProps {
     address: string;
   };
   onSave: (data: EditProfileFormProps['initialData']) => void;
-  onCancel: () => void;
 }
 
-export default function EditProfileForm({ initialData, onSave, onCancel }: EditProfileFormProps) {
+export default function EditProfileForm({
+  initialData,
+  onSave,
+}: EditProfileFormProps) {
   const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState<Partial<typeof initialData>>({});
 
@@ -20,34 +22,34 @@ export default function EditProfileForm({ initialData, onSave, onCancel }: EditP
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({
         ...prev,
-        [name]: undefined
+        [name]: undefined,
       }));
     }
   };
 
   const validateForm = () => {
     const newErrors: Partial<typeof initialData> = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Invalid email format';
     }
-    
+
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
     }
-    
+
     if (!formData.address.trim()) {
       newErrors.address = 'Address is required';
     }
@@ -101,17 +103,10 @@ export default function EditProfileForm({ initialData, onSave, onCancel }: EditP
 
       <div className="flex justify-end space-x-4">
         <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
           type="submit"
           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
         >
-          Save Changes
+          Update Changes
         </button>
       </div>
     </form>

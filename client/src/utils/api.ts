@@ -135,7 +135,12 @@ export const api = {
       }),
   },
   user: {
-    getProfile: () => request<User>('/user/profile'),
+    getProfile: () =>
+      request<User>('/user/profile', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
     updateProfile: (formData: FormData) =>
       request('/user', {
         method: 'PATCH',
