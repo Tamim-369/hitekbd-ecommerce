@@ -6,10 +6,10 @@ import validateRequest from '../../middlewares/validateRequest';
 import { OrderValidation } from './order.validation';
 
 const router = express.Router();
-
+const rolesOfAccess = [USER_ROLES.ADMIN, USER_ROLES.USER];
 router.post(
   '/create',
-  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  auth(...rolesOfAccess),
   validateRequest(OrderValidation.createOrderZodSchema),
   OrderController.createOrder
 );
@@ -17,14 +17,10 @@ router.get('/', OrderController.getAllOrders);
 router.get('/:id', OrderController.getOrderById);
 router.patch(
   '/:id',
-  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  auth(...rolesOfAccess),
   validateRequest(OrderValidation.updateOrderZodSchema),
   OrderController.updateOrder
 );
-router.delete(
-  '/:id',
-  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
-  OrderController.deleteOrder
-);
+router.delete('/:id', auth(...rolesOfAccess), OrderController.deleteOrder);
 
 export const OrderRoutes = router;

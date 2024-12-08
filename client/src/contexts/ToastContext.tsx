@@ -39,6 +39,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     toast(message, {
       ...toastStyles.success,
       duration: 3000,
+      position: 'top-right',
+      style: {
+        ...toastStyles.success.style,
+        marginTop: '2rem',
+      },
     });
   };
 
@@ -46,6 +51,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     toast(message, {
       ...toastStyles.error,
       duration: 4000,
+      position: 'bottom-center',
+      style: {
+        ...toastStyles.error.style,
+        marginBottom: '4rem',
+      },
     });
   };
 
@@ -53,6 +63,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     toast(message, {
       ...toastStyles.info,
       duration: 3000,
+      position: 'bottom-center',
+      style: {
+        ...toastStyles.info.style,
+        marginBottom: '4rem',
+      },
     });
   };
 

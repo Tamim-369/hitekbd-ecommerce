@@ -4,7 +4,7 @@ import { IErrorResponse } from '../types/error';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 export interface Product {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   image: string[];
@@ -21,6 +21,17 @@ export interface User {
   phone: string;
   address: string;
   profile?: string;
+}
+
+export interface Order {
+  _id?: string;
+  user: string;
+  product: string[];
+  amountPaid: number;
+  phoneNumber: string;
+  address: string;
+  transactionID: string;
+  status?: string;
 }
 
 interface RequestOptions extends RequestInit {
@@ -154,27 +165,50 @@ export const api = {
     getAll: () => request<Product[]>('/products'),
     getById: (id: string) => request<Product>(`/products/${id}`),
     create: (formData: FormData) =>
-      request('/products/create', {
+      request<Product>('/products', {
         method: 'POST',
-        body: formData,
+        data: formData,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data',
         },
       }),
     update: (id: string, formData: FormData) =>
-      request(`/products/${id}`, {
+      request<Product>(`/products/${id}`, {
         method: 'PATCH',
-        body: formData,
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }),
+    delete: (id: string) =>
+      request<Product>(`/products/${id}`, {
+        method: 'DELETE',
+      }),
+  },
+  orders: {
+    create: (data: Omit<Order, '_id'>) =>
+      request<Order>('/orders/create', {
+        method: 'POST',
+        data,
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
+    getAll: (query?: { search?: string; page?: number; limit?: number }) => {
+      const queryString = query
+        ? `?${new URLSearchParams(query as Record<string, string>).toString()}`
+        : '';
+      return request<Order[]>(`/orders${queryString}`);
+    },
+    getById: (id: string) => request<Order>(`/orders/${id}`),
+    update: (id: string, data: Partial<Order>) =>
+      request<Order>(`/orders/${id}`, {
+        method: 'PATCH',
+        data,
+      }),
     delete: (id: string) =>
-      request(`/products/${id}`, {
+      request<Order>(`/orders/${id}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
       }),
   },
 };

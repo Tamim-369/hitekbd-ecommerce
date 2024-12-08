@@ -3,8 +3,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export default function Input({ label, error, type = "text", className = "", ...props }: InputProps) {
-  if (type === "checkbox") {
+export default function Input({
+  label,
+  error,
+  type = 'text',
+  className = '',
+  ...props
+}: InputProps) {
+  if (type === 'checkbox') {
     return (
       <div className="flex items-center">
         <input
@@ -15,18 +21,14 @@ export default function Input({ label, error, type = "text", className = "", ...
         <label className="ml-2 block text-sm font-medium text-gray-700">
           {label}
         </label>
-        {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
-        )}
+        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
       </div>
     );
   }
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700">{label}</label>
       <div className="mt-1">
         <input
           type={type}
@@ -36,9 +38,7 @@ export default function Input({ label, error, type = "text", className = "", ...
           {...props}
         />
       </div>
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

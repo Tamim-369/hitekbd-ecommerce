@@ -11,8 +11,14 @@ const createBanners = async (payload: IBanners): Promise<IBanners> => {
   return result;
 };
 
-const getAllBannerss = async (search: string, page: number | null, limit: number | null): Promise<IBanners[]> => {
-  const query = search ? { $or: [{ image: { $regex: search, $options: 'i' } }] } : {};
+const getAllBannerss = async (
+  search: string,
+  page: number | null,
+  limit: number | null
+): Promise<IBanners[]> => {
+  const query = search
+    ? { $or: [{ image: { $regex: search, $options: 'i' } }] }
+    : {};
   let queryBuilder = Banners.find(query);
 
   if (page && limit) {
@@ -22,7 +28,6 @@ const getAllBannerss = async (search: string, page: number | null, limit: number
   return await queryBuilder;
 };
 
-
 const getBannersById = async (id: string): Promise<IBanners | null> => {
   const result = await Banners.findById(id);
   if (!result) {
@@ -31,7 +36,10 @@ const getBannersById = async (id: string): Promise<IBanners | null> => {
   return result;
 };
 
-const updateBanners = async (id: string, payload: IBanners): Promise<IBanners | null> => {
+const updateBanners = async (
+  id: string,
+  payload: IBanners
+): Promise<IBanners | null> => {
   const isExistBanners = await getBannersById(id);
   if (!isExistBanners) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Banners not found!');

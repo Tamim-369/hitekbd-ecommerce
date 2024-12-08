@@ -10,22 +10,26 @@ interface ProductCardProps {
   title: string;
   price: number;
   image: string;
-  discount?: number;
+  discountedPrice: number;
 }
 
 export default function ProductCard({
-  id,
   _id,
   title,
   price,
   image,
-  discount,
+  discountedPrice,
 }: ProductCardProps) {
   const { addItem } = useCart();
   const { showSuccess } = useToast();
 
   const handleAddToCart = () => {
-    addItem({ id, title, price, image });
+    addItem({
+      _id,
+      title,
+      price: discountedPrice ? discountedPrice : price,
+      image,
+    });
     showSuccess(`${title} added to cart!`);
   };
 
@@ -40,9 +44,9 @@ export default function ProductCard({
             className="h-full w-full object-cover object-center group-hover:opacity-75 transition-opacity"
           />
         </Link>
-        {discount && (
+        {discountedPrice && (
           <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-semibold">
-            -{discount}%
+            -{price - discountedPrice} ৳
           </div>
         )}
       </div>
@@ -51,11 +55,11 @@ export default function ProductCard({
           <h3 className="text-sm text-gray-700 font-medium">{title}</h3>
           <div className="flex items-center gap-2">
             <p className="text-lg font-semibold text-gray-900">
-              ${price.toFixed(2)}
+              ৳{discountedPrice ? discountedPrice : price.toFixed(2)}
             </p>
-            {discount && (
+            {discountedPrice && (
               <p className="text-sm text-gray-500 line-through">
-                ${(price / (1 - discount / 100)).toFixed(2)}
+                ৳{price.toFixed(2)}
               </p>
             )}
           </div>

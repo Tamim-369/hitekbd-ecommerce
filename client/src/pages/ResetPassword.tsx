@@ -24,7 +24,7 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.newPassword !== formData.confirmPassword) {
       showError('Passwords do not match');
       return;
@@ -44,7 +44,11 @@ export default function ResetPassword() {
 
     setIsSubmitting(true);
     try {
-      await resetPassword(token, formData.newPassword, formData.confirmPassword);
+      await resetPassword(
+        token,
+        formData.newPassword,
+        formData.confirmPassword
+      );
       showSuccess('Password has been reset successfully');
       // Clear reset-related items from localStorage
       localStorage.removeItem('resetToken');
@@ -85,7 +89,7 @@ export default function ResetPassword() {
             type="password"
             required
             value={formData.newPassword}
-            onChange={(e) =>
+            onChange={e =>
               setFormData({ ...formData, newPassword: e.target.value })
             }
             placeholder="Enter new password"
@@ -96,7 +100,7 @@ export default function ResetPassword() {
             type="password"
             required
             value={formData.confirmPassword}
-            onChange={(e) =>
+            onChange={e =>
               setFormData({ ...formData, confirmPassword: e.target.value })
             }
             placeholder="Confirm new password"

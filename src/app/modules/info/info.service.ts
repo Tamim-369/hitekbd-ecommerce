@@ -11,9 +11,19 @@ const createInfo = async (payload: IInfo): Promise<IInfo> => {
   return result;
 };
 
-const getAllInfos = async (search: string, page: number | null, limit: number | null): Promise<IInfo[]> => {
-  const query = search ? { $or: [{ name: { $regex: search, $options: 'i' } },
-        { content: { $regex: search, $options: 'i' } }] } : {};
+const getAllInfos = async (
+  search: string,
+  page: number | null,
+  limit: number | null
+): Promise<IInfo[]> => {
+  const query = search
+    ? {
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { content: { $regex: search, $options: 'i' } },
+        ],
+      }
+    : {};
   let queryBuilder = Info.find(query);
 
   if (page && limit) {
@@ -23,7 +33,6 @@ const getAllInfos = async (search: string, page: number | null, limit: number | 
   return await queryBuilder;
 };
 
-
 const getInfoById = async (id: string): Promise<IInfo | null> => {
   const result = await Info.findById(id);
   if (!result) {
@@ -32,7 +41,10 @@ const getInfoById = async (id: string): Promise<IInfo | null> => {
   return result;
 };
 
-const updateInfo = async (id: string, payload: IInfo): Promise<IInfo | null> => {
+const updateInfo = async (
+  id: string,
+  payload: IInfo
+): Promise<IInfo | null> => {
   const isExistInfo = await getInfoById(id);
   if (!isExistInfo) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Info not found!');

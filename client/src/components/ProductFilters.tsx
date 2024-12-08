@@ -57,7 +57,7 @@ export default function ProductFilters({
               All Categories
             </label>
           </div>
-          {categories.map((category) => (
+          {categories.map(category => (
             <div key={category} className="flex items-center">
               <input
                 id={category}
@@ -92,7 +92,7 @@ export default function ProductFilters({
               All Brands
             </label>
           </div>
-          {brands.map((brand) => (
+          {brands.map(brand => (
             <div key={brand} className="flex items-center">
               <input
                 id={brand}
@@ -123,7 +123,9 @@ export default function ProductFilters({
             min="0"
             max={maxPrice}
             value={priceRange[1]}
-            onChange={(e) => onPriceChange([priceRange[0], Number(e.target.value)])}
+            onChange={e =>
+              onPriceChange([priceRange[0], Number(e.target.value)])
+            }
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
         </div>

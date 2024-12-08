@@ -6,7 +6,11 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+export default function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) {
   return (
     <div className="flex items-center justify-center space-x-2">
       <button
@@ -16,8 +20,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
-      
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
         <button
           key={page}
           onClick={() => onPageChange(page)}
@@ -30,7 +34,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
           {page}
         </button>
       ))}
-      
+
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}

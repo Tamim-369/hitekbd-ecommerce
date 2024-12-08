@@ -73,7 +73,7 @@ export default function Navbar() {
                   </span>
                 )}
               </div>
-              <span>Cart ({totalItems})</span>
+              <span>Cart</span>
             </Link>
           </div>
 
@@ -140,7 +140,7 @@ export default function Navbar() {
                   </span>
                 )}
               </div>
-              <span>Cart ({totalItems})</span>
+              <span>Cart</span>
             </Link>
           </div>
         </div>

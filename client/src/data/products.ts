@@ -6,7 +6,7 @@ export interface Product {
   title: string;
   price: number | null;
   image: string | null;
-  discount?: number;
+  discountedPrice: number;
   category: string;
   brand: string | null;
   rating: number | null;

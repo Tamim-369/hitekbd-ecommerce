@@ -57,7 +57,8 @@ export default function ForgotPassword() {
       <div className="mt-8 space-y-6">
         <div className="rounded-md">
           <p className="text-sm text-gray-600 mb-4">
-            Enter your email address and we'll send you a verification code to reset your password.
+            Enter your email address and we'll send you a verification code to
+            reset your password.
           </p>
           <form onSubmit={handleSubmit} className="space-y-6">
             <Input
@@ -65,7 +66,7 @@ export default function ForgotPassword() {
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               placeholder="Enter your email"
               autoComplete="email"
             />
