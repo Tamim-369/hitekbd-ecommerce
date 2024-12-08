@@ -73,6 +73,7 @@ export default function Profile() {
       setLoading(true);
       const getAllOrders = await api.orders.getAll();
       if (getAllOrders) {
+        //@ts-ignore
         setOrders(getAllOrders);
       }
     } catch (err) {
