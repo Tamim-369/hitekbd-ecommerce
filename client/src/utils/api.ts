@@ -198,9 +198,17 @@ export const api = {
       const queryString = query
         ? `?${new URLSearchParams(query as Record<string, string>).toString()}`
         : '';
-      return request<Order[]>(`/orders${queryString}`);
+      return request<Order[]>(`/orders${queryString}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
     },
-    getById: (id: string) => request<Order>(`/orders/${id}`),
+    getById: (id: string) => request<Order>(`/orders/${id}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
+    }),
     update: (id: string, data: Partial<Order>) =>
       request<Order>(`/orders/${id}`, {
         method: 'PATCH',

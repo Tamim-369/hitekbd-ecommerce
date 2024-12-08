@@ -13,8 +13,8 @@ router.post(
   validateRequest(OrderValidation.createOrderZodSchema),
   OrderController.createOrder
 );
-router.get('/', OrderController.getAllOrders);
-router.get('/:id', OrderController.getOrderById);
+router.get('/', auth(...rolesOfAccess), OrderController.getAllOrders);
+router.get('/:id', auth(...rolesOfAccess), OrderController.getOrderById);
 router.patch(
   '/:id',
   auth(...rolesOfAccess),

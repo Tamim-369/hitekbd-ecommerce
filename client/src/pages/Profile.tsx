@@ -12,12 +12,17 @@ import {
 import Input from '../components/Input';
 import EditProfileForm from '../components/EditProfileForm';
 import { api } from '../utils/api';
+import { STATUS } from '../enums/order';
 
 interface Order {
-  id: string;
+  _id: string;
   date: string;
   total: number;
-  status: 'delivered' | 'processing' | 'shipped';
+  amountPaid: number;
+  phoneNumber: string;
+  address: string;
+  transactionID: string;
+  status: STATUS.CANCELLED | STATUS.DELIVERED | STATUS.PENDING;
   items: { name: string; quantity: number; price: number; image: string }[];
 }
 
@@ -44,6 +49,7 @@ export default function Profile() {
 
   useEffect(() => {
     fetchUserProfile();
+    fetchOrderData();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -53,6 +59,7 @@ export default function Profile() {
       if (response) {
         setPersonalInfo(response);
       }
+
       setError(null);
     } catch (err) {
       setError('Failed to load profile data');
@@ -61,7 +68,20 @@ export default function Profile() {
       setLoading(false);
     }
   };
-
+  const fetchOrderData = async () => {
+    try {
+      setLoading(true);
+      const getAllOrders = await api.orders.getAll();
+      if (getAllOrders) {
+        setOrders(getAllOrders);
+      }
+    } catch (err) {
+      setError('Failed to load orders');
+      console.error('Error fetching orders:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleProfileSave = async (data: Omit<UserProfile, 'id'>) => {
     try {
       setLoading(true);
@@ -97,7 +117,7 @@ export default function Profile() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
-
+  const [orders, setOrders] = useState([]);
   const handleSettingChange = (setting: keyof typeof settings) => {
     setSettings(prev => ({
       ...prev,
@@ -144,54 +164,14 @@ export default function Profile() {
 
   const getStatusColor = (status: Order['status']) => {
     switch (status) {
-      case 'delivered':
+      case STATUS.DELIVERED as string:
         return 'bg-green-100 text-green-800';
-      case 'processing':
+      case STATUS.PENDING as string:
         return 'bg-yellow-100 text-yellow-800';
-      case 'shipped':
+      case STATUS.CANCELLED as string:
         return 'bg-blue-100 text-blue-800';
     }
   };
-
-  const orders: Order[] = [
-    {
-      id: '#ORD-2024-001',
-      date: '2024-03-15',
-      total: 499.98,
-      status: 'delivered',
-      items: [
-        {
-          name: 'Premium Wireless Headphones',
-          quantity: 1,
-          price: 299.99,
-          image:
-            'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80',
-        },
-        {
-          name: 'Smart Watch Series 5',
-          quantity: 1,
-          price: 199.99,
-          image:
-            'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80',
-        },
-      ],
-    },
-    {
-      id: '#ORD-2024-002',
-      date: '2024-03-10',
-      total: 89.99,
-      status: 'processing',
-      items: [
-        {
-          name: 'Designer Backpack',
-          quantity: 1,
-          price: 89.99,
-          image:
-            'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80',
-        },
-      ],
-    },
-  ];
 
   const renderContent = () => {
     switch (activeTab) {
@@ -233,57 +213,58 @@ export default function Profile() {
                 Order History
               </h2>
               <div className="space-y-6">
-                {orders.map(order => (
-                  <div
-                    key={order.id}
-                    className="border border-gray-200 rounded-lg p-6"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {order.id}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Ordered on {order.date}
-                        </p>
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                          order.status
-                        )}`}
-                      >
-                        {order.status.charAt(0).toUpperCase() +
-                          order.status.slice(1)}
-                      </span>
-                    </div>
-                    <div className="space-y-4">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex items-center gap-4">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-16 h-16 rounded object-cover"
-                          />
-                          <div className="flex-1">
-                            <p className="text-gray-900">{item.name}</p>
-                            <p className="text-sm text-gray-500">
-                              Quantity: {item.quantity}
-                            </p>
-                          </div>
-                          <p className="text-gray-900">
-                            ${item.price.toFixed(2)}
+                {loading ? (
+                  <div className="text-center py-4">Loading orders...</div>
+                ) : error ? (
+                  <div className="text-red-600 text-center py-4">{error}</div>
+                ) : orders && orders.length > 0 ? (
+                  orders.map((order: Order) => (
+                    <div
+                      key={order._id}
+                      className="border border-gray-200 rounded-lg p-6"
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <p className="text-lg font-semibold text-gray-900">
+                            Order #{order._id}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Amount Paid: ${order.amountPaid}
                           </p>
                         </div>
-                      ))}
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                            order.status as STATUS
+                          )}`}
+                        >
+                          {order.status &&
+                            order.status.charAt(0).toUpperCase() +
+                              order.status.slice(1)}
+                        </span>
+                      </div>
+                      <div className="space-y-4">
+                        <div className="flex flex-col gap-2">
+                          <p className="text-gray-700">
+                            <span className="font-medium">Phone:</span>{' '}
+                            {order.phoneNumber}
+                          </p>
+                          <p className="text-gray-700">
+                            <span className="font-medium">Address:</span>{' '}
+                            {order.address}
+                          </p>
+                          <p className="text-gray-700">
+                            <span className="font-medium">Transaction ID:</span>{' '}
+                            {order.transactionID}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
-                      <p className="text-gray-500">Total</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        ${order.total.toFixed(2)}
-                      </p>
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-4 text-gray-500">
+                    No orders found
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>
