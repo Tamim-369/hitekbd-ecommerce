@@ -1,86 +1,156 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { api } from '../utils/api';
 
 interface User {
   id: string;
-  name: string;
   email: string;
-  phone: string;
-  address: string;
+  role: string;
+}
+
+interface DecodedToken {
+  id: string;
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
 }
 
 interface AuthContextType {
   user: User | null;
-  isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  signup: (data: {
+    email: string;
+    password: string;
+    name: string;
+    phone: string;
+    address: string;
+  }) => Promise<void>;
   logout: () => void;
-  signup: (
-    email: string,
-    password: string,
-    name: string,
-    address: string,
-    phone: string
+  forgotPassword: (email: string) => Promise<void>;
+  verifyEmail: (email: string, oneTimeCode: number) => Promise<string>;
+  resetPassword: (
+    token: string,
+    newPassword: string,
+    confirmPassword: string
   ) => Promise<void>;
-  updateProfile: (data: Partial<User>) => Promise<void>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode<DecodedToken>(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        if (decoded.exp > currentTime) {
+          setUser({
+            id: decoded.id,
+            email: decoded.email,
+            role: decoded.role,
+          });
+        } else {
+          // Token expired
+          localStorage.removeItem('token');
+          setUser(null);
+        }
+      } catch (error) {
+        // Invalid token
+        localStorage.removeItem('token');
+        setUser(null);
+      }
+    }
+  }, []);
+
   const login = async (email: string, password: string) => {
-    // Simulate API call
-    const mockUser = {
-      id: '1',
-      name: 'John Doe',
-      email,
-      phone: '+1 (555) 123-4567',
-      address: '123 Main St, New York, NY 10001',
-    };
-    setUser(mockUser);
+    const response = await api.auth.login(email, password);
+    console.log(response);
+    const token = response;
+    if (!token) {
+      throw new Error('No token received from server');
+    }
+
+    // Store token in localStorage
+    localStorage.setItem('token', token);
+
+    // Decode and set user
+    const decoded = jwtDecode<DecodedToken>(token);
+    setUser({
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role,
+    });
+  };
+
+  const signup = async (data: {
+    email: string;
+    password: string;
+    name: string;
+    phone: string;
+    address: string;
+  }) => {
+    await api.auth.signup(data);
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     setUser(null);
+    api.auth.logout();
   };
 
-  const signup = async (
-    email: string,
-    password: string,
-    name: string,
-    phone: string,
-    address: string
+  const forgotPassword = async (email: string) => {
+    await api.auth.forgotPassword(email);
+  };
+
+  const verifyEmail = async (email: string, oneTimeCode: number) => {
+    const response = await api.auth.verifyEmail(email, oneTimeCode);
+    return response.data.token;
+  };
+
+  const resetPassword = async (
+    token: string,
+    newPassword: string,
+    confirmPassword: string
   ) => {
-    const createResponse = await fetch('/api/auth/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password, name, phone, address }),
-    });
-    setUser(mockUser);
+    await api.auth.resetPassword(token, newPassword, confirmPassword);
   };
 
-  const updateProfile = async (data: Partial<User>) => {
-    if (user) {
-      setUser({ ...user, ...data });
-    }
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => {
+    await api.auth.changePassword(
+      currentPassword,
+      newPassword,
+      confirmPassword
+    );
   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        login,
-        logout,
-        signup,
-        updateProfile,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user,
+    login,
+    signup,
+    logout,
+    forgotPassword,
+    verifyEmail,
+    resetPassword,
+    changePassword,
+    isAuthenticated: !!user,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

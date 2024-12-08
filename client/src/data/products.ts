@@ -1,3 +1,5 @@
+import { ApiURL } from './baseApi';
+
 export interface Product {
   id: number;
   title: string;
@@ -10,26 +12,34 @@ export interface Product {
   details: {};
 }
 
-export const allProducts: Product[] = [
-  {
-    id: 1,
-    title: 'Cristal Galaxy Ball',
-    price: 895,
-    image: '',
-    category: 'Lighting',
-    brand: null,
-    rating: null,
-    details: {
-      baseMaterial: 'Wood',
-      dimensions: '0.5"D x 0.3"W x 0.9"H',
-      lampType: 'LED',
-      shadeColor: 'Multicolor',
-      shadeMaterial: 'Glass, Wood',
-      warranty: '7 Days',
-      returnPolicy: 'Damaged product cannot be returned',
-    },
-  },
-];
+const getLatestProducts = async () => {
+  try {
+    const response = await fetch(`${ApiURL}/products?page=1&limit=8`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching latest products:', error);
+    return [];
+  }
+};
 
-export const featuredProducts = allProducts.slice(0, 5);
-export const latestProducts = allProducts.slice(4, 9);
+const getAllProducts = async () => {
+  try {
+    const response = await fetch(`${ApiURL}/products?page=1&limit=20`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching all products:', error);
+    return [];
+  }
+};
+
+export const allProducts = await getAllProducts();
+export const featuredProducts = await getLatestProducts();
+export const latestProducts = await getLatestProducts();

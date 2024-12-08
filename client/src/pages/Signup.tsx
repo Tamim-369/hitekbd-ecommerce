@@ -32,7 +32,7 @@ export default function Signup() {
         formData.address,
         formData.phone
       );
-      showSuccess('Account created successfully!');
+      showSuccess('Account created successfully.');
       navigate('/');
     } catch (error) {
       showError('Failed to create account');

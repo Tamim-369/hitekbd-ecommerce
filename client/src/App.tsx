@@ -7,6 +7,9 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import ProductDetails from './pages/ProductDetails';
+import ForgotPassword from './pages/ForgotPassword';
+import VerifyEmail from './pages/VerifyEmail';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
           <Route path="signup" element={<Signup />} />
           <Route path="profile" element={<Profile />} />
           <Route path="product/:id" element={<ProductDetails />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="verify-email" element={<VerifyEmail />} />
+          <Route path="reset-password" element={<ResetPassword />} />
         </Route>
       </Routes>
     </Router>

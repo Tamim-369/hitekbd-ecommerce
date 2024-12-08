@@ -23,20 +23,19 @@ const createProducts = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllProductss = catchAsync(async (req: Request, res: Response) => {
-  const search: any = req.query.search || '';
-  const page = req.query.page || null;
-  const limit = req.query.limit || null;
-
-  const result = await ProductsService.getAllProductss(
-    search as string,
-    page as number | null,
-    limit as number | null
-  );
+  const query = req.query;
+  const result = await ProductsService.getAllProductss(query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: 'Productss fetched successfully',
-    data: result,
+    pagination: {
+      page: query.page || 1,
+      limit: query.limit || 10,
+      totalPage: result.totalPages,
+      total: result.totalProducts,
+    },
+    data: result.products,
   });
 });
 

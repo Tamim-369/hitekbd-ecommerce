@@ -4,6 +4,7 @@ import ProductContainer from '../components/ProductContainer';
 import { featuredProducts, latestProducts } from '../data/products';
 
 export default function Home() {
+  console.log(featuredProducts);
   return (
     <div>
       <HeroBanner />
@@ -20,9 +21,10 @@ export default function Home() {
             </button>
           </div>
           <ProductContainer>
-            {featuredProducts.map(product => (
-              <ProductCard key={product.id} {...product} />
-            ))}
+            {featuredProducts &&
+              featuredProducts.map((product: any, index: number) => (
+                <ProductCard key={product._id} id={index + 1} {...product} />
+              ))}
           </ProductContainer>
         </section>
 

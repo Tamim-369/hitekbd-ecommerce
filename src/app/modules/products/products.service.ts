@@ -7,7 +7,7 @@ import unlinkFile from '../../../shared/unlinkFile';
 
 const createProducts = async (payload: IProducts): Promise<IProducts> => {
   console.log();
-  payload.details = JSON.parse(payload.details);
+  payload.details = await JSON.parse(payload.details.toString());
   payload.details = await Promise.all(
     payload.details.map(async (detail: any) => {
       return {
@@ -24,27 +24,85 @@ const createProducts = async (payload: IProducts): Promise<IProducts> => {
   return result;
 };
 
-const getAllProductss = async (
-  search: string,
-  page: number | null,
-  limit: number | null
-): Promise<IProducts[]> => {
-  const query = search
-    ? {
-        $or: [
-          { title: { $regex: search, $options: 'i' } },
-          { description: { $regex: search, $options: 'i' } },
-          { image: { $regex: search, $options: 'i' } },
-        ],
-      }
-    : {};
-  let queryBuilder = Products.find(query);
+interface IProductQueryFields {
+  search?: string;
+  page?: number;
+  limit?: number;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
 
-  if (page && limit) {
-    queryBuilder = queryBuilder.skip((page - 1) * limit).limit(limit);
+const getAllProductss = async (
+  queryFields: IProductQueryFields
+): Promise<{
+  products: IProducts[];
+  totalProducts: number;
+  totalPages: number;
+}> => {
+  const {
+    search,
+    page = 1,
+    limit = 10,
+    category,
+    minPrice,
+    maxPrice,
+    sortBy = 'createdAt',
+    sortOrder = 'asc',
+  } = queryFields;
+
+  // Build the query object with multiple filtering options
+  const query: Record<string, any> = {};
+
+  // Text search across title and description
+  if (search) {
+    query.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
+    ];
   }
 
-  return await queryBuilder;
+  // Category filter
+  if (category) {
+    query.category = category;
+  }
+
+  // Price range filter
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    query.price = {};
+    if (minPrice !== undefined) query.price.$gte = minPrice;
+    if (maxPrice !== undefined) query.price.$lte = maxPrice;
+  }
+
+  // Pagination
+  const skip = (page - 1) * limit;
+
+  // Sorting
+  const sortOptions: Record<string, 1 | -1> = {
+    [sortBy]: sortOrder === 'asc' ? 1 : -1,
+  };
+
+  try {
+    // Fetch products with pagination, sorting, and filtering
+    const [products, totalProducts] = await Promise.all([
+      Products.find(query).sort(sortOptions).skip(skip).limit(limit).lean(), // Use lean for better performance
+      Products.countDocuments(query),
+    ]);
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    return {
+      products,
+      totalProducts,
+      totalPages,
+    };
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw new Error('Failed to retrieve products');
+  }
 };
 
 const getProductsById = async (id: string): Promise<IProducts | null> => {

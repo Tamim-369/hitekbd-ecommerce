@@ -7,7 +7,6 @@ export type IUser = {
   phone: string;
   email: string;
   password: string;
-  location: string;
   address: string;
   profile?: string;
   status: 'active' | 'delete';

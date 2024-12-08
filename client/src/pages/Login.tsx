@@ -13,21 +13,37 @@ export default function Login() {
     email: '',
     password: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.email || !formData.password) {
+      showError('Please fill in all fields');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       await login(formData.email, formData.password);
-      showSuccess('Successfully logged in!');
+      showSuccess('Login successful');
       navigate('/');
-    } catch (error) {
-      showError('Invalid email or password');
+    } catch (error: any) {
+      if (error.errorMessages?.length > 0) {
+        error.errorMessages.forEach((err: { message: string }) => {
+          showError(err.message);
+        });
+      } else {
+        showError(error.message || 'Failed to login');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <AuthLayout
-      title="Welcome back"
+      title="Sign in to your account"
       subtitle={
         <>
           Don't have an account?{' '}
@@ -40,58 +56,55 @@ export default function Login() {
         </>
       }
     >
-      <form className="space-y-6" onSubmit={handleSubmit}>
-        <Input
-          label="Email address"
-          type="email"
-          required
-          value={formData.email}
-          onChange={e => setFormData({ ...formData, email: e.target.value })}
-        />
+      <div className="mt-8 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <Input
+            label="Email address"
+            type="email"
+            required
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+            placeholder="Enter your email"
+          />
 
-        <Input
-          label="Password"
-          type="password"
-          required
-          value={formData.password}
-          onChange={e => setFormData({ ...formData, password: e.target.value })}
-        />
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+          <div className="space-y-1">
+            <Input
+              label="Password"
+              type="password"
+              required
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              placeholder="Enter your password"
             />
-            <label
-              htmlFor="remember-me"
-              className="ml-2 block text-sm text-gray-900"
-            >
-              Remember me
-            </label>
+            <div className="flex items-center justify-end">
+              <div className="text-sm">
+                <a
+                  href="/forgot-password"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+            </div>
           </div>
 
-          <div className="text-sm">
-            <a
-              href="#"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+          <div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 button-gradient ${
+                isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
             >
-              Forgot your password?
-            </a>
+              {isSubmitting ? 'Signing in...' : 'Sign in'}
+            </button>
           </div>
-        </div>
-
-        <div>
-          <button
-            type="submit"
-            className="w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 button-gradient"
-          >
-            Sign in
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </AuthLayout>
   );
 }

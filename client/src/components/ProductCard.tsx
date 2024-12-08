@@ -1,9 +1,12 @@
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
 import { ShoppingCart } from 'lucide-react';
+import { ImageURL } from '../data/baseApi';
+import { Link } from 'react-router-dom';
 
 interface ProductCardProps {
   id: number;
+  _id: string;
   title: string;
   price: number;
   image: string;
@@ -12,6 +15,7 @@ interface ProductCardProps {
 
 export default function ProductCard({
   id,
+  _id,
   title,
   price,
   image,
@@ -28,11 +32,14 @@ export default function ProductCard({
   return (
     <div className="group relative">
       <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
-        <img
-          src={image}
-          alt={title}
-          className="h-full w-full object-cover object-center group-hover:opacity-75 transition-opacity"
-        />
+        <Link to={`/product/${_id}`}>
+          {' '}
+          <img
+            src={`${ImageURL}/${image[0]}`}
+            alt={title}
+            className="h-full w-full object-cover object-center group-hover:opacity-75 transition-opacity"
+          />
+        </Link>
         {discount && (
           <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-semibold">
             -{discount}%

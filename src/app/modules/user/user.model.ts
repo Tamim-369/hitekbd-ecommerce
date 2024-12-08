@@ -37,10 +37,7 @@ const userSchema = new Schema<IUser, UserModal>(
       select: 0,
       minlength: 8,
     },
-    location: {
-      type: String,
-      required: true,
-    },
+
     profile: {
       type: String,
       default: 'https://i.ibb.co/z5YHLV9/profile.png',
