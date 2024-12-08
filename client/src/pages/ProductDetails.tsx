@@ -129,7 +129,7 @@ export default function ProductDetails() {
           </div>
 
           {/* Thumbnail Navigation */}
-          {product.image.length > 1 && (
+          {product.image.length > 0 && (
             <div className="grid grid-cols-5 gap-4">
               {product.image.map((img, index) => (
                 <button
@@ -223,7 +223,7 @@ export default function ProductDetails() {
           <button
             onClick={handleAddToCart}
             disabled={parseInt(product.stockAmount) === 0}
-            className="w-full md:w-auto bg-indigo-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full md:w-auto px-6 py-2 rounded-lg font-semibold flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed button-gradient"
           >
             <ShoppingCart className="h-5 w-5" />
             {parseInt(product.stockAmount) === 0
