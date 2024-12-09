@@ -11,6 +11,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import VerifyEmail from './pages/VerifyEmail';
 import ResetPassword from './pages/ResetPassword';
 import Checkout from './pages/Checkout';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="verify-email" element={<VerifyEmail />} />
           <Route path="reset-password" element={<ResetPassword />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </Router>
