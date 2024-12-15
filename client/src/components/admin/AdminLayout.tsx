@@ -6,7 +6,8 @@ import {
   Users, 
   Settings,
   Menu,
-  X
+  X,
+  Package
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -23,6 +24,11 @@ export default function AdminLayout() {
       path: '/admin/products',
       icon: <ShoppingBag size={20} />,
       label: 'Products'
+    },
+    {
+      path: '/admin/orders',
+      icon: <Package size={20} />,
+      label: 'Orders'
     },
     {
       path: '/admin/users',

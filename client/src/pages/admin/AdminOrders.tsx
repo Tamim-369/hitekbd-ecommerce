@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
-import { Order } from '../../types/order';
 import { useOrders } from '../../contexts/OrderContext';
 import { DashboardSkeleton } from '../../components/admin/DashboardSkeleton';
 import StatusBadge from '../../components/admin/StatusBadge';
+
+// Match backend STATUS enum
+const orderStatuses = ['pending', 'delivered', 'cancelled'] as const;
+type OrderStatus = typeof orderStatuses[number];
 
 export default function AdminOrders() {
   const { orders, loading, loadOrders, updateOrderStatus } = useOrders();
@@ -14,7 +17,7 @@ export default function AdminOrders() {
     loadOrders();
   }, [loadOrders]);
 
-  const handleStatusChange = async (orderId: string, newStatus: string) => {
+  const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
     try {
       await updateOrderStatus(orderId, newStatus);
     } catch (error) {
@@ -24,7 +27,7 @@ export default function AdminOrders() {
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
-      order.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order._id.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
@@ -46,17 +49,17 @@ export default function AdminOrders() {
             className="rounded-lg border border-gray-300 px-3 py-2"
           >
             <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="processing">Processing</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
+            {orderStatuses.map((status) => (
+              <option key={status} value={status}>
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </option>
+            ))}
           </select>
 
           <div className="relative">
             <input
               type="text"
-              placeholder="Search orders..."
+              placeholder="Search by Phone or Order ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="rounded-lg border border-gray-300 pl-10 pr-4 py-2 w-64"
@@ -71,8 +74,10 @@ export default function AdminOrders() {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Address</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Transaction ID</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
@@ -82,11 +87,10 @@ export default function AdminOrders() {
             {filteredOrders.map((order) => (
               <tr key={order._id}>
                 <td className="px-6 py-4 whitespace-nowrap">#{order._id.slice(-6)}</td>
-                <td className="px-6 py-4">
-                  <div className="text-sm font-medium text-gray-900">{order.userName}</div>
-                  <div className="text-sm text-gray-500">{order.userEmail}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">৳{order.totalAmount}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{order.phoneNumber}</td>
+                <td className="px-6 py-4">{order.address}</td>
+                <td className="px-6 py-4 whitespace-nowrap">৳{order.amountPaid}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{order.transactionID}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={order.status} />
                 </td>
@@ -96,14 +100,14 @@ export default function AdminOrders() {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <select
                     value={order.status}
-                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                    onChange={(e) => handleStatusChange(order._id, e.target.value as OrderStatus)}
                     className="rounded-md border border-gray-300 px-2 py-1"
                   >
-                    <option value="pending">Pending</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
+                    {orderStatuses.map((status) => (
+                      <option key={status} value={status}>
+                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                      </option>
+                    ))}
                   </select>
                 </td>
               </tr>

@@ -46,6 +46,7 @@ export interface UserWithStats {
 
 interface RequestOptions extends RequestInit {
   data?: any;
+  body?: any;
 }
 
 class ApiError extends Error {
@@ -62,34 +63,50 @@ class ApiError extends Error {
 
 async function request<T = any>(
   endpoint: string,
-  { data, headers: customHeaders, ...customConfig }: RequestOptions = {}
+  { data, body, headers: customHeaders, ...customConfig }: RequestOptions = {}
 ): Promise<T> {
+  console.log('Request config:', {
+    endpoint,
+    method: customConfig.method,
+    headers: customHeaders,
+    data,
+    body
+  });
+
   const config: RequestInit = {
-    method: data ? 'POST' : 'GET',
-    body: data ? JSON.stringify(data) : undefined,
+    method: data || body ? 'POST' : 'GET',
+    body: body || (data instanceof FormData ? data : data ? JSON.stringify(data) : undefined),
     headers: {
-      'Content-Type': 'application/json',
+      ...(!(data instanceof FormData) && !body ? { 'Content-Type': 'application/json' } : {}),
       ...customHeaders,
     },
     credentials: 'include',
     ...customConfig,
   };
 
+  console.log('Final request config:', {
+    url: `${API_URL}${endpoint}`,
+    method: config.method,
+    headers: config.headers,
+    body: config.body instanceof FormData ? 'FormData' : config.body
+  });
+
   try {
     const response = await fetch(`${API_URL}${endpoint}`, config);
     const responseData = await response.json();
 
+    console.log('Response:', responseData);
+
     if (!response.ok) {
-      // Handle API error response
       throw new ApiError(responseData);
     }
 
     return responseData.data;
   } catch (error) {
+    console.error('Request error:', error);
     if (error instanceof ApiError) {
       throw error;
     }
-    // Handle network or other errors
     throw new ApiError({
       statusCode: 500,
       message: 'Network error or server is not responding',
@@ -186,19 +203,19 @@ export const api = {
     },
     getById: (id: string) => request<Product>(`/products/${id}`),
     create: (formData: FormData) =>
-      request<Product>('/products', {
+      request<Product>('/products/create', {
         method: 'POST',
         data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     update: (id: string, formData: FormData) =>
       request<Product>(`/products/${id}`, {
         method: 'PATCH',
-        data: formData,
+        body: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     delete: (id: string) =>
@@ -254,6 +271,21 @@ export const api = {
   },
   categorys: {
     getAll: () => request<Category[]>('/category'),
+    create: (data: { name: string }) => 
+      request<Category>('/category/create', {
+        method: 'POST',
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    delete: (id: string) =>
+      request<void>(`/category/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
   },
   baseURL: API_URL,
   admin: {

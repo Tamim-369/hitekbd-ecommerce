@@ -16,6 +16,7 @@ export interface IOrder {
   user: Types.ObjectId;
   items: IOrderItem[];
   totalAmount: number;
+  product: Types.ObjectId;
   status: OrderStatus;
   shippingAddress: {
     address: string;

@@ -11,31 +11,21 @@ const createOrder = async (payload: IOrder): Promise<IOrder> => {
   return result;
 };
 
-const getAllOrders = async (
-  queryFields: Record<string, any>,
-  userId: string
-): Promise<IOrder[]> => {
-  const { search, page, limit } = queryFields;
-  const query = search
-    ? {
-        $or: [
-          { phoneNumber: { $regex: search, $options: 'i' } },
-          { address: { $regex: search, $options: 'i' } },
-          { transactionID: { $regex: search, $options: 'i' } },
-          { status: { $regex: search, $options: 'i' } },
-        ],
-      }
-    : {};
-  let queryBuilder = Order.find({ ...query, user: userId });
+const getAllOrders = async () => {
+  try {
+    const orders = await Order.find()
+      .populate('user', 'name email')
+      .populate({
+        path: 'product',
+        ref: 'Products',
+        select: 'title price image'
+      })
+      .sort({ createdAt: -1 });
 
-  if (page && limit) {
-    queryBuilder = queryBuilder.skip((page - 1) * limit).limit(limit);
+    return orders;
+  } catch (error) {
+    throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to fetch orders');
   }
-  delete queryFields.search;
-  delete queryFields.page;
-  delete queryFields.limit;
-  queryBuilder.find(queryFields);
-  return await queryBuilder;
 };
 
 const getOrderById = async (id: string): Promise<IOrder | null> => {
@@ -76,10 +66,25 @@ const deleteOrder = async (id: string): Promise<IOrder | null> => {
   return result;
 };
 
+const updateOrderStatus = async (id: string, status: string): Promise<IOrder> => {
+  const order = await Order.findByIdAndUpdate(
+    id,
+    { status },
+    { new: true }
+  );
+
+  if (!order) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Order not found');
+  }
+
+  return order;
+};
+
 export const OrderService = {
   createOrder,
   getAllOrders,
   getOrderById,
   updateOrder,
   deleteOrder,
+  updateOrderStatus,
 };

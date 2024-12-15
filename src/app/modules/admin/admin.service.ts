@@ -8,6 +8,7 @@ import config from '../../../config';
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
 import { Types } from 'mongoose';
+import { USER_ROLES } from '../../../enums/user';
 
 const getDashboardStats = async (): Promise<DashboardStats> => {
   // Get total counts
@@ -145,9 +146,8 @@ const getAllUsers = async (): Promise<IUserWithStats[]> => {
           },
         },
       },
-    ]);
+    ])
 
-    console.log('Users from DB:', users); // Debug log
     return users;
   } catch (error) {
     console.error('Error in getAllUsers:', error); // Debug log

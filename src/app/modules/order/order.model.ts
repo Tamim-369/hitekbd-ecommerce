@@ -6,7 +6,7 @@ const orderSchema = new Schema<IOrder, OrderModel>(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     product: {
-      type: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+      type: [{ type: Schema.Types.ObjectId, ref: 'Products' }],
       required: true,
     },
     amountPaid: { type: Number, required: true },

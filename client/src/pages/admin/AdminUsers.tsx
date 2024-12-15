@@ -6,6 +6,7 @@ import DeleteConfirmModal from '../../components/admin/DeleteConfirmModal';
 import UserModal from '../../components/admin/UserModal';
 import { DashboardSkeleton } from '../../components/admin/DashboardSkeleton';
 import { api } from '../../utils/api';
+import { ImageURL } from '../../data/baseApi';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<UserWithStats[]>([]);
@@ -130,17 +131,17 @@ export default function AdminUsers() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredUsers.map((user) => (
-              <tr key={user.id}>
+            {filteredUsers.map((user:any) => (
+              <tr key={user._id} className={`${user?.role === 'ADMIN' && 'hidden'}`}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="h-10 w-10 flex-shrink-0">
+                    {/* <div className="h-10 w-10 flex-shrink-0">
                       <img
                         className="h-10 w-10 rounded-full object-cover"
-                        src={user.profile || '/default-avatar.png'}
+                        src={`${ImageURL}/${user?.profile}`}
                         alt={user.name}
                       />
-                    </div>
+                    </div> */}
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">
                         {user.name}

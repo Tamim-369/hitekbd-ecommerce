@@ -11,25 +11,41 @@ interface ProductDetail {
 }
 
 const createProducts = async (payload: IProducts): Promise<IProducts> => {
-  console.log();
-  if (typeof payload.details === 'string') {
-    payload.details = JSON.parse(payload.details);
-  }
+  try {
+    // Parse details from JSON string
+    if (typeof payload.details === 'string') {
+      payload.details = JSON.parse(payload.details);
+    }
 
-  payload.details = (payload.details as ProductDetail[]).map((detail: ProductDetail) => {
-    return {
-      name: detail.name,
-      value: detail.value,
+    // Validate the payload first
+    await ProductsValidation.createProductsZodSchema.parseAsync({
+      ...payload,
+      price: String(payload.price),
+      discountedPrice: String(payload.discountedPrice),
+      stockAmount: String(payload.stockAmount),
+      details: JSON.stringify(payload.details), // Convert back to string for validation
+    });
+
+    // Convert strings back to numbers for database
+    const numericPayload = {
+      ...payload,
+      price: Number(payload.price),
+      discountedPrice: Number(payload.discountedPrice),
+      stockAmount: Number(payload.stockAmount),
+      details: Array.isArray(payload.details) ? payload.details : JSON.parse(payload.details),
     };
-  });
-
-  await ProductsValidation.createProductsZodSchema.parseAsync(payload);
-  
-  const result = await Products.create(payload);
-  if (!result) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create products!');
+    
+    const result = await Products.create(numericPayload);
+    if (!result) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create product!');
+    }
+    return result;
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid details format');
+    }
+    throw error;
   }
-  return result;
 };
 
 interface IProductQueryFields {
@@ -123,23 +139,51 @@ const getProductsById = async (id: string): Promise<IProducts | null> => {
 
 const updateProducts = async (
   id: string,
-  payload: IProducts
+  payload: Partial<IProducts>
 ): Promise<IProducts | null> => {
-  await ProductsValidation.updateProductsZodSchema.parseAsync(payload);
-  const isExistProducts = await getProductsById(id);
-  if (!isExistProducts) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Products not found!');
+  try {
+    // Parse details if it's a string and present
+    if (typeof payload.details === 'string') {
+      payload.details = JSON.parse(payload.details);
+    }
+
+    // Convert string numbers to actual numbers if present
+    const numericPayload = {
+      ...payload,
+      ...(payload.price && { price: Number(payload.price) }),
+      ...(payload.discountedPrice && { discountedPrice: Number(payload.discountedPrice) }),
+      ...(payload.stockAmount && { stockAmount: Number(payload.stockAmount) }),
+    };
+
+    // Check if product exists
+    const isExistProducts = await getProductsById(id);
+    if (!isExistProducts) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Product not found!');
+    }
+
+    // Handle image deletion if new images are uploaded
+    if (isExistProducts.image.length > 0 && payload.image && payload.image.length > 0) {
+      isExistProducts.image.forEach((image: string) => {
+        unlinkFile(image);
+      });
+    }
+
+    // Validate and update
+    await ProductsValidation.updateProductsZodSchema.parseAsync(numericPayload);
+    const result = await Products.findByIdAndUpdate(id, numericPayload, { new: true });
+    
+    if (!result) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to update product!');
+    }
+    return result;
+  } catch (error) {
+    // If error is from JSON.parse
+    if (error instanceof SyntaxError) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid details format');
+    }
+    // Re-throw other errors
+    throw error;
   }
-  if (isExistProducts.image.length > 1 && payload.image.length > 1) {
-    isExistProducts.image.map((image: string) => {
-      unlinkFile(image);
-    });
-  }
-  const result = await Products.findByIdAndUpdate(id, payload, { new: true });
-  if (!result) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to update products!');
-  }
-  return result;
 };
 
 const deleteProducts = async (id: string): Promise<IProducts | null> => {

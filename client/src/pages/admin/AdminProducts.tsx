@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, Search } from 'lucide-react';
-import { api, Product } from '../../utils/api';
+import { api, Product, Category } from '../../utils/api';
 import { useProducts } from '../../contexts/ProductContext';
 import { useToast } from '../../contexts/ToastContext';
 import ProductModal from '../../components/admin/ProductModal';
 import DeleteConfirmModal from '../../components/admin/DeleteConfirmModal';
 import { DashboardSkeleton } from '../../components/admin/DashboardSkeleton';
+import { ImageURL } from '../../data/baseApi';
+import CategoryModal from '../../components/admin/CategoryModal';
 
 export default function AdminProducts() {
   const { products, loading, loadProducts } = useProducts();
@@ -14,10 +16,22 @@ export default function AdminProducts() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const { showSuccess, showError } = useToast();
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     loadProducts();
+    fetchCategories();
   }, [loadProducts]);
+
+  const fetchCategories = async () => {
+    try {
+      const data = await api.categorys.getAll();
+      setCategories(data);
+    } catch (error) {
+      showError('Failed to load categories');
+    }
+  };
 
   const handleDelete = async () => {
     if (!selectedProduct) return;
@@ -41,16 +55,24 @@ export default function AdminProducts() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Products</h1>
-        <button
-          onClick={() => {
-            setSelectedProduct(null);
-            setIsModalOpen(true);
-          }}
-          className="button-gradient px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <Plus size={20} />
-          Add Product
-        </button>
+        <div className="flex gap-4">
+          <button
+            onClick={() => setIsCategoryModalOpen(true)}
+            className="px-4 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50"
+          >
+            Manage Categories
+          </button>
+          <button
+            onClick={() => {
+              setSelectedProduct(null);
+              setIsModalOpen(true);
+            }}
+            className="button-gradient px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            <Plus size={20} />
+            Add Product
+          </button>
+        </div>
       </div>
 
       {/* Search Bar */}
@@ -75,7 +97,7 @@ export default function AdminProducts() {
             className="bg-white rounded-lg shadow overflow-hidden"
           >
             <img
-              src={product.image[0]}
+              src={`${ImageURL}/${product.image[0]}`}
               alt={product.title}
               className="w-full h-48 object-cover"
             />
@@ -139,6 +161,14 @@ export default function AdminProducts() {
         onConfirm={handleDelete}
         title="Delete Product"
         message="Are you sure you want to delete this product? This action cannot be undone."
+      />
+
+      {/* Add CategoryModal */}
+      <CategoryModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        onSuccess={fetchCategories}
+        categories={categories}
       />
     </div>
   );

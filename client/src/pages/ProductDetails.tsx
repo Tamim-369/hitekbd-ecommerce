@@ -22,7 +22,7 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [suggestedProducts, setSuggestedProducts] = useState<any[]>([]);
+  const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -30,6 +30,20 @@ export default function ProductDetails() {
         setError(null);
         const data = await api.products.getById(id!);
         setProduct(data);
+
+        // Fetch suggested products from the same category
+        if (data) {
+          const allProducts = await api.products.getAll({
+            category: data.category,
+          });
+          
+          // Filter out the current product and limit to 4 products
+          const filtered = allProducts
+            .filter(p => p._id !== data._id)
+            .slice(0, 4);
+            
+          setSuggestedProducts(filtered);
+        }
       } catch (err) {
         setError('Failed to load product details');
         console.error(err);
@@ -203,9 +217,18 @@ export default function ProductDetails() {
                 </>
               )}
             </div>
-
+            <button
+              onClick={handleAddToCart}
+              disabled={parseInt(product.stockAmount) === 0}
+              className="w-full md:w-auto px-6 py-2 rounded-lg font-semibold flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed button-gradient"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {parseInt(product.stockAmount) === 0
+                ? 'Out of Stock'
+                : 'Add to Cart'}
+            </button>
             {/* Product Details */}
-            {product.details.length > 1 && (
+            {product.details.length > 0 && (
               <div className="border-t border-gray-200 pt-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
                   Product Details
@@ -226,38 +249,31 @@ export default function ProductDetails() {
             )}
 
             {/* Add to Cart Button */}
-            <button
-              onClick={handleAddToCart}
-              disabled={parseInt(product.stockAmount) === 0}
-              className="w-full md:w-auto px-6 py-2 rounded-lg font-semibold flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed button-gradient"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {parseInt(product.stockAmount) === 0
-                ? 'Out of Stock'
-                : 'Add to Cart'}
-            </button>
+         
           </div>
         </div>
       </div>
-      <div>
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-          Similar Products
-        </h2>
-        <ProductContainer>
-          {suggestedProducts &&
-            suggestedProducts.map((product: Product, index: number) => (
+
+      {/* Suggested Products Section */}
+      {suggestedProducts.length > 0 && (
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            Similar Products
+          </h2>
+          <ProductContainer>
+            {suggestedProducts.map((suggestedProduct) => (
               <ProductCard
-                key={product._id}
-                id={index + 1}
-                _id={product._id}
-                title={product.title}
-                price={Number(product.price)}
-                image={product.image.toString()}
-                discountedPrice={Number(product.discountedPrice)}
+                key={suggestedProduct._id}
+                _id={suggestedProduct._id}
+                title={suggestedProduct.title}
+                price={Number(suggestedProduct.price)}
+                discountedPrice={Number(suggestedProduct.discountedPrice)}
+                image={suggestedProduct.image}
               />
             ))}
-        </ProductContainer>
-      </div>
+          </ProductContainer>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Save, User, Globe, Bell } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
+import EditProfileForm from '../../components/EditProfileForm';
+import { api } from '../../utils/api';
 
 interface SiteSettings {
   siteName: string;
@@ -14,6 +16,14 @@ interface NotificationSettings {
   orderUpdates: boolean;
   newProducts: boolean;
   marketing: boolean;
+}
+
+interface AdminProfile {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  profile?: string;
 }
 
 export default function AdminSettings() {
@@ -33,6 +43,30 @@ export default function AdminSettings() {
     newProducts: false,
     marketing: false,
   });
+
+  const [profileData, setProfileData] = useState<AdminProfile | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await api.user.getProfile();
+        setProfileData(data);
+      } catch (error) {
+        showError('Failed to load profile data');
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const handleProfileSave = async (formData: FormData) => {
+    try {
+      await api.user.updateProfile(formData);
+      showSuccess('Profile updated successfully');
+    } catch (error) {
+      showError('Failed to update profile');
+    }
+  };
 
   const handleSiteSettingsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -277,8 +311,12 @@ export default function AdminSettings() {
 
         {activeTab === 'profile' && (
           <div className="max-w-xl mx-auto">
-            {/* Profile content will be added here */}
-            <p className="text-gray-500 text-center">Profile settings coming soon...</p>
+            {profileData && (
+              <EditProfileForm 
+                initialData={profileData} 
+                onSave={handleProfileSave}
+              />
+            )}
           </div>
         )}
       </div>
