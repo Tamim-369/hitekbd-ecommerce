@@ -12,6 +12,7 @@ import VerifyEmail from './pages/VerifyEmail';
 import ResetPassword from './pages/ResetPassword';
 import Checkout from './pages/Checkout';
 import NotFound from './pages/NotFound';
+import AdminLayout from './components/AdminLayout';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="reset-password" element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />
         </Route>
+        <Route path="/admin" element={<AdminLayout />}></Route>
       </Routes>
     </Router>
   );

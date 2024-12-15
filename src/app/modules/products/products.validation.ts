@@ -30,6 +30,10 @@ const createProductsZodSchema = z.object({
     required_error: 'stockAmount is required',
     invalid_type_error: 'stockAmount should be type string',
   }),
+  category: z.string({
+    required_error: 'category is required',
+    invalid_type_error: 'category should be type string',
+  }),
 });
 
 const updateProductsZodSchema = z.object({

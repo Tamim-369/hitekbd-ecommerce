@@ -11,6 +11,7 @@ export interface Product {
   details: string;
   price: string;
   discountedPrice: string;
+  category?: string;
   stockAmount: string;
 }
 
@@ -162,7 +163,18 @@ export const api = {
       }),
   },
   products: {
-    getAll: () => request<Product[]>('/products'),
+    getAll: (query: {
+      category?: string;
+      page?: number;
+      limit?: number;
+      minPrice?: number;
+      maxPrice?: number;
+    }) => {
+      const queryString = new URLSearchParams(
+        query as Record<string, any>
+      ).toString();
+      request<Product[]>(`/products?${queryString}`);
+    },
     getById: (id: string) => request<Product>(`/products/${id}`),
     create: (formData: FormData) =>
       request<Product>('/products', {
@@ -194,21 +206,27 @@ export const api = {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
-    getAll: (query?: { search?: string; page?: number; limit?: number }) => {
+    getAll: (query?: {
+      search?: string;
+      page?: number;
+      limit?: number;
+      category?: string;
+    }) => {
       const queryString = query
         ? `?${new URLSearchParams(query as Record<string, string>).toString()}`
         : '';
       return request<Order[]>(`/orders${queryString}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }
+        },
       });
     },
-    getById: (id: string) => request<Order>(`/orders/${id}`,{
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      }
-    }),
+    getById: (id: string) =>
+      request<Order>(`/orders/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
     update: (id: string, data: Partial<Order>) =>
       request<Order>(`/orders/${id}`, {
         method: 'PATCH',

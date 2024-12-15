@@ -7,6 +7,7 @@ export type IProducts = {
   details: Array<Object>;
   price: number;
   discountedPrice: number;
+  category: Types.ObjectId;
   stockAmount: number;
 };
 

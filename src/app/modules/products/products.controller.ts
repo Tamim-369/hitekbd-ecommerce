@@ -30,7 +30,9 @@ const getAllProductss = catchAsync(async (req: Request, res: Response) => {
     success: true,
     message: 'Productss fetched successfully',
     pagination: {
+      //@ts-ignore
       page: query.page || 1,
+      //@ts-ignore
       limit: query.limit || 10,
       totalPage: result.totalPages,
       total: result.totalProducts,
