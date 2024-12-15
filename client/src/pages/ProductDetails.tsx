@@ -149,30 +149,31 @@ export default function ProductDetails() {
             </div>
 
             {/* Thumbnail Navigation */}
-            {product.image.length > 0 && (
               <div className="grid grid-cols-5 gap-4">
-                {product.image.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`relative aspect-square rounded-lg overflow-hidden bg-gray-100 ${
-                      selectedImage === index
-                        ? 'ring-2 ring-indigo-600'
-                        : 'hover:opacity-75'
-                    }`}
-                  >
-                    <img
-                      src={`${ImageURL}/${img}`}
-                      alt={`${product.title} - View ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    {selectedImage === index && (
-                      <div className="absolute inset-0 bg-indigo-600/10" />
-                    )}
-                  </button>
-                ))}
+                {product.image.map((img, index) => {
+                  console.log(img)
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(index)}
+                      className={`relative aspect-square rounded-lg overflow-hidden bg-gray-100 ${
+                        selectedImage === index
+                          ? 'ring-2 ring-indigo-600'
+                          : 'hover:opacity-75'
+                      }`}
+                    >
+                      <img
+                        src={`${ImageURL}/${img}`}
+                        alt={`${product.title} - View ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      {selectedImage === index && (
+                        <div className="absolute inset-0 bg-indigo-600/10" />
+                      )}
+                    </button>
+                  )
+                })}
               </div>
-            )}
           </div>
 
           {/* Product Info */}

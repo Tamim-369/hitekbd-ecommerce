@@ -7,7 +7,9 @@ import { ProductsService } from './products.service';
 const createProducts = catchAsync(async (req: Request, res: Response) => {
   let image: Array<string> = [];
   if (req.files && 'image' in req.files && req.files.image[0]) {
-    image.push('/images/' + req.files.image[0].filename);
+    req.files.image.forEach((file: any) => {
+      image.push('/images/' + file.filename);
+    });
   }
   const data = {
     ...req.body,
@@ -52,11 +54,17 @@ const getProductsById = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateProducts = catchAsync(async (req: Request, res: Response) => {
+  let image: Array<string> = [];
   if (req.files && 'image' in req.files && req.files.image[0]) {
-    req.body.image.push('/images/' + req.files.image[0].filename);
+    req.files.image.forEach((file: any) => {
+      image.push('/images/' + file.filename);
+    });
   }
-
-  const result = await ProductsService.updateProducts(req.params.id, req.body);
+  const data = {
+    ...req.body,
+    ...(image.length > 0 && { image }),
+  };
+  const result = await ProductsService.updateProducts(req.params.id, data);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
