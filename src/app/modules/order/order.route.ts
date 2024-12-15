@@ -14,6 +14,7 @@ router.post(
   OrderController.createOrder
 );
 router.get('/', auth(...rolesOfAccess), OrderController.getAllOrders);
+router.get('/my', auth(...rolesOfAccess), OrderController.getMyOrders);
 router.get('/:id', auth(...rolesOfAccess), OrderController.getOrderById);
 router.patch(
   '/:id',

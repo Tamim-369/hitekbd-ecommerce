@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import AuthLayout from '../components/AuthLayout';
@@ -41,6 +41,10 @@ export default function Login() {
     }
   };
 
+  const token = localStorage.getItem('token')
+  if(token){
+    return <Navigate to="/profile" />
+  }
   return (
     <AuthLayout
       title="Sign in to your account"

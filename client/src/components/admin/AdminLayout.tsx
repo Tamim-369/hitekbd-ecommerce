@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -9,6 +9,7 @@ import {
   X,
   Package
 } from 'lucide-react';
+import { jwtDecode } from 'jwt-decode';
 
 export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -42,6 +43,10 @@ export default function AdminLayout() {
     }
   ];
 
+  const token = jwtDecode(localStorage.getItem('token')!);
+  if(token.role !== 'ADMIN'){
+    return <Navigate to="/login" />
+  }
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Mobile menu button */}

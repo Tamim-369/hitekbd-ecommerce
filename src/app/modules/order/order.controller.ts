@@ -56,10 +56,22 @@ const deleteOrder = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMyOrders = catchAsync(async (req: Request, res: Response) => {
+  const id = req.user.id;
+  const result = await OrderService.getMyOrdersFromDB(id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Orders fetched successfully',
+    data: result,
+  });
+});
+
 export const OrderController = {
   createOrder,
   getAllOrders,
   getOrderById,
   updateOrder,
   deleteOrder,
+  getMyOrders
 };

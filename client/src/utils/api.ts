@@ -157,6 +157,7 @@ export const api = {
 
     logout: () => {
       localStorage.removeItem('token');
+      window.location.reload();
       return;
     },
     changePassword: (
@@ -247,6 +248,12 @@ export const api = {
         },
       });
     },
+    getMyOrders: () =>
+      request<Order[]>('/orders/my', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
     getById: (id: string) =>
       request<Order>(`/orders/${id}`, {
         headers: {

@@ -71,7 +71,7 @@ export default function Profile() {
   const fetchOrderData = async () => {
     try {
       setLoading(true);
-      const getAllOrders = await api.orders.getAll();
+      const getAllOrders = await api.orders.getMyOrders();
       if (getAllOrders) {
         //@ts-ignore
         setOrders(getAllOrders);
