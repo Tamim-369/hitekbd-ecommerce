@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { AuthProvider } from './AuthContext';
 import { CartProvider } from './CartContext';
 import { ProductProvider } from './ProductContext';
+import { OrderProvider } from './OrderContext';
 import { ToastProvider } from './ToastContext';
 import { Toaster } from 'react-hot-toast';
 
@@ -10,7 +11,11 @@ export function AppProviders({ children }: { children: ReactNode }) {
     <AuthProvider>
       <CartProvider>
         <ToastProvider>
-          <ProductProvider>{children}</ProductProvider>
+          <ProductProvider>
+            <OrderProvider>
+              {children}
+            </OrderProvider>
+          </ProductProvider>
           <Toaster position="top-right" />
         </ToastProvider>
       </CartProvider>

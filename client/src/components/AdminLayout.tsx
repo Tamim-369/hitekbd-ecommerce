@@ -10,7 +10,7 @@ export default function AdminLayout() {
     const token = localStorage.getItem('token');
     const decodedToken: any = jwtDecode(token!);
     setUser(decodedToken);
-    if (decodedToken.role !== 'admin') {
+    if (decodedToken.role !== 'ADMIN') {
       window.location.href = '/login';
     }
   }, []);
@@ -18,7 +18,7 @@ export default function AdminLayout() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* <Navbar /> */}
       <main className="flex-grow">
-        {user && user.role === 'admin' && <Outlet />}
+        {user && user.role === 'ADMIN' && <Outlet />}
       </main>
       <Footer />
     </div>

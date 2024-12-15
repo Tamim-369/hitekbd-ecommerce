@@ -1,0 +1,145 @@
+import { useState, useEffect } from 'react';
+import { Plus, Pencil, Trash2, Search } from 'lucide-react';
+import { api, Product } from '../../utils/api';
+import { useProducts } from '../../contexts/ProductContext';
+import { useToast } from '../../contexts/ToastContext';
+import ProductModal from '../../components/admin/ProductModal';
+import DeleteConfirmModal from '../../components/admin/DeleteConfirmModal';
+import { DashboardSkeleton } from '../../components/admin/DashboardSkeleton';
+
+export default function AdminProducts() {
+  const { products, loading, loadProducts } = useProducts();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const { showSuccess, showError } = useToast();
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
+  const handleDelete = async () => {
+    if (!selectedProduct) return;
+    try {
+      await api.products.delete(selectedProduct._id);
+      showSuccess('Product deleted successfully');
+      loadProducts();
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      showError('Failed to delete product');
+    }
+  };
+
+  const filteredProducts = products.filter(product =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return <DashboardSkeleton />;
+
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Products</h1>
+        <button
+          onClick={() => {
+            setSelectedProduct(null);
+            setIsModalOpen(true);
+          }}
+          className="button-gradient px-4 py-2 rounded-lg flex items-center gap-2"
+        >
+          <Plus size={20} />
+          Add Product
+        </button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+        </div>
+      </div>
+
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {filteredProducts.map((product) => (
+          <div
+            key={product._id}
+            className="bg-white rounded-lg shadow overflow-hidden"
+          >
+            <img
+              src={product.image[0]}
+              alt={product.title}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {product.title}
+              </h3>
+              <p className="text-gray-500 text-sm mb-4">
+                {product.description.slice(0, 100)}...
+              </p>
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-lg font-bold text-gray-900">
+                    ৳{product.price.toFixed(2)}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Stock: {product.stockAmount}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      setIsModalOpen(true);
+                    }}
+                    className="p-2 text-indigo-600 hover:text-indigo-900"
+                  >
+                    <Pencil size={16} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      setIsDeleteModalOpen(true);
+                    }}
+                    className="p-2 text-red-600 hover:text-red-900"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Product Modal */}
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={selectedProduct}
+        onSuccess={() => {
+          setIsModalOpen(false);
+          loadProducts();
+        }}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Delete Product"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+      />
+    </div>
+  );
+} 

@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import router from './routes';
 import { Morgan } from './shared/morgen';
+import { AdminRoutes } from './app/modules/admin/admin.route';
 const app = express();
 
 //morgan
@@ -30,6 +31,7 @@ app.use(express.static('uploads'));
 
 //router
 app.use('/api/v1', router);
+app.use('/api/v1/admin', AdminRoutes);
 
 //live response
 app.get('/', (req: Request, res: Response) => {

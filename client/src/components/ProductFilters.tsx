@@ -1,13 +1,13 @@
 import { SlidersHorizontal } from 'lucide-react';
+import { Category } from '../utils/api';
 
 interface ProductFiltersProps {
-  categories: string[];
-  brands: string[];
-  selectedCategory: string;
+  categories: Category[];
+  selectedCategory: Category | null;
   selectedBrand: string;
   priceRange: [number, number];
   maxPrice: number;
-  onCategoryChange: (category: string) => void;
+  onCategoryChange: (category: Category | null) => void;
   onBrandChange: (brand: string) => void;
   onPriceChange: (range: [number, number]) => void;
   onClearFilters: () => void;
@@ -15,7 +15,6 @@ interface ProductFiltersProps {
 
 export default function ProductFilters({
   categories,
-  brands,
   selectedCategory,
   selectedBrand,
   priceRange,
@@ -25,6 +24,7 @@ export default function ProductFilters({
   onPriceChange,
   onClearFilters,
 }: ProductFiltersProps) {
+  console.log(categories);
   return (
     <div className="space-y-6">
       <div>
@@ -49,26 +49,26 @@ export default function ProductFilters({
               id="all-categories"
               type="radio"
               name="category"
-              checked={selectedCategory === ''}
-              onChange={() => onCategoryChange('')}
+              checked={selectedCategory === null}
+              onChange={() => onCategoryChange(null)}
               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
             />
             <label htmlFor="all-categories" className="ml-2 text-gray-700">
               All Categories
             </label>
           </div>
-          {categories.map(category => (
-            <div key={category} className="flex items-center">
+          {categories.map((category: Category) => (
+            <div key={category._id} className="flex items-center">
               <input
-                id={category}
+                id={category._id}
                 type="radio"
                 name="category"
-                checked={selectedCategory === category}
+                checked={selectedCategory?._id === category._id}
                 onChange={() => onCategoryChange(category)}
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
               />
-              <label htmlFor={category} className="ml-2 text-gray-700">
-                {category}
+              <label htmlFor={category._id} className="ml-2 text-gray-700">
+                {category.name}
               </label>
             </div>
           ))}
@@ -76,7 +76,7 @@ export default function ProductFilters({
       </div>
 
       {/* Brands */}
-      <div>
+      {/* <div>
         <h4 className="font-medium text-gray-900 mb-3">Brands</h4>
         <div className="space-y-2">
           <div className="flex items-center">
@@ -108,7 +108,7 @@ export default function ProductFilters({
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Price Range */}
       <div>

@@ -39,10 +39,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     toast(message, {
       ...toastStyles.success,
       duration: 3000,
-      position: 'top-right',
+      position: 'top-center',
       style: {
         ...toastStyles.success.style,
-        marginTop: '2rem',
+        // marginTop: '2rem',
       },
     });
   };

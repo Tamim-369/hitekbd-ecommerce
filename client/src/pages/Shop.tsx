@@ -1,34 +1,34 @@
 import { useState, useMemo } from 'react';
-import { allProducts } from '../data/products';
+import { allCategorys, allProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
 import ProductSort from '../components/ProductSort';
 import Pagination from '../components/Pagination';
-import ProductContainer from '../components/ProductContainer';
 import ShopProductContainer from '../components/ShopProductContainer';
+import { Category, Product } from '../utils/api';
 
 const ITEMS_PER_PAGE = 8;
 
 export default function Shop() {
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedBrand, setSelectedBrand] = useState('');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [sortBy, setSortBy] = useState('featured');
   const [currentPage, setCurrentPage] = useState(1);
 
   // Extract unique categories and brands
-  const categories = [...new Set(allProducts.map(p => p.category))];
-  const brands = [...new Set(allProducts.map(p => p.brand))];
-  const maxPrice = Math.max(...allProducts.map(p => p.price));
+  const categories: Category[] = [...allCategorys];
+  const maxPrice = Math.max(...allProducts.map((p: Product) => p.price));
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
     let filtered = [...allProducts];
 
-    // Apply category filter
-    if (selectedCategory) {
-      filtered = filtered.filter(p => p.category === selectedCategory);
+    // Apply category filter - only filter if a category is selected
+    if (selectedCategory?._id) {
+      filtered = filtered.filter(p => p.category === selectedCategory._id);
     }
+    // If selectedCategory is null, show all products
 
     // Apply brand filter
     if (selectedBrand) {
@@ -37,7 +37,10 @@ export default function Shop() {
 
     // Apply price range filter
     filtered = filtered.filter(
-      p => p.price >= priceRange[0] && p.price <= priceRange[1]
+      (p: Product) =>
+        p.discountedPrice &&
+        Number(p.discountedPrice) >= priceRange[0] &&
+        Number(p.discountedPrice) <= priceRange[1]
     );
 
     // Apply sorting
@@ -67,7 +70,7 @@ export default function Shop() {
   );
 
   const handleClearFilters = () => {
-    setSelectedCategory('');
+    setSelectedCategory(null);
     setSelectedBrand('');
     setPriceRange([0, maxPrice]);
     setSortBy('featured');
@@ -81,7 +84,6 @@ export default function Shop() {
         <div className="hidden lg:block">
           <ProductFilters
             categories={categories}
-            brands={brands}
             selectedCategory={selectedCategory}
             selectedBrand={selectedBrand}
             priceRange={priceRange}

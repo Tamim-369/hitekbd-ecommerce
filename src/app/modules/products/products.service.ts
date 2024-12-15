@@ -5,18 +5,26 @@ import { IProducts } from './products.interface';
 import { ProductsValidation } from './products.validation';
 import unlinkFile from '../../../shared/unlinkFile';
 
+interface ProductDetail {
+  name: string;
+  value: string;
+}
+
 const createProducts = async (payload: IProducts): Promise<IProducts> => {
   console.log();
-  payload.details = await JSON.parse(payload.details.toString());
-  payload.details = await Promise.all(
-    payload.details.map(async (detail: any) => {
-      return {
-        name: detail.name,
-        value: detail.value,
-      };
-    })
-  );
+  if (typeof payload.details === 'string') {
+    payload.details = JSON.parse(payload.details);
+  }
+
+  payload.details = (payload.details as ProductDetail[]).map((detail: ProductDetail) => {
+    return {
+      name: detail.name,
+      value: detail.value,
+    };
+  });
+
   await ProductsValidation.createProductsZodSchema.parseAsync(payload);
+  
   const result = await Products.create(payload);
   if (!result) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create products!');

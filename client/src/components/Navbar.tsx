@@ -9,7 +9,11 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { totalItems } = useCart();
   const { isAuthenticated, logout } = useAuth();
-
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const searchQuery = (e.target as HTMLInputElement).value;
+    navigate(`/shop?search=${searchQuery}`);
+  };
   return (
     <nav className="bg-white border  sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,17 +29,18 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:block">
-            <div className="relative">
+            <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
+                name="search"
                 placeholder="Search products..."
                 className="w-96 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <Search className="absolute right-3 top-2.5 text-gray-400 h-5 w-5" />
-            </div>
+            </form>
           </div>
 
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-6">
             {isAuthenticated ? (
               <>
                 <Link
@@ -77,7 +82,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <Menu className="h-6 w-6 text-gray-600" />
             </button>
@@ -87,16 +92,17 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <div className="relative mb-3">
+            <form onSubmit={handleSearch} className="relative mb-3 md:hidden">
               <input
                 type="text"
+                name="search"
                 placeholder="Search products..."
                 className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <Search className="absolute right-3 top-2.5 text-gray-400 h-5 w-5" />
-            </div>
+            </form>
             {isAuthenticated ? (
               <>
                 <Link

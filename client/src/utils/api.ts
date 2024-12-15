@@ -1,5 +1,7 @@
-import { IResponse } from '../types/responseType';
 import { IErrorResponse } from '../types/error';
+import { Order, CreateOrderDTO, UpdateOrderDTO, OrderStatus } from '../types/order';
+import { Category } from '../types/category';
+import { DashboardStats } from '../app/modules/admin/admin.interface';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
@@ -7,12 +9,17 @@ export interface Product {
   _id: string;
   title: string;
   description: string;
+  price: number;
+  discountedPrice: number;
+  category: string;
+  stockAmount: number;
   image: string[];
-  details: string;
-  price: string;
-  discountedPrice: string;
-  category?: string;
-  stockAmount: string;
+  details: ProductDetail[];
+}
+
+export interface ProductDetail {
+  name: string;
+  value: string;
 }
 
 export interface User {
@@ -24,15 +31,17 @@ export interface User {
   profile?: string;
 }
 
-export interface Order {
-  _id?: string;
-  user: string;
-  product: string[];
-  amountPaid: number;
-  phoneNumber: string;
+export interface UserWithStats {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
   address: string;
-  transactionID: string;
-  status?: string;
+  role: 'USER' | 'ADMIN';
+  status: 'active' | 'blocked';
+  totalOrders: number;
+  totalSpent: number;
+  createdAt: string;
 }
 
 interface RequestOptions extends RequestInit {
@@ -163,17 +172,17 @@ export const api = {
       }),
   },
   products: {
-    getAll: (query: {
+    getAll: (query?: {
       category?: string;
       page?: number;
       limit?: number;
       minPrice?: number;
       maxPrice?: number;
     }) => {
-      const queryString = new URLSearchParams(
-        query as Record<string, any>
-      ).toString();
-      request<Product[]>(`/products?${queryString}`);
+      const queryString = query
+        ? `?${new URLSearchParams(query as Record<string, string>).toString()}`
+        : '';
+      return request<Product[]>(`/products${queryString}`);
     },
     getById: (id: string) => request<Product>(`/products/${id}`),
     create: (formData: FormData) =>
@@ -198,7 +207,7 @@ export const api = {
       }),
   },
   orders: {
-    create: (data: Omit<Order, '_id'>) =>
+    create: (data: CreateOrderDTO) =>
       request<Order>('/orders/create', {
         method: 'POST',
         data,
@@ -210,7 +219,7 @@ export const api = {
       search?: string;
       page?: number;
       limit?: number;
-      category?: string;
+      status?: OrderStatus;
     }) => {
       const queryString = query
         ? `?${new URLSearchParams(query as Record<string, string>).toString()}`
@@ -227,14 +236,75 @@ export const api = {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
-    update: (id: string, data: Partial<Order>) =>
+    update: (id: string, data: UpdateOrderDTO) =>
       request<Order>(`/orders/${id}`, {
         method: 'PATCH',
         data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       }),
     delete: (id: string) =>
       request<Order>(`/orders/${id}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+  },
+  categorys: {
+    getAll: () => request<Category[]>('/category'),
+  },
+  baseURL: API_URL,
+  admin: {
+    getDashboardStats: () =>
+      request<DashboardStats>('/admin/dashboard', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    getAllUsers: () =>
+      request<UserWithStats[]>('/admin/users', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    getUser: (id: string) =>
+      request<UserWithStats>(`/admin/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    createUser: (data: Partial<UserWithStats>) =>
+      request<UserWithStats>('/admin/users', {
+        method: 'POST',
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    updateUser: (id: string, data: Partial<UserWithStats>) =>
+      request<UserWithStats>(`/admin/users/${id}`, {
+        method: 'PATCH',
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    deleteUser: (id: string) =>
+      request<void>(`/admin/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    updateUserStatus: (id: string, status: string) =>
+      request<UserWithStats>(`/admin/users/${id}/status`, {
+        method: 'PATCH',
+        data: { status },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       }),
   },
 };

@@ -1,14 +1,37 @@
-import { Model, Types } from 'mongoose';
-import { STATUS } from '../../../enums/order';
+import { Types } from 'mongoose';
 
-export type IOrder = {
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type PaymentStatus = 'pending' | 'paid' | 'failed';
+
+export interface IOrderItem {
+  productId: Types.ObjectId;
+  title: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
+export interface IOrder {
+  _id: Types.ObjectId;
   user: Types.ObjectId;
-  product: [Types.ObjectId];
-  amountPaid: number;
-  phoneNumber: string;
-  address: string;
-  transactionID: string;
-  status?: STATUS.CANCELLED | STATUS.DELIVERED | STATUS.PENDING;
-};
+  items: IOrderItem[];
+  totalAmount: number;
+  status: OrderStatus;
+  shippingAddress: {
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentStatus: PaymentStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-export type OrderModel = Model<IOrder>;
+export interface OrderWithUser extends Omit<IOrder, 'user'> {
+  user: {
+    _id: Types.ObjectId;
+    name: string;
+    email: string;
+  };
+}

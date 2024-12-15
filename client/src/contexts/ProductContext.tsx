@@ -11,7 +11,7 @@ interface ProductContextType {
   products: Product[];
   loading: boolean;
   error: string | null;
-  loadProducts: () => Promise<void>;
+  loadProducts: () => Promise<Product[]>;
   getProduct: (id: string) => Promise<Product>;
   createProduct: (formData: FormData) => Promise<void>;
   updateProduct: (id: string, formData: FormData) => Promise<void>;
@@ -25,14 +25,18 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadProducts = useCallback(async () => {
+  const loadProducts = useCallback(async (): Promise<Product[]> => {
     setLoading(true);
     setError(null);
     try {
       const data = await api.products.getAll();
+      console.log('Loaded products:', data);
       setProducts(data);
+      return data;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load products');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load products';
+      setError(errorMessage);
+      return [];
     } finally {
       setLoading(false);
     }
