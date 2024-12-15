@@ -3,6 +3,7 @@ import { useToast } from '../contexts/ToastContext';
 import { ShoppingCart } from 'lucide-react';
 import { ImageURL } from '../data/baseApi';
 import { Link } from 'react-router-dom';
+import { OptimizedImage } from './OptimizedImage';
 
 interface ProductCardProps {
   id: number;
@@ -38,7 +39,7 @@ export default function ProductCard({
       <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
         <Link to={`/product/${_id}`}>
           {' '}
-          <img
+          <OptimizedImage
             src={`${ImageURL}/${image[0]}`}
             alt={title}
             className="h-full w-full object-cover object-center group-hover:opacity-75 transition-opacity"

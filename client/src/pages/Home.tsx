@@ -3,11 +3,16 @@ import HeroBanner from '../components/HeroBanner';
 import ProductCard from '../components/ProductCard';
 import ProductContainer from '../components/ProductContainer';
 import { featuredProducts, latestProducts, Product } from '../data/products';
+import SEO from '../components/SEO';
 
 export default function Home() {
   console.log(featuredProducts);
   return (
     <div>
+      <SEO
+        title="HitekBD - Your one-stop shop for premium products"
+        description="Welcome to HitekBD - Your one-stop shop for premium products"
+      />
       <HeroBanner />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

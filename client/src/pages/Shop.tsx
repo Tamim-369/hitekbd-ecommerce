@@ -6,6 +6,7 @@ import ProductSort from '../components/ProductSort';
 import Pagination from '../components/Pagination';
 import ShopProductContainer from '../components/ShopProductContainer';
 import { Category, Product } from '../utils/api';
+import SEO from '../components/SEO';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -79,6 +80,10 @@ export default function Shop() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <SEO
+        title="Shop"
+        description="Browse our wide selection of premium products at HitekBD"
+      />
       <div className="lg:grid lg:grid-cols-5 lg:gap-8">
         {/* Filters - Left Sidebar */}
         <div className="hidden lg:block">

@@ -14,6 +14,7 @@ import { Spinner } from '../components/Spinner';
 import { ImageURL } from '../data/baseApi';
 import ProductContainer from '../components/ProductContainer';
 import ProductCard from '../components/ProductCard';
+import SEO from '../components/SEO';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -116,8 +117,14 @@ export default function ProductDetails() {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <title>{product.title}</title>
-        <meta name="description" content={product.description} />
+      {product && (
+        <SEO 
+          title={product.title}
+          description={product.description}
+          image={`${ImageURL}/${product.image[0]}`}
+          url={window.location.href}
+        />
+      )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Image Gallery */}
           <div className="space-y-6">
