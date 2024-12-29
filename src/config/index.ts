@@ -8,6 +8,7 @@ export default {
   port: process.env.PORT,
   database_url: process.env.DATABASE_URL,
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
+  ip_address: process.env.IP_ADDRESS,
   jwt: {
     jwt_secret: process.env.JWT_SECRET,
     jwt_expire_in: process.env.JWT_EXPIRES_IN,
@@ -15,10 +16,10 @@ export default {
     jwt_refresh_expire_in: process.env.JWT_REFRESH_EXPIRES_IN,
   },
   email: {
-    smtp_host: process.env.SMTP_HOST,
-    smtp_port: process.env.SMTP_PORT,
-    smtp_user: process.env.SMTP_USER,
-    smtp_pass: process.env.SMTP_PASS,
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
   client_url: process.env.CLIENT_URL,
 };

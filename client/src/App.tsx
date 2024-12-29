@@ -26,7 +26,6 @@ function App() {
   return (
     <HelmetProvider>
       <ErrorBoundary>
-
         <Router>
           <Routes>
             <Route path="/" element={<Layout />}>

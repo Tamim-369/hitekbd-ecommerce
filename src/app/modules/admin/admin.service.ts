@@ -107,7 +107,7 @@ const getDashboardStats = async (): Promise<DashboardStats> => {
     totalUsers,
     totalRevenue,
     totalOrders,
-    recentOrders: recentOrders.map(order => ({
+    recentOrders: recentOrders.map((order:any) => ({
       _id: order._id.toString(),
       userName: order.user.name,
       totalAmount: order.totalAmount,

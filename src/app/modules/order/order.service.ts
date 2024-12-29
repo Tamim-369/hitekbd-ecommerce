@@ -75,7 +75,7 @@ const deleteOrder = async (id: string): Promise<IOrder | null> => {
 };
 
 const updateOrderStatus = async (id: string, status: keyof typeof STATUS): Promise<IOrder> => {
-  // Validate status
+  //@ts-ignore
   if (!Object.values(STATUS).includes(status)) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid status');
   }

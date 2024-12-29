@@ -9,7 +9,6 @@ const router = express.Router();
 
 router.post(
   '/create',
-  // change the role according to your preferences
   auth(USER_ROLES.ADMIN),
   fileUploadHandler(),
   ProductsController.createProducts
@@ -18,7 +17,6 @@ router.get('/', ProductsController.getAllProductss);
 router.get('/:id', ProductsController.getProductsById);
 router.patch(
   '/:id',
-  // change the role according to your preferences
   auth(USER_ROLES.ADMIN),
   fileUploadHandler(),
   ProductsController.updateProducts

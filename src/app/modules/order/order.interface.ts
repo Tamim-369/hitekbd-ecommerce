@@ -15,15 +15,12 @@ export interface IOrder {
   _id: Types.ObjectId;
   user: Types.ObjectId;
   items: IOrderItem[];
-  totalAmount: number;
-  product: Types.ObjectId;
+  phoneNumber: string;
+  amountPaid: number;
+  product: [Types.ObjectId];
   status: OrderStatus;
-  shippingAddress: {
-    address: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  };
+  address: string;
+  transactionID: string;
   paymentStatus: PaymentStatus;
   createdAt: Date;
   updatedAt: Date;

@@ -41,6 +41,7 @@ const getAllProducts = async () => {
     return [];
   }
 };
+
 export const allCategorys = await api.categorys.getAll();
 export const allProducts = await getAllProducts();
 export const featuredProducts = await getLatestProducts();

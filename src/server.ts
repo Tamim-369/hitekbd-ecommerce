@@ -6,6 +6,9 @@ import config from './config';
 import { socketHelper } from './helpers/socketHelper';
 import { errorLogger, logger } from './shared/logger';
 import { seedAdmin } from './helpers/seedAdmin';
+import { IUser } from './app/modules/user/user.interface';
+import { USER_ROLES } from './enums/user';
+import { User } from './app/modules/user/user.model';
 
 //uncaught exception
 process.on('uncaughtException', error => {
@@ -17,12 +20,14 @@ let server: any;
 async function main() {
   try {
     mongoose.connect(config.database_url as string);
-    await seedAdmin();
     logger.info(colors.green('🚀 Database connected successfully'));
-
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
-
+    try {
+      await seedAdmin();
+    } catch (error) {
+      console.log(error);
+    }
     server = app.listen(port, config.ip_address as string, () => {
       logger.info(
         colors.yellow(`♻️  Application listening on port:${config.port}`)
