@@ -7,10 +7,11 @@ export const seedAdmin = async () => {
   if (!isExistAdmin) {
     const admin: IUser = {
       name: 'Admin',
-      email: process.env.ADMIN_EMAIL,
-      password: process.env.ADMIN_PASSWORD,
+      email: process.env.ADMIN_EMAIL as string,
+      password: process.env.ADMIN_PASSWORD as string,
       role: USER_ROLES.ADMIN,
       address: 'unknown',
+      phone: '',
       verified: true,
       status: 'active',
     };
