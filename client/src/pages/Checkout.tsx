@@ -121,7 +121,7 @@ export default function Checkout() {
                 >
                   <div className="flex items-center">
                     <img
-                      src={`${ImageURL}/${item.image}`}
+                      src={`${ImageURL}/${item.image[0]}`}
                       alt={item.title}
                       className="w-16 h-16 object-cover rounded"
                     />
