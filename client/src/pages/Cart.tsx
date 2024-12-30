@@ -12,7 +12,7 @@ export default function Cart() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shipping = totalItems > 0 ? 15.0 : 0;
+  const shipping = totalItems > 0 ? 110.0 : 0;
   const tax = subtotal * 0.1; // 10% tax
   const total = subtotal + shipping + tax;
 
