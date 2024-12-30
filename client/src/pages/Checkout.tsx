@@ -46,7 +46,7 @@ export default function Checkout() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shipping = totalItems > 0 ? 15.0 : 0;
+  const shipping = totalItems > 0 ? 110.0 : 0;
   const tax = subtotal * 0.1; // 10% tax
   const total = subtotal + shipping + tax;
 
@@ -83,7 +83,7 @@ export default function Checkout() {
         address: formData.address,
         transactionID: formData.transactionID,
       };
-
+      //@ts-ignore
       await api.orders.create(orderData);
       showSuccess('Order placed successfully!');
       clearCart();
