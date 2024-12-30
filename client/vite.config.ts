@@ -1,18 +1,16 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    port: 3000,
-    strictPort: true,
-  },
-  build: {
+   build: {
     modulePreload: true,
     target: 'esnext',
     minify: true,
   },
-  resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+  optimizeDeps: {
+    exclude: ['lucide-react'],
   },
 });
+

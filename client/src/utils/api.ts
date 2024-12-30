@@ -3,7 +3,7 @@ import { Order, CreateOrderDTO, UpdateOrderDTO, OrderStatus } from '../types/ord
 import { Category } from '../types/category';
 import { DashboardStats } from '../app/modules/admin/admin.interface';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.hitekbd.com/api/v1';
 
 export interface Product {
   _id: string;
@@ -222,6 +222,9 @@ export const api = {
     delete: (id: string) =>
       request<Product>(`/products/${id}`, {
         method: 'DELETE',
+	headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       }),
   },
   orders: {

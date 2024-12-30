@@ -3,13 +3,12 @@ import { User } from '../app/modules/user/user.model';
 import { USER_ROLES } from '../enums/user';
 
 export const seedAdmin = async () => {
-  const isExistAdmin = await User.find({ role: USER_ROLES.ADMIN });
-  if (!isExistAdmin.length) {
+  const isExistAdmin = await User.findOne({ role: USER_ROLES.ADMIN });
+  if (!isExistAdmin) {
     const admin: IUser = {
       name: 'Admin',
-      email: 'hitekbd@gmail.com',
-      password: 'password',
-      phone: '+8801942374953',
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
       role: USER_ROLES.ADMIN,
       address: 'unknown',
       verified: true,

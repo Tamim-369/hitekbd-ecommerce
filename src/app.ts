@@ -29,10 +29,7 @@ app.use(
 //body parser
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === 'production'
-        ? process.env.CLIENT_URL
-        : 'http://localhost:4173',
+    origin: ["https://hitekbd.com", "http://103.240.4.37:4173"],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],

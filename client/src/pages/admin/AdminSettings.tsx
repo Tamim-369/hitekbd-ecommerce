@@ -29,11 +29,11 @@ interface AdminProfile {
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('general');
   const { showSuccess, showError } = useToast();
-  
+
   const [siteSettings, setSiteSettings] = useState<SiteSettings>({
-    siteName: 'ShopHub',
+    siteName: 'HitekBD',
     siteDescription: 'Your one-stop shop for premium products',
-    contactEmail: 'contact@shophub.com',
+    contactEmail: 'hitekbd@gmail.com',
     supportPhone: '+1234567890',
   });
 
@@ -96,11 +96,10 @@ export default function AdminSettings() {
       <div className="flex space-x-4 mb-6 border-b">
         <button
           onClick={() => setActiveTab('general')}
-          className={`pb-2 px-1 ${
-            activeTab === 'general'
-              ? 'border-b-2 border-indigo-600 text-indigo-600'
-              : 'text-gray-500'
-          }`}
+          className={`pb-2 px-1 ${activeTab === 'general'
+            ? 'border-b-2 border-indigo-600 text-indigo-600'
+            : 'text-gray-500'
+            }`}
         >
           <div className="flex items-center gap-2">
             <Globe size={20} />
@@ -109,11 +108,10 @@ export default function AdminSettings() {
         </button>
         <button
           onClick={() => setActiveTab('notifications')}
-          className={`pb-2 px-1 ${
-            activeTab === 'notifications'
-              ? 'border-b-2 border-indigo-600 text-indigo-600'
-              : 'text-gray-500'
-          }`}
+          className={`pb-2 px-1 ${activeTab === 'notifications'
+            ? 'border-b-2 border-indigo-600 text-indigo-600'
+            : 'text-gray-500'
+            }`}
         >
           <div className="flex items-center gap-2">
             <Bell size={20} />
@@ -122,11 +120,10 @@ export default function AdminSettings() {
         </button>
         <button
           onClick={() => setActiveTab('profile')}
-          className={`pb-2 px-1 ${
-            activeTab === 'profile'
-              ? 'border-b-2 border-indigo-600 text-indigo-600'
-              : 'text-gray-500'
-          }`}
+          className={`pb-2 px-1 ${activeTab === 'profile'
+            ? 'border-b-2 border-indigo-600 text-indigo-600'
+            : 'text-gray-500'
+            }`}
         >
           <div className="flex items-center gap-2">
             <User size={20} />
@@ -312,8 +309,9 @@ export default function AdminSettings() {
         {activeTab === 'profile' && (
           <div className="max-w-xl mx-auto">
             {profileData && (
-              <EditProfileForm 
-                initialData={profileData} 
+              <EditProfileForm
+                initialData={profileData}
+                //@ts-ignore
                 onSave={handleProfileSave}
               />
             )}
