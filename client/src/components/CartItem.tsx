@@ -25,7 +25,7 @@ export default function CartItem({
         {/* Product Image */}
         <div className="flex-shrink-0 relative w-full sm:w-24 aspect-square sm:h-24 rounded-lg overflow-hidden bg-gray-100">
           <img
-            src={`${ImageURL}/${image}`}
+            src={`${ImageURL}/${image[0]}`}
             alt={title}
             className="absolute inset-0 w-full h-full object-cover"
           />
