@@ -220,10 +220,9 @@ export default function Checkout() {
                     placeholder="Enter your payment transaction ID"
                     className="mt-1 block w-full px-4 py-2 bg-gray-50 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors"
                   />
-                  <p className="mt-2 text-sm text-gray-500">
-                    Please complete your payment and enter the transaction ID
-                    here.
-                  </p>
+                    <p className="mt-2 text-sm text-gray-500">
+                    Please make your payment via bKash to the number 01942374953 and enter the transaction ID below.
+                    </p>
                 </div>
               </div>
             </div>
