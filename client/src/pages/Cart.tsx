@@ -13,8 +13,7 @@ export default function Cart() {
     0
   );
   const shipping = totalItems > 0 ? 110.0 : 0;
-  const tax = subtotal * 0.1; // 10% tax
-  const total = subtotal + shipping + tax;
+  const total = subtotal + shipping;
 
   if (items.length === 0) {
     return (
