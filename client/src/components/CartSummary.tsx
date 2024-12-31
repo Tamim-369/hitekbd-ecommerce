@@ -3,14 +3,12 @@ import { useNavigate } from 'react-router-dom';
 interface CartSummaryProps {
   subtotal: number;
   shipping: number;
-  tax: number;
   total: number;
 }
 
 export default function CartSummary({
   subtotal,
   shipping,
-  tax,
   total,
 }: CartSummaryProps) {
   const navigate = useNavigate();

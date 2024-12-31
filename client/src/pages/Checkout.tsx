@@ -47,8 +47,7 @@ export default function Checkout() {
     0
   );
   const shipping = totalItems > 0 ? 110.0 : 0;
-  const tax = subtotal * 0.1; // 10% tax
-  const total = subtotal + shipping + tax;
+  const total = subtotal + shipping
 
   useEffect(() => {
     if (!user) {
@@ -149,10 +148,7 @@ export default function Checkout() {
                   <span className="text-gray-600">Shipping</span>
                   <span className="text-gray-900">৳{shipping.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="text-gray-900">৳{tax.toFixed(2)}</span>
-                </div>
+                
                 <div className="flex justify-between text-base font-medium pt-2">
                   <span className="text-gray-900">Total</span>
                   <span className="text-gray-900">৳{total.toFixed(2)}</span>

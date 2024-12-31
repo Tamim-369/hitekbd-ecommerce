@@ -72,7 +72,6 @@ export default function Cart() {
               <CartSummary
                 subtotal={subtotal}
                 shipping={shipping}
-                tax={tax}
                 total={total}
               />
             </div>
