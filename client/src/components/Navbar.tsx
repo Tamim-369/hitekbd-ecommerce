@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -52,8 +52,9 @@ export default function Navbar() {
                 </Link>
                 <button
                   onClick={() => logout()}
-                  className="text-gray-600 hover:text-indigo-600"
+                  className="text-gray-600 hover:text-indigo-600 flex gap-1"
                 >
+                  <LogOut size={20} />
                   Logout
                 </button>
               </>
@@ -120,6 +121,7 @@ export default function Navbar() {
                   }}
                   className="text-gray-600 hover:text-indigo-600 flex items-center gap-2 w-full py-2"
                 >
+                  <LogOut size={20} />
                   Logout
                 </button>
               </>

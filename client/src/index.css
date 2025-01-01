@@ -5,3 +5,7 @@
 .button-gradient {
   @apply text-white bg-gradient-to-br from-[#37c3fa] to-[#c937fb] hover:bg-indigo-700 focus:outline-none;
 }
+
+.button-gradient-alternative {
+  @apply text-white bg-gradient-to-r from-[#c937fb] to-[#37acfa] hover:bg-indigo-700 focus:outline-none ring-2 ring-[#000000];
+}

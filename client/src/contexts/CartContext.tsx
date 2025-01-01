@@ -16,6 +16,7 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  isInCart: (_id: string) => boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -47,7 +48,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items.map(item => (item._id === _id ? { ...item, quantity } : item))
     );
   };
-
+  const isInCart = (_id: string) => items.some(item => item._id === _id);
   const clearCart = () => {
     setItems([]);
   };
@@ -67,6 +68,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateQuantity,
         clearCart,
         totalItems,
+        isInCart,
         totalPrice,
       }}
     >
