@@ -3,6 +3,7 @@ import { Star, Search, Filter, Trash2, Edit2 } from 'lucide-react';
 import { api } from '../../utils/api';
 import { showError, showSuccess } from '../../utils/toast';
 import AdminLayout from '../../components/AdminLayout';
+import { ImageURL } from '../../data/baseApi';
 
 interface Review {
   _id: string;
@@ -108,7 +109,7 @@ const Reviews = () => {
   });
 
   return (
-    <AdminLayout>
+    <>
       <div className="px-4 sm:px-6 lg:px-8 py-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
@@ -185,7 +186,7 @@ const Reviews = () => {
                           <td className="whitespace-nowrap px-3 py-4">
                             <div className="flex items-center">
                               <div className="h-10 w-10 flex-shrink-0">
-                                <img className="h-10 w-10 rounded object-cover" src={review.product.image} alt="" />
+                                <img className="h-10 w-10 rounded object-cover" src={`${ImageURL}/${review.product.image[0]}`} alt="" />
                               </div>
                               <div className="ml-4">
                                 <div className="font-medium text-gray-900">{review.product.name}</div>
@@ -384,7 +385,7 @@ const Reviews = () => {
           </div>
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

@@ -333,13 +333,13 @@ export const api = {
   },
   reviews: {
     getAll: (productId: string) =>
-      request(`/review${productId === '' ? '' : `?product=${productId}`}`, {
+      request(`/review?product=${productId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     getAllAdmin: () =>
-      request('/review/all', {
+      request('/review', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

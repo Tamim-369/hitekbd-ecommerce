@@ -3,6 +3,7 @@ import ApiError from '../../../errors/ApiError';
 import { Review } from './review.model';
 import { IReview } from './review.interface';
 import { Types } from 'mongoose';
+import { Products } from '../products/products.model';
 
 const createReview = async (payload: IReview): Promise<IReview> => {
   const result = await Review.create(payload);
@@ -15,19 +16,31 @@ const createReview = async (payload: IReview): Promise<IReview> => {
 const getAllReviews = async (
   queryFields: Record<string, any>
 ): Promise<IReview[]> => {
-  const { search, page, limit } = queryFields;
-  const query = search
-    ? { $or: [{ description: { $regex: search, $options: 'i' } }] }
-    : {};
-  let queryBuilder = Review.find(query);
+  const { search, page, limit, product } = queryFields;
+  const query: Record<string, any> = {};
+  
+  if (search) {
+    query.$or = [{ description: { $regex: search, $options: 'i' } }];
+  }
+  
+  if (product) {
+    query.product = new Types.ObjectId(product);
+  }
+  
+  let queryBuilder = Review.find(query)
+    .populate('userId', 'name email')
+    .populate({
+      path: 'product',
+      model: Products,
+      select: 'title price image'
+    })
+    .sort({ createdAt: -1 });
 
   if (page && limit) {
-    queryBuilder = queryBuilder.skip((page - 1) * limit).limit(limit);
+    const skip = (Number(page) - 1) * Number(limit);
+    queryBuilder = queryBuilder.skip(skip).limit(Number(limit));
   }
-  delete queryFields.search;
-  delete queryFields.page;
-  delete queryFields.limit;
-  queryBuilder.find(queryFields).populate('userId', 'name email');
+
   return await queryBuilder;
 };
 
@@ -36,6 +49,11 @@ const getAllReviewsByProductId = async (
 ): Promise<IReview[]> => {
   const result = await Review.find({ product: new Types.ObjectId(productId) })
     .populate('userId', 'name email')
+    .populate({
+      path: 'product',
+      model: Products,
+      select: 'title price image'
+    })
     .sort({ createdAt: -1 });
   return result;
 };

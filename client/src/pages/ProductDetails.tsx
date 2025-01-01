@@ -66,7 +66,7 @@ export default function ProductDetails() {
               api.products.getAll({ category: data.category }),
               api.reviews.getAll(data._id)
             ]);
-            
+            console.log('Similar products:', reviews);
             // Filter out the current product and limit to 4 products
             const filtered = productsRes
               .filter(p => p._id !== data._id)
