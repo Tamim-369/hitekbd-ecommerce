@@ -23,7 +23,7 @@ const createProducts = async (payload: IProducts): Promise<IProducts> => {
       price: String(payload.price),
       discountedPrice: String(payload.discountedPrice),
       stockAmount: String(payload.stockAmount),
-      details: JSON.stringify(payload.details), // Convert back to string for validation
+      details: payload.details,
     });
 
     // Convert strings back to numbers for database
@@ -32,9 +32,11 @@ const createProducts = async (payload: IProducts): Promise<IProducts> => {
       price: Number(payload.price),
       discountedPrice: Number(payload.discountedPrice),
       stockAmount: Number(payload.stockAmount),
-      details: Array.isArray(payload.details) ? payload.details : JSON.parse(payload.details),
+      details: Array.isArray(payload.details)
+        ? payload.details
+        : JSON.parse(payload.details),
     };
-    
+
     const result = await Products.create(numericPayload);
     if (!result) {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create product!');
@@ -151,7 +153,10 @@ const updateProducts = async (
     const numericPayload = {
       ...payload,
       ...(payload.price && { price: Number(payload.price) }),
-      ...(payload.discountedPrice && { discountedPrice: Number(payload.discountedPrice) }),
+      ...(payload.details && { details: payload.details }),
+      ...(payload.discountedPrice && {
+        discountedPrice: Number(payload.discountedPrice),
+      }),
       ...(payload.stockAmount && { stockAmount: Number(payload.stockAmount) }),
     };
 
@@ -162,7 +167,11 @@ const updateProducts = async (
     }
 
     // Handle image deletion if new images are uploaded
-    if (isExistProducts.image.length > 0 && payload.image && payload.image.length > 0) {
+    if (
+      isExistProducts.image.length > 0 &&
+      payload.image &&
+      payload.image.length > 0
+    ) {
       isExistProducts.image.forEach((image: string) => {
         unlinkFile(image);
       });
@@ -170,8 +179,10 @@ const updateProducts = async (
 
     // Validate and update
     await ProductsValidation.updateProductsZodSchema.parseAsync(numericPayload);
-    const result = await Products.findByIdAndUpdate(id, numericPayload, { new: true });
-    
+    const result = await Products.findByIdAndUpdate(id, numericPayload, {
+      new: true,
+    });
+
     if (!result) {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to update product!');
     }
