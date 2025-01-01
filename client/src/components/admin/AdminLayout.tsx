@@ -37,10 +37,16 @@ export default function AdminLayout() {
       label: 'Users'
     },
     {
+      path: '/admin/reviews',
+      icon: <Settings size={20} />,
+      label: 'Reviews'
+    },
+    {
       path: '/admin/settings',
       icon: <Settings size={20} />,
       label: 'Settings'
-    }
+    },
+ 
   ];
 
   const token = jwtDecode(localStorage.getItem('token')!);
