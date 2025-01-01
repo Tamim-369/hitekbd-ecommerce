@@ -27,6 +27,7 @@ export default function ForgotPassword() {
       showSuccess('Verification code sent to your email');
       navigate('/verify-email');
     } catch (error: any) {
+      console.error('Forgot password error:', error);
       if (error.errorMessages?.length > 0) {
         error.errorMessages.forEach((err: { message: string }) => {
           showError(err.message);

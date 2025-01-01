@@ -16,10 +16,10 @@ export default {
     jwt_refresh_expire_in: process.env.JWT_REFRESH_EXPIRES_IN,
   },
   email: {
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
   client_url: process.env.CLIENT_URL,
 };
