@@ -230,9 +230,6 @@ export const api = {
         method: 'PATCH',
         body: {
           ...formData,
-          ...(formData.details && {
-            details: `${formData.get('details')}`,
-          }),
         },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
