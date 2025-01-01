@@ -25,17 +25,17 @@ export default function Signup() {
       return;
     }
     try {
-      await signup(
-        formData.email,
-        formData.password,
-        formData.name,
-        formData.address,
-        formData.phone
-      );
+      await signup({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        phone: formData.phone,
+        address: formData.address
+      });
       showSuccess('Account created successfully.');
       navigate('/');
-    } catch (error) {
-      showError('Failed to create account');
+    } catch (error: any) {
+      showError(error?.message || 'Failed to create account');
     }
   };
 
