@@ -52,7 +52,7 @@ export default function ProductCard({
       </div>
       <div className="mt-4 flex justify-between">
         <div>
-          <h3 className="text-sm text-gray-700 font-medium">{title}</h3>
+          <h3 className="text-sm text-gray-700 font-medium">{title.toString().length>47?title.substring(1,47)+'...':title}</h3>
           <div className="flex items-center gap-2">
             <p className="text-lg font-semibold text-gray-900">
               ৳{discountedPrice ? discountedPrice : price.toFixed(2)}
