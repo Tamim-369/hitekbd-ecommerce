@@ -53,9 +53,36 @@ const updateProfileToDB = async (
 
   return updateDoc;
 };
+const getWishlistFromDB = async (user: JwtPayload) => {
+  const { id } = user;
+  const result = await User.findById(id).populate('wishlist');
+  return result;
+};
+const addWishlistToDB = async (user: JwtPayload, productId: string) => {
+  const { id } = user;
+  const result = await User.findByIdAndUpdate(
+    id,
+    { $addToSet: { wishlist: productId } },
+    { new: true }
+  );
+  return result;
+};
+
+const deleteWishlistFromDB = async (user: JwtPayload, productId: string) => {
+  const { id } = user;
+  const result = await User.findByIdAndUpdate(
+    id,
+    { $pull: { wishlist: productId } },
+    { new: true }
+  );
+  return result;
+};
 
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
   updateProfileToDB,
+  getWishlistFromDB,
+  addWishlistToDB,
+  deleteWishlistFromDB,
 };

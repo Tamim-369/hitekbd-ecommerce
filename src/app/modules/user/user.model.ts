@@ -51,6 +51,16 @@ const userSchema = new Schema<IUser, UserModal>(
       type: Boolean,
       default: false,
     },
+    wishlist: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Products',
+        },
+      ],
+      default: [],
+      required: false,
+    },
     authentication: {
       type: {
         isResetPassword: {

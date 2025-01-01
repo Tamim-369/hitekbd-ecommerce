@@ -54,4 +54,53 @@ const updateProfile = catchAsync(
   }
 );
 
-export const UserController = { createUser, getUserProfile, updateProfile };
+const getWishlist = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const result = await UserService.getWishlistFromDB(user);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Wishlist data retrieved successfully',
+    data: result,
+  });
+});
+
+const addWishlist = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!req.query.id) throw new Error('Product id is required');
+
+  const result = await UserService.addWishlistToDB(
+    user,
+    req.query.id.toString()
+  );
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Product added to wishlist successfully',
+    data: result,
+  });
+});
+
+const deleteWishlist = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!req.query.id) throw new Error('Product id is required');
+  const result = await UserService.deleteWishlistFromDB(
+    user,
+    req.query.id.toString()
+  );
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Product deleted from wishlist successfully',
+    data: result,
+  });
+});
+
+export const UserController = {
+  createUser,
+  getUserProfile,
+  updateProfile,
+  getWishlist,
+  addWishlist,
+  deleteWishlist,
+};

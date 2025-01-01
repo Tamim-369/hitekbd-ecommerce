@@ -24,5 +24,12 @@ router
     fileUploadHandler(),
     UserController.updateProfile
   );
-
+router
+  .route('/wishlist')
+  .get(auth(USER_ROLES.ADMIN, USER_ROLES.USER), UserController.getWishlist)
+  .post(auth(USER_ROLES.ADMIN, USER_ROLES.USER), UserController.addWishlist)
+  .delete(
+    auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+    UserController.deleteWishlist
+  );
 export const UserRoutes = router;
