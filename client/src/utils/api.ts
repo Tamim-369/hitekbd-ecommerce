@@ -335,7 +335,7 @@ export const api = {
     getAll: (productId: string) =>
       request(`/review?product=${productId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     create: (data: { description: string; star: number; product: string }) =>
@@ -351,14 +351,14 @@ export const api = {
         data,
         method: 'PATCH',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     delete: (id: string) =>
       request(`/review/${id}`, {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
   },
