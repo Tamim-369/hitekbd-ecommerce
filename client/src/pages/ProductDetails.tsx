@@ -63,9 +63,9 @@ export default function ProductDetails() {
       _id: product._id,
       title: product.title,
       price: product.discountedPrice
-        ? parseFloat(product.discountedPrice)
-        : parseFloat(product.price),
-      image: product.image[0],
+        ? parseFloat(product.discountedPrice.toString())
+        : parseFloat(product.price.toString()),
+      image: product.image,
     });
   };
 
@@ -108,8 +108,8 @@ export default function ProductDetails() {
   const discountPercentage =
     product.price && product.discountedPrice
       ? Math.round(
-          ((parseFloat(product.price) - parseFloat(product.discountedPrice)) /
-            parseFloat(product.price)) *
+          ((parseFloat(product.price.toString()) - parseFloat(product.discountedPrice.toString())) /
+            parseFloat(product.price.toString())) *
             100
         )
       : 0;
@@ -195,12 +195,12 @@ export default function ProductDetails() {
             {/* Price */}
             <div className="flex items-baseline gap-4">
               <span className="text-3xl font-bold text-gray-900">
-                ৳{parseFloat(product.discountedPrice).toFixed(2)}
+                ৳{parseFloat(product.discountedPrice.toString()).toFixed(2)}
               </span>
               {discountPercentage > 0 && (
                 <>
                   <span className="text-xl text-gray-500 line-through">
-                    ৳{parseFloat(product.price).toFixed(2)}
+                    ৳{parseFloat(product.price.toString()).toFixed(2)}
                   </span>
                   <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
                     {discountPercentage}% OFF
@@ -211,7 +211,7 @@ export default function ProductDetails() {
 
             {/* Stock Status */}
             <div className="flex items-center gap-2">
-              {parseInt(product.stockAmount) > 0 ? (
+              {parseInt(product.stockAmount.toString()) > 0 ? (
                 <>
                   <Check className="h-5 w-5 text-green-500" />
                   <span className="text-green-600 font-medium">
@@ -227,11 +227,11 @@ export default function ProductDetails() {
             </div>
             <button
               onClick={handleAddToCart}
-              disabled={parseInt(product.stockAmount) === 0}
+              disabled={parseInt(product.stockAmount.toString()) === 0}
               className="w-full md:w-auto px-6 py-2 rounded-lg font-semibold flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed button-gradient"
             >
               <ShoppingCart className="h-5 w-5" />
-              {parseInt(product.stockAmount) === 0
+              {parseInt(product.stockAmount.toString()) === 0
                 ? 'Out of Stock'
                 : 'Add to Cart'}
             </button>

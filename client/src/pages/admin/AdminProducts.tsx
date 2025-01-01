@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash2, Search } from 'lucide-react';
-import { api, Product, Category } from '../../utils/api';
+import { api, Product } from '../../utils/api';
+import { Category } from '../../types/category';
 import { useProducts } from '../../contexts/ProductContext';
 import { useToast } from '../../contexts/ToastContext';
 import ProductModal from '../../components/admin/ProductModal';

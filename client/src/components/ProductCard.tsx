@@ -6,11 +6,10 @@ import { Link } from 'react-router-dom';
 import { OptimizedImage } from './OptimizedImage';
 
 interface ProductCardProps {
-  id: number;
   _id: string;
   title: string;
   price: number;
-  image: string;
+  image: string[];
   discountedPrice: number;
 }
 

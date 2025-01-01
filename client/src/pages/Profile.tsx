@@ -225,7 +225,7 @@ export default function Profile() {
                               Order # {4563+index+order._id.toString()[0]}
                             </p>
                             <p className="text-sm text-gray-500">
-                              Amount Paid: ${order.amountPaid}
+                              Amount Paid: ৳{order.amountPaid}
                             </p>
                           </div>
                           <span

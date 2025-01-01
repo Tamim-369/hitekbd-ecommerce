@@ -1,9 +1,15 @@
 import { IErrorResponse } from '../types/error';
-import { Order, CreateOrderDTO, UpdateOrderDTO, OrderStatus } from '../types/order';
+import {
+  Order,
+  CreateOrderDTO,
+  UpdateOrderDTO,
+  OrderStatus,
+} from '../types/order';
 import { Category } from '../types/category';
-import { DashboardStats } from '../app/modules/admin/admin.interface';
+import { DashboardStats } from '../types/dashboard';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.hitekbd.com/api/v1';
+const API_URL =
+  import.meta.env.VITE_API_URL || 'https://api.hitekbd.com/api/v1';
 
 export interface Product {
   _id: string;
@@ -70,14 +76,22 @@ async function request<T = any>(
     method: customConfig.method,
     headers: customHeaders,
     data,
-    body
+    body,
   });
 
   const config: RequestInit = {
     method: data || body ? 'POST' : 'GET',
-    body: body || (data instanceof FormData ? data : data ? JSON.stringify(data) : undefined),
+    body:
+      body ||
+      (data instanceof FormData
+        ? data
+        : data
+        ? JSON.stringify(data)
+        : undefined),
     headers: {
-      ...(!(data instanceof FormData) && !body ? { 'Content-Type': 'application/json' } : {}),
+      ...(!(data instanceof FormData) && !body
+        ? { 'Content-Type': 'application/json' }
+        : {}),
       ...customHeaders,
     },
     credentials: 'include',
@@ -88,7 +102,7 @@ async function request<T = any>(
     url: `${API_URL}${endpoint}`,
     method: config.method,
     headers: config.headers,
-    body: config.body instanceof FormData ? 'FormData' : config.body
+    body: config.body instanceof FormData ? 'FormData' : config.body,
   });
 
   try {
@@ -222,7 +236,7 @@ export const api = {
     delete: (id: string) =>
       request<Product>(`/products/${id}`, {
         method: 'DELETE',
-	headers: {
+        headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
@@ -281,7 +295,7 @@ export const api = {
   },
   categorys: {
     getAll: () => request<Category[]>('/category'),
-    create: (data: { name: string }) => 
+    create: (data: { name: string }) =>
       request<Category>('/category/create', {
         method: 'POST',
         data,

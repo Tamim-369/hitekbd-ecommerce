@@ -1,6 +1,5 @@
 import { SlidersHorizontal } from 'lucide-react';
-import { Category } from '../utils/api';
-
+import { Category } from '../types/category';
 interface ProductFiltersProps {
   categories: Category[];
   selectedCategory: Category | null;

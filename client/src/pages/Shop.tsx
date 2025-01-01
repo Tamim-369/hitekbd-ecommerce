@@ -5,7 +5,8 @@ import ProductFilters from '../components/ProductFilters';
 import ProductSort from '../components/ProductSort';
 import Pagination from '../components/Pagination';
 import ShopProductContainer from '../components/ShopProductContainer';
-import { Category, Product } from '../utils/api';
+import { Product } from '../utils/api';
+import { Category } from '../types/category';
 import SEO from '../components/SEO';
 
 const ITEMS_PER_PAGE = 8;
