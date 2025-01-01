@@ -189,7 +189,7 @@ export default function ProductDetails() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {product.title}
               </h1>
-              <p className="text-lg text-gray-600">{product.description}</p>
+              <p className="text-lg text-gray-600 whitespace-pre-wrap">{product.description}</p>
             </div>
 
             {/* Price */}
