@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const productDetailSchema = z.object({
   name: z.string(),
-  value: z.string()
+  value: z.string(),
 });
 
 const createProductsZodSchema = z.object({
@@ -14,9 +14,9 @@ const createProductsZodSchema = z.object({
   }),
   image: z.array(z.string()),
   details: z.array(productDetailSchema),
-  price: z.string(),
-  discountedPrice: z.string(),
-  stockAmount: z.string(),
+  price: z.number(),
+  discountedPrice: z.number(),
+  stockAmount: z.number(),
   category: z.string({
     required_error: 'category is required',
   }),
@@ -27,9 +27,9 @@ const updateProductsZodSchema = z.object({
   description: z.string().optional(),
   image: z.array(z.string()).optional(),
   details: z.array(productDetailSchema).optional(),
-  price: z.string().optional(),
-  discountedPrice: z.string().optional(),
-  stockAmount: z.string().optional(),
+  price: z.number().optional(),
+  discountedPrice: z.number().optional(),
+  stockAmount: z.number().optional(),
   category: z.string().optional(),
 });
 

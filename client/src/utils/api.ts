@@ -80,7 +80,7 @@ async function request<T = any>(
   });
 
   const config: RequestInit = {
-    method: data || body ? 'POST' : 'GET',
+    method: customConfig.method || (data || body ? 'POST' : 'GET'),
     body:
       body ||
       (data instanceof FormData
@@ -225,12 +225,10 @@ export const api = {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
-    update: (id: string, formData: any) =>
+    update: (id: string, formData: FormData) =>
       request<Product>(`/products/${id}`, {
         method: 'PATCH',
-        body: {
-          ...formData,
-        },
+        data: formData,
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

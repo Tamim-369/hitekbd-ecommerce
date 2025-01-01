@@ -122,11 +122,14 @@ export default function ProductModal({
         const details = formData.details || [];
         form.append('details', JSON.stringify(details));
 
-        // Handle images separately
-        if (selectedFiles) {
+        // Only append new images if they are selected
+        if (selectedFiles && selectedFiles.length > 0) {
           Array.from(selectedFiles).forEach(file => {
             form.append('image', file);
           });
+        } else {
+          // If no new images, send the existing image array
+          form.append('image', JSON.stringify(formData.image));
         }
 
         await updateProduct(product._id, form);

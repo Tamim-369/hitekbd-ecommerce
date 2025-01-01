@@ -143,6 +143,8 @@ const updateProducts = async (
   id: string,
   payload: Partial<IProducts>
 ): Promise<IProducts | null> => {
+  console.log('Payload :', payload);
+
   try {
     // Handle details parsing and ensure it's an array
     let parsedDetails = payload.details;
@@ -154,6 +156,17 @@ const updateProducts = async (
       }
     }
 
+    // Handle image array
+    let imageArray = payload.image;
+    if (typeof payload.image === 'string') {
+      try {
+        imageArray = JSON.parse(payload.image);
+      } catch (error) {
+        // If it's not JSON, treat it as a single image
+        imageArray = [payload.image];
+      }
+    }
+
     // Ensure details is always an array if provided
     if (parsedDetails !== undefined && !Array.isArray(parsedDetails)) {
       parsedDetails = [parsedDetails];
@@ -162,25 +175,29 @@ const updateProducts = async (
     // Convert string numbers to actual numbers if present
     const numericPayload = {
       ...payload,
-      ...(payload.price && { price: Number(payload.price) }),
-      ...(parsedDetails !== undefined && { details: parsedDetails }), // Only include if provided
-      ...(payload.discountedPrice && {
+      ...(payload.price !== undefined && { price: Number(payload.price) }),
+      ...(parsedDetails !== undefined && { details: parsedDetails }),
+      ...(payload.discountedPrice !== undefined && {
         discountedPrice: Number(payload.discountedPrice),
       }),
-      ...(payload.stockAmount && { stockAmount: Number(payload.stockAmount) }),
+      ...(payload.stockAmount !== undefined && {
+        stockAmount: Number(payload.stockAmount),
+      }),
+      ...(imageArray !== undefined && { image: imageArray }),
     };
 
-    // Rest of your existing code...
+    // Check if product exists
     const isExistProducts = await getProductsById(id);
     if (!isExistProducts) {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Product not found!');
     }
 
-    // Handle image deletion if new images are uploaded
+    // Only delete old images if new images are being uploaded and they're actual files
     if (
       isExistProducts.image.length > 0 &&
       payload.image &&
-      payload.image.length > 0
+      !Array.isArray(payload.image) &&
+      typeof payload.image !== 'string'
     ) {
       isExistProducts.image.forEach((image: string) => {
         unlinkFile(image);
@@ -192,17 +209,15 @@ const updateProducts = async (
 
     // Use $set operator with special handling for details array
     const updateQuery = { $set: numericPayload };
-    
+
     // If details field exists in payload, ensure it completely replaces the old array
     if (parsedDetails !== undefined) {
       updateQuery.$set.details = parsedDetails;
     }
 
-    const result = await Products.findByIdAndUpdate(
-      id,
-      updateQuery,
-      { new: true }
-    );
+    const result = await Products.findByIdAndUpdate(id, updateQuery, {
+      new: true,
+    });
 
     if (!result) {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to update product!');
