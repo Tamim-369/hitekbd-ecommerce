@@ -147,18 +147,23 @@ const updateProducts = async (
     // Handle details parsing and ensure it's an array
     let parsedDetails = payload.details;
     if (typeof payload.details === 'string') {
-      parsedDetails = JSON.parse(payload.details);
-      // Ensure it's an array
-      if (!Array.isArray(parsedDetails)) {
-        parsedDetails = [parsedDetails];
+      try {
+        parsedDetails = JSON.parse(payload.details);
+      } catch (error) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid details format');
       }
+    }
+
+    // Ensure details is always an array if provided
+    if (parsedDetails !== undefined && !Array.isArray(parsedDetails)) {
+      parsedDetails = [parsedDetails];
     }
 
     // Convert string numbers to actual numbers if present
     const numericPayload = {
       ...payload,
       ...(payload.price && { price: Number(payload.price) }),
-      ...(parsedDetails && { details: parsedDetails }), // Use parsed details
+      ...(parsedDetails !== undefined && { details: parsedDetails }), // Only include if provided
       ...(payload.discountedPrice && {
         discountedPrice: Number(payload.discountedPrice),
       }),
@@ -185,10 +190,17 @@ const updateProducts = async (
     // Validate and update
     await ProductsValidation.updateProductsZodSchema.parseAsync(numericPayload);
 
-    // Use $set operator to ensure proper array update
+    // Use $set operator with special handling for details array
+    const updateQuery = { $set: numericPayload };
+    
+    // If details field exists in payload, ensure it completely replaces the old array
+    if (parsedDetails !== undefined) {
+      updateQuery.$set.details = parsedDetails;
+    }
+
     const result = await Products.findByIdAndUpdate(
       id,
-      { $set: numericPayload },
+      updateQuery,
       { new: true }
     );
 

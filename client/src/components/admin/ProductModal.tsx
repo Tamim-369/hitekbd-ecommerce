@@ -112,18 +112,18 @@ export default function ProductModal({
       if (product) {
         // For update, only send changed fields
         const changedFields = Object.entries(formData).filter(([key, value]) => {
-          // Skip if value is null/undefined or same as original
+          // Skip if value is null/undefined
           if (value === null || value === undefined) return false;
-          if (key === 'details') {
-            return JSON.stringify(value) !== JSON.stringify(product[key]);
-          }
+          // Always include details if they exist
+          if (key === 'details') return true;
           return value !== product[key];
         });
 
         // Append only changed fields
         changedFields.forEach(([key, value]) => {
           if (key === 'details') {
-            form.append('details', JSON.stringify(value));
+            // Always send the complete details array
+            form.append('details', JSON.stringify(value || []));
           } else if (typeof value === 'number') {
             form.append(key, String(value));
           } else {
