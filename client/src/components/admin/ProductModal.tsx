@@ -110,36 +110,17 @@ export default function ProductModal({
       const form = new FormData();
       
       if (product) {
-        // For update, only send changed fields
-        const changedFields = Object.entries(formData).filter(([key, value]) => {
-          // Skip if value is null/undefined
-          if (value === null || value === undefined) return false;
-          // Always include details if they exist
-          if (key === 'details') return true;
-          return value !== product[key];
-        });
-
-        // Append only changed fields
-        changedFields.forEach(([key, value]) => {
-          if (key === 'details') {
-            // Ensure details is an array of ProductDetail objects
-            const details = Array.isArray(value) ? value : [];
-            // Validate each detail has name and value
-            const validDetails = details.filter(detail => 
-              detail && 
-              typeof detail === 'object' && 
-              'name' in detail && 
-              'value' in detail &&
-              typeof detail.name === 'string' &&
-              typeof detail.value === 'string'
-            );
-            form.append('details', JSON.stringify(validDetails));
-          } else if (typeof value === 'number') {
-            form.append(key, String(value));
-          } else {
-            form.append(key, value.toString());
-          }
-        });
+        // For update, send all fields
+        form.append('title', formData.title || '');
+        form.append('description', formData.description || '');
+        form.append('price', String(formData.price || 0));
+        form.append('discountedPrice', String(formData.discountedPrice || 0));
+        form.append('category', formData.category || '');
+        form.append('stockAmount', String(formData.stockAmount || 0));
+        
+        // Always send the complete details array
+        const details = formData.details || [];
+        form.append('details', JSON.stringify(details));
 
         // Handle images separately
         if (selectedFiles) {
