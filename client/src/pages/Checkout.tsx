@@ -81,6 +81,14 @@ export default function Checkout() {
         phoneNumber: formData.phone,
         address: formData.address,
         transactionID: formData.transactionID,
+        items: items.map(item => ({
+          productId: item._id,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image[0],
+          color: item.color,
+        })),
       };
       //@ts-ignore
       await api.orders.create(orderData);
@@ -148,7 +156,7 @@ export default function Checkout() {
                   <span className="text-gray-600">Shipping</span>
                   <span className="text-gray-900">৳{shipping.toFixed(2)}</span>
                 </div>
-                
+
                 <div className="flex justify-between text-base font-medium pt-2">
                   <span className="text-gray-900">Total</span>
                   <span className="text-gray-900">৳{total.toFixed(2)}</span>
@@ -216,9 +224,9 @@ export default function Checkout() {
                     placeholder="Enter your payment transaction ID"
                     className="mt-1 block w-full px-4 py-2 bg-gray-50 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors"
                   />
-                    <p className="mt-2 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-gray-500">
                     Please make your payment via bKash to the number 01942374953 and enter the transaction ID below.
-                    </p>
+                  </p>
                 </div>
               </div>
             </div>

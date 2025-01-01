@@ -49,7 +49,8 @@ export default function ProductDetails() {
   const [editingReview, setEditingReview] = useState<{ id: string; description: string; star: number } | null>(null);
   const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-
+  const [selectedColor
+    , setSelectedColor] = useState<string>(product?.colors[0] || '');
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -70,7 +71,7 @@ export default function ProductDetails() {
             const filtered = productsRes
               .filter(p => p._id !== data._id)
               .slice(0, 4);
-              
+
             setSuggestedProducts(filtered);
             setReviews(reviewsRes || []);
 
@@ -104,6 +105,7 @@ export default function ProductDetails() {
         ? parseFloat(product.discountedPrice.toString())
         : parseFloat(product.price!.toString()),
       image: product.image,
+      color: selectedColor
     });
   };
 
@@ -127,7 +129,7 @@ export default function ProductDetails() {
 
   const confirmDelete = async () => {
     if (!deleteReviewId) return;
-    
+
     try {
       setIsDeleting(true);
       await api.reviews.delete(deleteReviewId);
@@ -188,11 +190,11 @@ export default function ProductDetails() {
           product: product._id
         });
       }
-      
+
       // Refresh reviews
       const updatedReviews = await api.reviews.getAll(product._id);
       setReviews(updatedReviews || []);
-      
+
       setNewReview({ description: '', star: 5 });
       setEditingReview(null);
       showSuccess(`Review ${editingReview ? 'updated' : 'submitted'} successfully`);
@@ -230,23 +232,23 @@ export default function ProductDetails() {
   const discountPercentage =
     product.price && product.discountedPrice
       ? Math.round(
-          ((parseFloat(product.price.toString()) - parseFloat(product.discountedPrice.toString())) /
-            parseFloat(product.price.toString())) *
-            100
-        )
+        ((parseFloat(product.price.toString()) - parseFloat(product.discountedPrice.toString())) /
+          parseFloat(product.price.toString())) *
+        100
+      )
       : 0;
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {product && (
-        <SEO 
-          title={product.title}
-          description={product.description}
-          image={`${ImageURL}/${product.image[0]}`}
-          url={window.location.href}
-        />
-      )}
+        {product && (
+          <SEO
+            title={product.title}
+            description={product.description}
+            image={`${ImageURL}/${product.image[0]}`}
+            url={window.location.href}
+          />
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Image Gallery */}
           <div className="space-y-6">
@@ -278,30 +280,29 @@ export default function ProductDetails() {
             </div>
 
             {/* Thumbnail Navigation */}
-              <div className="grid grid-cols-5 gap-4">
-                {product.image.map((img, index) => {
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className={`relative aspect-square rounded-lg overflow-hidden bg-gray-100 ${
-                        selectedImage === index
-                          ? 'ring-2 ring-indigo-600'
-                          : 'hover:opacity-75'
+            <div className="grid grid-cols-5 gap-4">
+              {product.image.map((img, index) => {
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`relative aspect-square rounded-lg overflow-hidden bg-gray-100 ${selectedImage === index
+                      ? 'ring-2 ring-indigo-600'
+                      : 'hover:opacity-75'
                       }`}
-                    >
-                      <img
-                        src={`${ImageURL}/${img}`}
-                        alt={`${product.title} - View ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      {selectedImage === index && (
-                        <div className="absolute inset-0 bg-indigo-600/10" />
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
+                  >
+                    <img
+                      src={`${ImageURL}/${img}`}
+                      alt={`${product.title} - View ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    {selectedImage === index && (
+                      <div className="absolute inset-0 bg-indigo-600/10" />
+                    )}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           {/* Product Info */}
@@ -310,6 +311,20 @@ export default function ProductDetails() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {product.title}
               </h1>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700">Select Color</label>
+                <div className="flex items-center space-x-2 mt-2">
+                  {product.colors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedColor(color)}
+                      className={`inline-block w-6 h-6 rounded-full border-2 ${selectedColor === color ? 'border-indigo-500' : 'border-gray-200'}`}
+                      style={{ backgroundColor: color }}
+                      title={color}
+                    />
+                  ))}
+                </div>
+              </div>
               <p className="text-lg text-gray-600 whitespace-pre-wrap">{product.description}</p>
             </div>
 
@@ -389,22 +404,20 @@ export default function ProductDetails() {
               {suggestedProducts.length > 0 && (
                 <button
                   onClick={() => setActiveTab('similar')}
-                  className={`${
-                    activeTab === 'similar'
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                  className={`${activeTab === 'similar'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                 >
                   Similar Products
                 </button>
               )}
               <button
                 onClick={() => setActiveTab('reviews')}
-                className={`${
-                  activeTab === 'reviews'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                className={`${activeTab === 'reviews'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Reviews
               </button>
@@ -441,11 +454,10 @@ export default function ProductDetails() {
                       {[...Array(5)].map((_, index) => (
                         <Star
                           key={index}
-                          className={`h-5 w-5 ${
-                            index < Math.round(reviews.reduce((acc, review) => acc + review.star, 0) / reviews.length)
-                              ? 'text-yellow-400'
-                              : 'text-gray-300'
-                          } fill-current`}
+                          className={`h-5 w-5 ${index < Math.round(reviews.reduce((acc, review) => acc + review.star, 0) / reviews.length)
+                            ? 'text-yellow-400'
+                            : 'text-gray-300'
+                            } fill-current`}
                         />
                       ))}
                     </div>
@@ -526,9 +538,8 @@ export default function ProductDetails() {
                                   {[...Array(5)].map((_, index) => (
                                     <Star
                                       key={index}
-                                      className={`h-4 w-4 ${
-                                        index < review.star ? 'text-yellow-400' : 'text-gray-300'
-                                      } fill-current`}
+                                      className={`h-4 w-4 ${index < review.star ? 'text-yellow-400' : 'text-gray-300'
+                                        } fill-current`}
                                     />
                                   ))}
                                 </div>
@@ -542,29 +553,29 @@ export default function ProductDetails() {
                               </div>
                             </div>
                             {
-                            //@ts-ignore
-                            user && user.id === review.userId._id && (
-                              <div className="flex items-center space-x-4 sm:flex-row flex-col gap-2">
-                                <button
-                                  onClick={() => handleEditReview(review)}
-                                  className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
-                                >
-                                  <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                  </svg>
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteReview(review._id)}
-                                  className="text-sm text-red-600 hover:text-red-800 flex items-center"
-                                >
-                                  <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
-                                  Delete
-                                </button>
-                              </div>
-                            )}
+                              //@ts-ignore
+                              user && user.id === review.userId._id && (
+                                <div className="flex items-center space-x-4 sm:flex-row flex-col gap-2">
+                                  <button
+                                    onClick={() => handleEditReview(review)}
+                                    className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
+                                  >
+                                    <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteReview(review._id)}
+                                    className="text-sm text-red-600 hover:text-red-800 flex items-center"
+                                  >
+                                    <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
                           </div>
                           <div className="mt-4 prose prose-sm max-w-none text-gray-500">
                             <p>{review.description}</p>
@@ -581,8 +592,8 @@ export default function ProductDetails() {
             {deleteReviewId && (
               <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                 <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                  <div 
-                    className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
+                  <div
+                    className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
                     aria-hidden="true"
                     onClick={() => setDeleteReviewId(null)}
                   ></div>
@@ -644,8 +655,8 @@ export default function ProductDetails() {
               <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                 <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                   {/* Background overlay */}
-                  <div 
-                    className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
+                  <div
+                    className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
                     aria-hidden="true"
                     onClick={() => setIsReviewModalOpen(false)}
                   ></div>
@@ -679,9 +690,8 @@ export default function ProductDetails() {
                                   key={rating}
                                   type="button"
                                   onClick={() => setNewReview(prev => ({ ...prev, star: rating }))}
-                                  className={`${
-                                    rating <= newReview.star ? 'text-yellow-400' : 'text-gray-300'
-                                  }`}
+                                  className={`${rating <= newReview.star ? 'text-yellow-400' : 'text-gray-300'
+                                    }`}
                                 >
                                   <Star className="h-8 w-8 fill-current" />
                                 </button>

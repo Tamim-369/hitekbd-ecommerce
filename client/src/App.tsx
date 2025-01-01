@@ -22,6 +22,7 @@ import AdminSettings from './pages/admin/AdminSettings';
 import { HelmetProvider } from 'react-helmet-async';
 import ErrorBoundary from './components/ErrorBoundary';
 import Reviews from './pages/admin/Reviews';
+import Order from './pages/Order';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
               <Route path="forgot-password" element={<ForgotPassword />} />
               <Route path="verify-email" element={<VerifyEmail />} />
               <Route path="reset-password" element={<ResetPassword />} />
+              <Route path="order/:id" element={<Order />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/admin" element={<AdminLayout />}>
@@ -49,7 +51,7 @@ function App() {
               <Route path="orders" element={<AdminOrders />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="settings" element={<AdminSettings />} />
-              <Route path='reviews' element={<Reviews/>} />
+              <Route path='reviews' element={<Reviews />} />
             </Route>
           </Routes>
         </Router>

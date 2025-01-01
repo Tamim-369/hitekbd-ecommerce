@@ -8,6 +8,7 @@ interface CartItemProps {
   price: number;
   image: string;
   quantity: number;
+  color?: string;
 }
 
 export default function CartItem({
@@ -16,6 +17,7 @@ export default function CartItem({
   price,
   image,
   quantity,
+  color,
 }: CartItemProps) {
   const { updateQuantity, removeItem } = useCart();
 
@@ -41,7 +43,16 @@ export default function CartItem({
               <p className="mt-1 text-sm text-gray-500">
                 ৳{price.toFixed(2)} each
               </p>
+              {color && (
+                <div className="flex items-center gap-2 mt-1">
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ backgroundColor: color }}
+                  ></div>
+                </div>
+              )}
             </div>
+
             <div className="flex sm:flex-col items-center sm:items-end gap-4 sm:gap-1">
               <p className="text-base sm:text-lg font-medium text-gray-900">
                 ${(price * quantity).toFixed(2)}
@@ -49,7 +60,7 @@ export default function CartItem({
             </div>
           </div>
 
-          <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="mt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {/* Quantity Controls */}
             <div className="flex items-center border border-gray-200 rounded-lg shadow-sm">
               <button

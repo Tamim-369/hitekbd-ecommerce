@@ -1,6 +1,11 @@
 import { Types } from 'mongoose';
 
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus =
+  | 'pending'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled';
 export type PaymentStatus = 'pending' | 'paid' | 'failed';
 
 export interface IOrderItem {
@@ -9,6 +14,7 @@ export interface IOrderItem {
   price: number;
   quantity: number;
   image: string;
+  color: string;
 }
 
 export interface IOrder {

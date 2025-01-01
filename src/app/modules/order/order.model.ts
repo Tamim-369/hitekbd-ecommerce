@@ -4,10 +4,22 @@ import { STATUS } from '../../../enums/order';
 
 const orderSchema = new Schema<IOrder>(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    product: [
-      { type: Schema.Types.ObjectId, ref: 'Products', required: true }
+    items: [
+      {
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Products',
+          required: true,
+        },
+        title: { type: String, required: true },
+        price: { type: Number, required: true },
+        quantity: { type: Number, required: true },
+        image: { type: String, required: true },
+        color: { type: String, required: true },
+      },
     ],
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    product: [{ type: Schema.Types.ObjectId, ref: 'Products', required: true }],
     amountPaid: { type: Number, required: true },
     phoneNumber: { type: String, required: true },
     address: { type: String, required: true },
