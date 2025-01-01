@@ -203,6 +203,28 @@ export const api = {
         },
       }),
   },
+  wishlist: {
+    get: () =>
+      request<string[]>('/user/wishlist', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    add: (productId: string) =>
+      request(`/user/wishlist?id=${productId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    remove: (productId: string) =>
+      request(`/user/wishlist?id=${productId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+  },
   products: {
     getAll: (query?: {
       category?: string;

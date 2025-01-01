@@ -8,11 +8,13 @@ import {
   Phone,
   MapPin,
   CreditCard,
+  Heart,
 } from 'lucide-react';
 import Input from '../components/Input';
 import EditProfileForm from '../components/EditProfileForm';
 import { api } from '../utils/api';
 import { STATUS } from '../enums/order';
+import ProductCard from '../components/ProductCard';
 
 interface Order {
   _id: string;
@@ -34,6 +36,14 @@ interface UserProfile {
   address: string;
 }
 
+interface Product {
+  _id: string;
+  title: string;
+  price: number;
+  discountedPrice: number;
+  image: string[];
+}
+
 export default function Profile() {
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
@@ -44,6 +54,8 @@ export default function Profile() {
     phone: '',
     address: '',
   });
+  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,6 +63,12 @@ export default function Profile() {
     fetchUserProfile();
     fetchOrderData();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'wishlist') {
+      fetchWishlistData();
+    }
+  }, [activeTab]);
 
   const fetchUserProfile = async () => {
     try {
@@ -174,6 +192,19 @@ export default function Profile() {
     }
   };
 
+  const fetchWishlistData = async () => {
+    try {
+      setWishlistLoading(true);
+      const products:any = await api.wishlist.get();
+     setWishlistItems(products);
+    } catch (err) {
+      console.error('Error fetching wishlist:', err);
+      setError('Failed to load wishlist');
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'profile':
@@ -267,6 +298,26 @@ export default function Profile() {
           </div>
         );
 
+      case 'wishlist':
+        return (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">My Wishlist</h2>
+            {wishlistLoading ? (
+              <div className="text-center py-8">Loading wishlist...</div>
+            ) : wishlistItems.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                Your wishlist is empty
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {wishlistItems.map((item) => (
+                  <ProductCard key={item._id} {...item} />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+
       case 'settings':
         return (
           <div className="bg-white rounded-lg shadow p-6">
@@ -353,6 +404,17 @@ export default function Profile() {
                 >
                   <Package className="w-5 h-5" />
                   Orders
+                </button>
+                <button
+                  onClick={() => setActiveTab('wishlist')}
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
+                    activeTab === 'wishlist'
+                      ? 'bg-indigo-50 text-indigo-600'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <Heart className="w-5 h-5" />
+                  Wishlist
                 </button>
                 <button
                   onClick={() => setActiveTab('settings')}

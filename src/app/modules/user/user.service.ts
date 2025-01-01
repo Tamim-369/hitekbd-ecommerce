@@ -55,8 +55,13 @@ const updateProfileToDB = async (
 };
 const getWishlistFromDB = async (user: JwtPayload) => {
   const { id } = user;
-  const result = await User.findById(id).populate('wishlist');
-  return result;
+  const result = await User.findById(id).select('wishlist').populate({
+    path: 'wishlist',
+  });
+  if (!result) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+  return result.wishlist || [];
 };
 const addWishlistToDB = async (user: JwtPayload, productId: string) => {
   const { id } = user;

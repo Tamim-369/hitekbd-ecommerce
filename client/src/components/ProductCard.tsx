@@ -1,9 +1,12 @@
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
-import { ShoppingCart } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { ShoppingCart, Heart } from 'lucide-react';
 import { ImageURL } from '../data/baseApi';
 import { Link } from 'react-router-dom';
 import { OptimizedImage } from './OptimizedImage';
+import { api } from '../utils/api';
+import { useState, useEffect } from 'react';
 
 interface ProductCardProps {
   _id: string;
@@ -22,6 +25,23 @@ export default function ProductCard({
 }: ProductCardProps) {
   const { addItem } = useCart();
   const { showSuccess } = useToast();
+  const { isAuthenticated } = useAuth();
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  useEffect(() => {
+    checkWishlistStatus();
+  }, [_id]);
+
+  const checkWishlistStatus = async () => {
+    try {
+      if (isAuthenticated) {
+        const wishlist = await api.wishlist.get();
+        setIsInWishlist(wishlist.some((item: any) => item._id === _id));
+      }
+    } catch (error) {
+      console.error('Error checking wishlist status:', error);
+    }
+  };
 
   const handleAddToCart = () => {
     addItem({
@@ -31,6 +51,22 @@ export default function ProductCard({
       image,
     });
     showSuccess(`${title} added to cart!`);
+  };
+
+  const handleWishlist = async () => {
+    try {
+      if (isInWishlist) {
+        await api.wishlist.remove(_id);
+        setIsInWishlist(false);
+        showSuccess('Removed from wishlist');
+      } else {
+        await api.wishlist.add(_id);
+        setIsInWishlist(true);
+        showSuccess('Added to wishlist');
+      }
+    } catch (error) {
+      console.error('Wishlist operation failed:', error);
+    }
   };
 
   return (
@@ -48,6 +84,16 @@ export default function ProductCard({
           <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-semibold">
             -{price - discountedPrice} ৳
           </div>
+        )}
+        {isAuthenticated && (
+          <button
+            onClick={handleWishlist}
+            className={`absolute top-2 left-2 p-1.5 sm:p-2 rounded-full ${
+              isInWishlist ? 'bg-red-500 text-white' : 'bg-white text-gray-600'
+            } hover:scale-110 transition-all duration-200 shadow-md`}
+          >
+            <Heart size={16} className="sm:w-5 sm:h-5" fill={isInWishlist ? 'currentColor' : 'none'} />
+          </button>
         )}
       </div>
       <div className="mt-4 flex justify-between">

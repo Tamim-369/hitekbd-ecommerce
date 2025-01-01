@@ -10,7 +10,11 @@ export function OptimizedImage({ src, alt, className }: {
             loading="lazy"
             className={className}
             onError={(e) => {
-                e.currentTarget.src = '/fallback.png';
+                const target = e.currentTarget;
+                // Only set fallback if it's not already the fallback image
+                if (!target.src.endsWith('/fallback.png')) {
+                    target.src = '/fallback.png';
+                }
             }}
         />
     );
