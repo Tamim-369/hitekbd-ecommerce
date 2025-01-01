@@ -76,13 +76,13 @@ function Order() {
                                 <h3 className="text-xl font-semibold mb-4 text-[#37acfa]">Ordered Items</h3>
                                 <div className="space-y-4">
                                     {order.items.map((item: any) => (
-                                        <div key={item.productId} className="bg-gray-50 p-4 rounded-lg flex items-center">
+                                        <div key={item.productId} className="bg-gray-50 p-4 rounded-lg flex flex-col sm:flex-row items-center">
                                             <img
                                                 src={`${ImageURL}/${item.image}`}
                                                 alt={item.title}
                                                 className="w-24 h-24 object-cover rounded-lg"
                                             />
-                                            <div className="ml-6 flex-1">
+                                            <div className="mt-4 sm:mt-0 sm:ml-6 flex-1">
                                                 <h4 className="text-lg font-semibold mb-2">{item.title}</h4>
                                                 <div className="grid grid-cols-2 gap-2">
                                                     <p className="text-gray-700">Price: <span className="font-semibold">৳{item.price}</span></p>
