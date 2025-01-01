@@ -87,14 +87,16 @@ function Order() {
                                                 <div className="grid grid-cols-2 gap-2">
                                                     <p className="text-gray-700">Price: <span className="font-semibold">৳{item.price}</span></p>
                                                     <p className="text-gray-700">Quantity: <span className="font-semibold">{item.quantity}</span></p>
-                                                    <div className="flex items-center">
-                                                        <span className="text-gray-700 mr-2">Color:</span>
-                                                        <div
-                                                            className="w-6 h-6 rounded-full border border-gray-200"
-                                                            style={{ backgroundColor: item.color }}
-                                                            title={item.color}
-                                                        />
-                                                    </div>
+                                                    {item.color && (
+                                                        <div className="flex items-center">
+                                                            <span className="text-gray-700 mr-2">Color:</span>
+                                                            <div
+                                                                className="w-6 h-6 rounded-full border border-gray-200"
+                                                                style={{ backgroundColor: item.color }}
+                                                                title={item.color}
+                                                            />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
