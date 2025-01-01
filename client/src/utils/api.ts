@@ -157,18 +157,16 @@ export const api = {
       token: string,
       newPassword: string,
       confirmPassword: string
-    ) => {
-      console.log(token);
+    ) =>
       request('/auth/reset-password', {
         data: { newPassword, confirmPassword },
-        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+
           Authorization: `Bearer ${token}`,
         },
-      });
-    },
-
+        method: 'POST',
+      }),
     logout: () => {
       localStorage.removeItem('token');
       window.location.reload();

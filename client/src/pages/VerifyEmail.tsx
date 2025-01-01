@@ -36,11 +36,17 @@ export default function VerifyEmail() {
 
     setIsSubmitting(true);
     try {
-      const token = await verifyEmail(email, parseInt(code));
-      localStorage.setItem('resetToken', token);
-      showSuccess('Email verified successfully');
-      navigate('/reset-password');
+      const response = await verifyEmail(email, parseInt(code));
+      console.log('Verification response:', response);
+      if (response) {
+        localStorage.setItem('resetToken', response);
+        showSuccess('Email verified successfully');
+        navigate('/reset-password');
+      } else {
+        showError('Failed to get reset token');
+      }
     } catch (error: any) {
+      console.error('Verification error:', error);
       if (error.errorMessages?.length > 0) {
         error.errorMessages.forEach((err: { message: string }) => {
           showError(err.message);

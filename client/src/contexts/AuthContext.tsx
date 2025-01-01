@@ -28,7 +28,7 @@ interface AuthContextType {
   }) => Promise<void>;
   logout: () => void;
   forgotPassword: (email: string) => Promise<void>;
-  verifyEmail: (email: string, oneTimeCode: number) => Promise<string>;
+  verifyEmail: (email: string, oneTimeCode: number) => Promise<any>;
   resetPassword: (
     token: string,
     newPassword: string,
@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const verifyEmail = async (email: string, oneTimeCode: number) => {
     const response = await api.auth.verifyEmail(email, oneTimeCode);
-    return response.data.token;
+    return response;
   };
 
   const resetPassword = async (
