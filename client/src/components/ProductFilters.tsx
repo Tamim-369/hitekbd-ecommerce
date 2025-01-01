@@ -1,5 +1,6 @@
 import { SlidersHorizontal } from 'lucide-react';
 import { Category } from '../types/category';
+
 interface ProductFiltersProps {
   categories: Category[];
   selectedCategory: Category | null;
@@ -112,21 +113,22 @@ export default function ProductFilters({
       {/* Price Range */}
       <div>
         <h4 className="font-medium text-gray-900 mb-3">Price Range</h4>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">৳{priceRange[0]}</span>
-            <span className="text-sm text-gray-600">৳{priceRange[1]}</span>
-          </div>
+        <div className="space-y-2">
           <input
             type="range"
             min="0"
             max={maxPrice}
             value={priceRange[1]}
-            onChange={e =>
-              onPriceChange([priceRange[0], Number(e.target.value)])
-            }
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              onPriceChange([0, value]);
+            }}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>৳0</span>
+            <span>৳{priceRange[1].toLocaleString()}</span>
+          </div>
         </div>
       </div>
     </div>

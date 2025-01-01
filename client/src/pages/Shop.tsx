@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { allCategorys, allProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
@@ -14,13 +14,22 @@ const ITEMS_PER_PAGE = 8;
 export default function Shop() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedBrand, setSelectedBrand] = useState('');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
   const [sortBy, setSortBy] = useState('featured');
   const [currentPage, setCurrentPage] = useState(1);
 
   // Extract unique categories and brands
   const categories: Category[] = [...allCategorys];
-  const maxPrice = Math.max(...allProducts.map((p: Product) => p.price));
+  const maxPrice = Math.max(
+    ...allProducts.map((p: Product) => 
+      p.discountedPrice ? p.discountedPrice : p.price
+    )
+  );
+
+  // Set initial price range when maxPrice is calculated
+  useEffect(() => {
+    setPriceRange([0, maxPrice]);
+  }, [maxPrice]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
