@@ -315,7 +315,7 @@ export default function ProductDetails() {
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-4">
+            <div className="flex items-baseline gap-4 sm:flex-nowrap flex-wrap">
               <span className="text-3xl font-bold text-gray-900">
                 ৳{parseFloat(product.discountedPrice.toString()).toFixed(2)}
               </span>
@@ -543,7 +543,7 @@ export default function ProductDetails() {
                               </div>
                             </div>
                             {user && user.id === review.userId._id && (
-                              <div className="flex items-center space-x-4">
+                              <div className="flex items-center space-x-4 sm:flex-row flex-col gap-2">
                                 <button
                                   onClick={() => handleEditReview(review)}
                                   className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
