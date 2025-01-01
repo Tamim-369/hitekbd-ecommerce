@@ -144,23 +144,28 @@ const updateProducts = async (
   payload: Partial<IProducts>
 ): Promise<IProducts | null> => {
   try {
-    // Parse details if it's a string and present
+    // Handle details parsing and ensure it's an array
+    let parsedDetails = payload.details;
     if (typeof payload.details === 'string') {
-      payload.details = JSON.parse(payload.details);
+      parsedDetails = JSON.parse(payload.details);
+      // Ensure it's an array
+      if (!Array.isArray(parsedDetails)) {
+        parsedDetails = [parsedDetails];
+      }
     }
 
     // Convert string numbers to actual numbers if present
     const numericPayload = {
       ...payload,
       ...(payload.price && { price: Number(payload.price) }),
-      ...(payload.details && { details: payload.details }),
+      ...(parsedDetails && { details: parsedDetails }), // Use parsed details
       ...(payload.discountedPrice && {
         discountedPrice: Number(payload.discountedPrice),
       }),
       ...(payload.stockAmount && { stockAmount: Number(payload.stockAmount) }),
     };
 
-    // Check if product exists
+    // Rest of your existing code...
     const isExistProducts = await getProductsById(id);
     if (!isExistProducts) {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Product not found!');
@@ -179,20 +184,22 @@ const updateProducts = async (
 
     // Validate and update
     await ProductsValidation.updateProductsZodSchema.parseAsync(numericPayload);
-    const result = await Products.findByIdAndUpdate(id, numericPayload, {
-      new: true,
-    });
+
+    // Use $set operator to ensure proper array update
+    const result = await Products.findByIdAndUpdate(
+      id,
+      { $set: numericPayload },
+      { new: true }
+    );
 
     if (!result) {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to update product!');
     }
     return result;
   } catch (error) {
-    // If error is from JSON.parse
     if (error instanceof SyntaxError) {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid details format');
     }
-    // Re-throw other errors
     throw error;
   }
 };
