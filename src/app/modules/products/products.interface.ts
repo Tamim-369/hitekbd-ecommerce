@@ -12,6 +12,7 @@ export type IProducts = {
   details: ProductDetail[];
   price: number;
   discountedPrice: number;
+  colors?: Array<string>;
   category: Types.ObjectId;
   stockAmount: number;
 };

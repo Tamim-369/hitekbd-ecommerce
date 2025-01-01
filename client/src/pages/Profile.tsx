@@ -3,18 +3,14 @@ import {
   User,
   Package,
   Settings,
-  Camera,
-  Mail,
-  Phone,
-  MapPin,
-  CreditCard,
   Heart,
 } from 'lucide-react';
-import Input from '../components/Input';
 import EditProfileForm from '../components/EditProfileForm';
 import { api } from '../utils/api';
 import { STATUS } from '../enums/order';
-import ProductCard from '../components/ProductCard';
+import Orders from './profile/Orders';
+import WishList from './profile/WishList';
+import ProfileSettings from './profile/ProfileSettings';
 
 interface Order {
   _id: string;
@@ -195,8 +191,8 @@ export default function Profile() {
   const fetchWishlistData = async () => {
     try {
       setWishlistLoading(true);
-      const products:any = await api.wishlist.get();
-     setWishlistItems(products);
+      const products: any = await api.wishlist.get();
+      setWishlistItems(products);
     } catch (err) {
       console.error('Error fetching wishlist:', err);
       setError('Failed to load wishlist');
@@ -230,148 +226,27 @@ export default function Profile() {
         );
 
       case 'orders':
-        return (
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-8">
-                Order History
-              </h2>
-              <div className="space-y-6">
-                {loading ? (
-                  <div className="text-center py-4">Loading orders...</div>
-                ) : error ? (
-                  <div className="text-red-600 text-center py-4">{error}</div>
-                ) : orders && orders.length > 0 ? (
-                  orders.map((order: Order, index:number) => {
-                    index = index+1;
-                    
-                    return (
-                      <div
-                        key={order._id}
-                        className="border border-gray-200 rounded-lg p-6"
-                      >
-                        <div className="flex items-center justify-between mb-4">
-                          <div>
-                            <p className="text-lg font-semibold text-gray-900">
-                              Order # {4563+index+order._id.toString()[0]}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Amount Paid: ৳{order.amountPaid}
-                            </p>
-                          </div>
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                              order.status as STATUS
-                            )}`}
-                          >
-                            {order.status &&
-                              order.status.charAt(0).toUpperCase() +
-                                order.status.slice(1)}
-                          </span>
-                        </div>
-                        <div className="space-y-4">
-                          <div className="flex flex-col gap-2">
-                            <p className="text-gray-700">
-                              <span className="font-medium">Phone:</span>{' '}
-                              {order.phoneNumber}
-                            </p>
-                            <p className="text-gray-700">
-                              <span className="font-medium">Address:</span>{' '}
-                              {order.address}
-                            </p>
-                            <p className="text-gray-700">
-                              <span className="font-medium">Transaction ID:</span>{' '}
-                              {order.transactionID}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })
-                ) : (
-                  <div className="text-center py-4 text-gray-500">
-                    No orders found
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        );
+        return <Orders
+          loading={loading}
+          error={error}
+          orders={orders}
+          getStatusColor={getStatusColor}
+        />
 
       case 'wishlist':
-        return (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">My Wishlist</h2>
-            {wishlistLoading ? (
-              <div className="text-center py-8">Loading wishlist...</div>
-            ) : wishlistItems.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                Your wishlist is empty
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {wishlistItems.map((item) => (
-                  <ProductCard key={item._id} {...item} />
-                ))}
-              </div>
-            )}
-          </div>
-        );
+        return <WishList wishlistLoading={wishlistLoading} wishlistItems={wishlistItems} />
+
 
       case 'settings':
         return (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Account Settings
-            </h2>
-            <form className="space-y-6" onSubmit={handlePasswordSubmit}>
-              <div className="border-t border-gray-200 pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Password
-                </h3>
-                {passwordError && (
-                  <div className="text-red-600 mb-4">{passwordError}</div>
-                )}
-                {passwordSuccess && (
-                  <div className="text-green-600 mb-4">{passwordSuccess}</div>
-                )}
-                <div className="space-y-4">
-                  <Input
-                    label="Current Password"
-                    type="password"
-                    name="currentPassword"
-                    value={passwords.currentPassword}
-                    onChange={handlePasswordChange}
-                  />
-                  <Input
-                    label="New Password"
-                    type="password"
-                    name="newPassword"
-                    value={passwords.newPassword}
-                    onChange={handlePasswordChange}
-                  />
-                  <Input
-                    label="Confirm New Password"
-                    type="password"
-                    name="confirmPassword"
-                    value={passwords.confirmPassword}
-                    onChange={handlePasswordChange}
-                  />
-                </div>
-                <div className="mt-4">
-                  <button
-                    type="submit"
-                    disabled={isChangingPassword}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors disabled:bg-indigo-400"
-                  >
-                    {isChangingPassword
-                      ? 'Changing Password...'
-                      : 'Change Password'}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+          <ProfileSettings
+            handlePasswordSubmit={handlePasswordSubmit}
+            passwordError={passwordError}
+            passwordSuccess={passwordSuccess}
+            passwords={passwords}
+            handlePasswordChange={handlePasswordChange}
+            isChangingPassword={isChangingPassword}
+          />
         );
     }
   };
@@ -385,44 +260,40 @@ export default function Profile() {
               <nav className="space-y-1">
                 <button
                   onClick={() => setActiveTab('profile')}
-                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
-                    activeTab === 'profile'
-                      ? 'bg-indigo-50 text-indigo-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${activeTab === 'profile'
+                    ? 'bg-indigo-50 text-indigo-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                    }`}
                 >
                   <User className="w-5 h-5" />
                   Profile
                 </button>
                 <button
                   onClick={() => setActiveTab('orders')}
-                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
-                    activeTab === 'orders'
-                      ? 'bg-indigo-50 text-indigo-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${activeTab === 'orders'
+                    ? 'bg-indigo-50 text-indigo-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                    }`}
                 >
                   <Package className="w-5 h-5" />
                   Orders
                 </button>
                 <button
                   onClick={() => setActiveTab('wishlist')}
-                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
-                    activeTab === 'wishlist'
-                      ? 'bg-indigo-50 text-indigo-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${activeTab === 'wishlist'
+                    ? 'bg-indigo-50 text-indigo-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                    }`}
                 >
                   <Heart className="w-5 h-5" />
                   Wishlist
                 </button>
                 <button
                   onClick={() => setActiveTab('settings')}
-                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
-                    activeTab === 'settings'
-                      ? 'bg-indigo-50 text-indigo-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${activeTab === 'settings'
+                    ? 'bg-indigo-50 text-indigo-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                    }`}
                 >
                   <Settings className="w-5 h-5" />
                   Settings
