@@ -58,11 +58,6 @@ const createOrderZodSchema = z.object({
       required_error: 'transactionID is required',
       invalid_type_error: 'transactionID should be type string',
     }),
-    color: z
-      .string({
-        invalid_type_error: 'color should be type string',
-      })
-      .optional(),
   }),
 });
 
@@ -118,9 +113,6 @@ const updateOrderZodSchema = z.object({
       .optional(),
     status: z
       .string({ invalid_type_error: 'status should be type string' })
-      .optional(),
-    color: z
-      .string({ invalid_type_error: 'color should be type string' })
       .optional(),
   }),
 });
