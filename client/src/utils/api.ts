@@ -231,7 +231,7 @@ export const api = {
         body: {
           ...formData,
           ...(formData.details && {
-            details: JSON.stringify(formData.get('details')),
+            details: `${formData.get('details')}`,
           }),
         },
         headers: {
