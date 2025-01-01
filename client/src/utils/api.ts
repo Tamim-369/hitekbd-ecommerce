@@ -225,10 +225,15 @@ export const api = {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
-    update: (id: string, formData: FormData) =>
+    update: (id: string, formData: any) =>
       request<Product>(`/products/${id}`, {
         method: 'PATCH',
-        body: formData,
+        body: {
+          ...formData,
+          ...(formData.details && {
+            details: JSON.stringify(formData.get('details')),
+          }),
+        },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
