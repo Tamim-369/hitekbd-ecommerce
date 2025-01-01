@@ -13,29 +13,38 @@ interface ProductDetail {
 const createProducts = async (payload: IProducts): Promise<IProducts> => {
   try {
     // Parse details from JSON string
+    let parsedDetails = payload.details;
     if (typeof payload.details === 'string') {
-      payload.details = JSON.parse(payload.details);
+      try {
+        parsedDetails = JSON.parse(payload.details);
+      } catch (error) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid details format');
+      }
     }
 
-    // Validate the payload first
-    await ProductsValidation.createProductsZodSchema.parseAsync({
-      ...payload,
-      price: String(payload.price),
-      discountedPrice: String(payload.discountedPrice),
-      stockAmount: String(payload.stockAmount),
-      details: payload.details,
-    });
+    // Handle colors array
+    let colorsArray = payload.colors;
+    if (typeof payload.colors === 'string') {
+      try {
+        colorsArray = JSON.parse(payload.colors);
+      } catch (error) {
+        // If it's not JSON, treat it as a single color
+        colorsArray = [payload.colors];
+      }
+    }
 
-    // Convert strings back to numbers for database
+    // Convert strings to numbers and ensure arrays
     const numericPayload = {
       ...payload,
       price: Number(payload.price),
       discountedPrice: Number(payload.discountedPrice),
       stockAmount: Number(payload.stockAmount),
-      details: Array.isArray(payload.details)
-        ? payload.details
-        : JSON.parse(payload.details),
+      details: Array.isArray(parsedDetails) ? parsedDetails : [parsedDetails],
+      colors: colorsArray,
     };
+
+    // Validate the payload with converted values
+    await ProductsValidation.createProductsZodSchema.parseAsync(numericPayload);
 
     const result = await Products.create(numericPayload);
     if (!result) {
@@ -44,7 +53,7 @@ const createProducts = async (payload: IProducts): Promise<IProducts> => {
     return result;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid details format');
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid JSON format');
     }
     throw error;
   }
@@ -167,6 +176,17 @@ const updateProducts = async (
       }
     }
 
+    // Handle colors array
+    let colorsArray = payload.colors;
+    if (typeof payload.colors === 'string') {
+      try {
+        colorsArray = JSON.parse(payload.colors);
+      } catch (error) {
+        // If it's not JSON, treat it as a single color
+        colorsArray = [payload.colors];
+      }
+    }
+
     // Ensure details is always an array if provided
     if (parsedDetails !== undefined && !Array.isArray(parsedDetails)) {
       parsedDetails = [parsedDetails];
@@ -184,6 +204,7 @@ const updateProducts = async (
         stockAmount: Number(payload.stockAmount),
       }),
       ...(imageArray !== undefined && { image: imageArray }),
+      ...(colorsArray !== undefined && { colors: colorsArray }),
     };
 
     // Check if product exists

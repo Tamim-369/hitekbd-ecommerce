@@ -19,6 +19,7 @@ export interface Product {
   discountedPrice: number | null;
   category: string;
   stockAmount: number | null;
+  colors: string[];
   image: string[];
   details: ProductDetail[];
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Upload, Plus, Minus } from 'lucide-react';
-import { Product} from '../../utils/api';
+import { Product } from '../../utils/api';
 import { Category } from '../../types/category';
 import { useProducts } from '../../contexts/ProductContext';
 import { useToast } from '../../contexts/ToastContext';
@@ -54,6 +54,7 @@ export default function ProductModal({
         discountedPrice: null,
         category: '',
         stockAmount: null,
+        colors: [],
         image: [],
         details: []
       });
@@ -109,7 +110,7 @@ export default function ProductModal({
     e.preventDefault();
     try {
       const form = new FormData();
-      
+
       if (product) {
         // For update, send all fields
         form.append('title', formData.title || '');
@@ -118,7 +119,8 @@ export default function ProductModal({
         form.append('discountedPrice', String(formData.discountedPrice || 0));
         form.append('category', formData.category || '');
         form.append('stockAmount', String(formData.stockAmount || 0));
-        
+        form.append('colors', JSON.stringify(formData.colors || []));
+
         // Always send the complete details array
         const details = formData.details || [];
         form.append('details', JSON.stringify(details));
@@ -143,7 +145,8 @@ export default function ProductModal({
         form.append('discountedPrice', String(formData.discountedPrice || 0));
         form.append('category', formData.category || '');
         form.append('stockAmount', String(formData.stockAmount || 0));
-        
+        form.append('colors', JSON.stringify(formData.colors || []));
+
         // Convert details array to JSON string
         const detailsString = JSON.stringify(formData.details || []);
         form.append('details', detailsString);
@@ -180,7 +183,7 @@ export default function ProductModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data"> 
+        <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -294,7 +297,57 @@ export default function ProductModal({
               </div>
             )}
           </div>
-
+          {/* Color Variants */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <label className="block text-sm font-medium text-gray-700">Color Variants</label>
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({
+                  ...prev,
+                  colors: [...(prev.colors || []), '#000000']
+                }))}
+                className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-indigo-100 hover:bg-indigo-200"
+              >
+                <Plus size={16} className="mr-1" />
+                Add Color
+              </button>
+            </div>
+            <div className="space-y-3">
+              {formData.colors?.map((color, index) => (
+                <div key={index} className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div
+                      className="w-8 h-8 rounded-full border border-gray-300 cursor-pointer"
+                      style={{ backgroundColor: color }}
+                      onClick={() => document.getElementById(`color-picker-${index}`)?.click()}
+                    />
+                    <input
+                      id={`color-picker-${index}`}
+                      type="color"
+                      value={color}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        colors: prev.colors?.map((c, i) => i === index ? e.target.value : c)
+                      }))}
+                      className="hidden"
+                    />
+                    <span className="text-sm text-gray-700">{color}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({
+                      ...prev,
+                      colors: prev.colors?.filter((_, i) => i !== index)
+                    }))}
+                    className="p-2 text-red-600 hover:text-red-800"
+                  >
+                    <Minus size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
           {/* Product Details */}
           <div>
             <div className="flex justify-between items-center mb-2">
