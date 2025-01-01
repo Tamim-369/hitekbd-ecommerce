@@ -115,8 +115,8 @@ export default function ProductFilters({
         <h4 className="font-medium text-gray-900 mb-3">Price Range</h4>
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">${priceRange[0]}</span>
-            <span className="text-sm text-gray-600">${priceRange[1]}</span>
+            <span className="text-sm text-gray-600">৳{priceRange[0]}</span>
+            <span className="text-sm text-gray-600">৳{priceRange[1]}</span>
           </div>
           <input
             type="range"
