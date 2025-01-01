@@ -24,10 +24,12 @@ const createOrderZodSchema = z.object({
           required_error: 'image is required',
           invalid_type_error: 'image should be type string',
         }),
-        color: z.string({
-          required_error: 'color is required',
-          invalid_type_error: 'color should be type string',
-        }),
+        color: z
+          .string({
+            required_error: 'color is required',
+            invalid_type_error: 'color should be type string',
+          })
+          .optional(),
       })
     ),
     user: z.string({
