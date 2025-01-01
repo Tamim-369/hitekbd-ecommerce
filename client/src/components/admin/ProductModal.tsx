@@ -122,8 +122,18 @@ export default function ProductModal({
         // Append only changed fields
         changedFields.forEach(([key, value]) => {
           if (key === 'details') {
-            // Always send the complete details array
-            form.append('details', JSON.stringify(value || []));
+            // Ensure details is an array of ProductDetail objects
+            const details = Array.isArray(value) ? value : [];
+            // Validate each detail has name and value
+            const validDetails = details.filter(detail => 
+              detail && 
+              typeof detail === 'object' && 
+              'name' in detail && 
+              'value' in detail &&
+              typeof detail.name === 'string' &&
+              typeof detail.value === 'string'
+            );
+            form.append('details', JSON.stringify(validDetails));
           } else if (typeof value === 'number') {
             form.append(key, String(value));
           } else {

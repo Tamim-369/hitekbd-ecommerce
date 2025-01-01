@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+const productDetailSchema = z.object({
+  name: z.string(),
+  value: z.string()
+});
+
 const createProductsZodSchema = z.object({
   title: z.string({
     required_error: 'title is required',
@@ -8,7 +13,7 @@ const createProductsZodSchema = z.object({
     required_error: 'description is required',
   }),
   image: z.array(z.string()),
-  details: z.array(z.string()),
+  details: z.array(productDetailSchema),
   price: z.string(),
   discountedPrice: z.string(),
   stockAmount: z.string(),
@@ -21,7 +26,7 @@ const updateProductsZodSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
   image: z.array(z.string()).optional(),
-  details: z.array(z.string()).optional(),
+  details: z.array(productDetailSchema).optional(),
   price: z.string().optional(),
   discountedPrice: z.string().optional(),
   stockAmount: z.string().optional(),
