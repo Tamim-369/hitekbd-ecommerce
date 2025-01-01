@@ -331,6 +331,37 @@ export const api = {
         },
       }),
   },
+  reviews: {
+    getAll: (productId: string) =>
+      request(`/review?product=${productId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }),
+    create: (data: { description: string; star: number; product: string }) =>
+      request('/review/create', {
+        data,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    update: (id: string, data: { description: string; star: number }) =>
+      request(`/review/${id}`, {
+        data,
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }),
+    delete: (id: string) =>
+      request(`/review/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }),
+  },
   baseURL: API_URL,
   admin: {
     getDashboardStats: () =>

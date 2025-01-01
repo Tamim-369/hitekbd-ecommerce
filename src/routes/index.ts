@@ -6,10 +6,12 @@ import { OrderRoutes } from '../app/modules/order/order.route';
 import { InfoRoutes } from '../app/modules/info/info.route';
 import { BannersRoutes } from '../app/modules/banners/banners.route';
 import { CategoryRoutes } from '../app/modules/category/category.route';
+import { ReviewRoutes } from '../app/modules/review/review.route';
+
 const router = express.Router();
 
 const apiRoutes = [
-  {
+{
     path: '/user',
     route: UserRoutes,
   },
@@ -36,6 +38,10 @@ const apiRoutes = [
   {
     path: '/category',
     route: CategoryRoutes,
+  },
+  {
+    path: '/review',
+    route: ReviewRoutes,
   },
 ];
 
