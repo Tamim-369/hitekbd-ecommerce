@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Upload, Plus, Minus } from 'lucide-react';
-import { Product, Category } from '../../utils/api';
+import { Product} from '../../utils/api';
+import { Category } from '../../types/category';
 import { useProducts } from '../../contexts/ProductContext';
 import { useToast } from '../../contexts/ToastContext';
 import { ImageURL } from '../../data/baseApi';
@@ -228,7 +229,7 @@ export default function ProductModal({
               <label className="block text-sm font-medium text-gray-700">Price</label>
               <input
                 type="number"
-                value={formData.price}
+                value={formData.price || ''}
                 onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                 className="mt-1 p-2 block w-full rounded-md border border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-0 focus:bg-white transition-all duration-200"
                 required
@@ -239,7 +240,7 @@ export default function ProductModal({
               <label className="block text-sm font-medium text-gray-700">Discounted Price</label>
               <input
                 type="number"
-                value={formData.discountedPrice}
+                value={formData.discountedPrice || ''}
                 onChange={(e) => setFormData({ ...formData, discountedPrice: Number(e.target.value) })}
                 className="mt-1 p-2 block w-full rounded-md border border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-0 focus:bg-white transition-all duration-200"
               />
@@ -249,7 +250,7 @@ export default function ProductModal({
               <label className="block text-sm font-medium text-gray-700">Stock Amount</label>
               <input
                 type="number"
-                value={formData.stockAmount}
+                value={formData.stockAmount || ''}
                 onChange={(e) => setFormData({ ...formData, stockAmount: Number(e.target.value) })}
                 className="mt-1 p-2  block w-full rounded-md border border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-0 focus:bg-white transition-all duration-200"
                 required

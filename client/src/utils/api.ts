@@ -15,10 +15,10 @@ export interface Product {
   _id: string;
   title: string;
   description: string;
-  price: number;
-  discountedPrice: number;
+  price: number | null;
+  discountedPrice: number | null;
   category: string;
-  stockAmount: number;
+  stockAmount: number | null;
   image: string[];
   details: ProductDetail[];
 }
