@@ -435,7 +435,7 @@ export default function ProductDetails() {
           <div className="space-y-8">
             <div className="flex justify-between items-start mb-8">
               <div>
-                <h2 className="text-2xl font-semibold text-gray-900">Customer Reviews</h2>
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Reviews</h2>
                 {reviews.length > 0 && (
                   <div className="mt-2 flex items-center space-x-2">
                     <div className="flex items-center">
@@ -450,7 +450,7 @@ export default function ProductDetails() {
                         />
                       ))}
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 sm:block hidden">
                       Based on {reviews.length} review{reviews.length !== 1 ? 's' : ''}
                     </p>
                   </div>
@@ -459,17 +459,17 @@ export default function ProductDetails() {
               {user ? (
                 <button
                   onClick={() => setIsReviewModalOpen(true)}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-xs sm:text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   <Star className="h-4 w-4 mr-2" />
-                  Write a Review
+                  Review
                 </button>
               ) : (
                 <a
                   href="/login"
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  Login to Review
+                  Review
                 </a>
               )}
             </div>
@@ -491,7 +491,7 @@ export default function ProductDetails() {
             ) : (
               <div className="space-y-6">
                 {/* Rating distribution */}
-                <div className="bg-gray-50 p-6 rounded-lg mb-8">
+                <div className="bg-gray-50 p-3 sm:p-6 rounded-lg mb-8">
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Rating Distribution</h3>
                   <div className="space-y-2">
                     {[5, 4, 3, 2, 1].map((rating) => {
@@ -522,8 +522,8 @@ export default function ProductDetails() {
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium text-gray-900">{review.userId.name}</h4>
-                              <div className="mt-1 flex items-center">
-                                <div className="flex items-center">
+                              <div className="mt-1 flex sm:items-center flex-col sm:flex-row">
+                                <div className="flex  items-center">
                                   {[...Array(5)].map((_, index) => (
                                     <Star
                                       key={index}
@@ -533,13 +533,13 @@ export default function ProductDetails() {
                                     />
                                   ))}
                                 </div>
-                                <span className="ml-2 text-sm text-gray-500">
+                                <div className="sm:ml-2 text-sm text-gray-500">
                                   {new Date(review.createdAt).toLocaleDateString('en-US', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric'
                                   })}
-                                </span>
+                                </div>
                               </div>
                             </div>
                             {user && user.id === review.userId._id && (
