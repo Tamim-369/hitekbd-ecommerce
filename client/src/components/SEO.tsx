@@ -14,7 +14,7 @@ export default function SEO({ title, description, image, url }: SEOProps) {
   return (
     <Helmet>
       {/* Standard metadata */}
-      <title>{title} | HitekBD</title>
+      <title>{title}</title>
       <meta name="description" content={description} />
 
       {/* Open Graph / Facebook */}
