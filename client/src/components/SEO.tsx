@@ -9,8 +9,8 @@ interface SEOProps {
 
 export default function SEO({ title, description, image, url }: SEOProps) {
   const siteUrl = window.location.origin;
-  const defaultImage = `${siteUrl}/logoIcon.png`; // Your default OG image
-
+  const defaultImage = `${siteUrl}/logoIcon.png`;
+  const keywords = title ? title.split(' ').map(word => word.trim()).join(', ') : '';
   return (
     <Helmet>
       {/* Standard metadata */}
@@ -30,6 +30,7 @@ export default function SEO({ title, description, image, url }: SEOProps) {
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description} />
       <meta property="twitter:image" content={image || defaultImage} />
+      <meta name="keywords" content={keywords} />
     </Helmet>
   );
 }
