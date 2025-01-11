@@ -11,7 +11,8 @@ export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const searchQuery = (e.target as HTMLInputElement).value;
+    const formData = new FormData(e.target as HTMLFormElement);
+    const searchQuery = formData.get('search') as string;
     navigate(`/shop?search=${searchQuery}`);
   };
   return (

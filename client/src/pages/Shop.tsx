@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { allCategorys, allProducts } from '../data/products';
+import { allCategorys, getAllProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
 import ProductSort from '../components/ProductSort';
@@ -8,72 +8,81 @@ import ShopProductContainer from '../components/ShopProductContainer';
 import { Product } from '../utils/api';
 import { Category } from '../types/category';
 import SEO from '../components/SEO';
+import { useSearchParams } from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 8;
 
 export default function Shop() {
+  const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedBrand, setSelectedBrand] = useState('');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
   const [sortBy, setSortBy] = useState('featured');
   const [currentPage, setCurrentPage] = useState(1);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [maxPrice, setMaxPrice] = useState(0);
 
-  // Extract unique categories and brands
   const categories: Category[] = [...allCategorys];
-  const maxPrice = Math.max(
-    ...allProducts.map((p: Product) => 
-      p.discountedPrice ? p.discountedPrice : p.price
-    )
-  );
 
-  // Set initial price range when maxPrice is calculated
+  const getAllProductData = async () => {
+    try {
+      const searchTerm = searchParams.get('search') || '';
+      const allProductData = await getAllProducts(searchTerm);
+      setAllProducts(allProductData);
+
+      // Calculate max price after products are loaded
+      const maxPriceCount = Math.max(
+        ...allProductData.map((p: Product) =>
+          p.discountedPrice ? p.discountedPrice : p.price
+        )
+      );
+      setMaxPrice(maxPriceCount);
+      setPriceRange([0, maxPriceCount]);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
   useEffect(() => {
-    setPriceRange([0, maxPrice]);
-  }, [maxPrice]);
+    getAllProductData();
+    // Reset to first page when search changes
+    setCurrentPage(1);
+  }, [searchParams]); // Add searchParams as dependency
 
-  // Filter and sort products
+  // Rest of the component remains the same...
   const filteredProducts = useMemo(() => {
     let filtered = [...allProducts];
 
-    // Apply category filter - only filter if a category is selected
     if (selectedCategory?._id) {
       filtered = filtered.filter(p => p.category === selectedCategory._id);
     }
-    // If selectedCategory is null, show all products
 
-    // Apply brand filter
     if (selectedBrand) {
-      filtered = filtered.filter(p => p.brand === selectedBrand);
+      filtered = filtered.filter((p: any) => p.brand === selectedBrand);
     }
 
-    // Apply price range filter
-    filtered = filtered.filter(
-      (p: Product) =>
-        p.discountedPrice &&
-        Number(p.discountedPrice) >= priceRange[0] &&
-        Number(p.discountedPrice) <= priceRange[1]
-    );
+    filtered = filtered.filter((p: Product) => {
+      const price = p.discountedPrice ?? p.price;
+      return price !== null && price >= priceRange[0] && price <= priceRange[1];
+    });
 
-    // Apply sorting
     switch (sortBy) {
       case 'price-asc':
-        filtered.sort((a, b) => a.price - b.price);
+        filtered.sort((a: any, b: any) => (a.discountedPrice ?? a.price) - (b.discountedPrice ?? b.price));
         break;
       case 'price-desc':
-        filtered.sort((a, b) => b.price - a.price);
+        filtered.sort((a: any, b: any) => (b.discountedPrice ?? b.price) - (a.discountedPrice ?? a.price));
         break;
       case 'rating':
-        filtered.sort((a, b) => b.rating - a.rating);
+        filtered.sort((a: any, b: any) => (b.rating ?? 0) - (a.rating ?? 0));
         break;
       default:
-        // 'featured' - keep original order
         break;
     }
 
     return filtered;
-  }, [selectedCategory, selectedBrand, priceRange, sortBy]);
+  }, [selectedCategory, selectedBrand, priceRange, sortBy, allProducts]);
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -95,7 +104,6 @@ export default function Shop() {
         description="Browse our wide selection of premium products at HitekBD"
       />
       <div className="lg:grid lg:grid-cols-5 lg:gap-8">
-        {/* Filters - Left Sidebar */}
         <div className="hidden lg:block">
           <ProductFilters
             categories={categories}
@@ -110,7 +118,6 @@ export default function Shop() {
           />
         </div>
 
-        {/* Product Grid */}
         <div className="lg:col-span-4">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
@@ -128,8 +135,8 @@ export default function Shop() {
           ) : (
             <>
               <ShopProductContainer>
-                {paginatedProducts.map(product => (
-                  <ProductCard key={product.id} {...product} />
+                {paginatedProducts.map((product: any) => (
+                  <ProductCard key={product._id} {...product} />
                 ))}
               </ShopProductContainer>
 

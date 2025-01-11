@@ -28,9 +28,11 @@ const getLatestProducts = async () => {
   }
 };
 
-const getAllProducts = async () => {
+export const getAllProducts = async (search?: string) => {
   try {
-    const response = await fetch(`${ApiURL}/products?page=1&limit=20`);
+    const response = await fetch(
+      `${ApiURL}/products?page=1&limit=20${search ? `&search=${search}` : ''}`
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
