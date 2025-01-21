@@ -49,8 +49,9 @@ export default function ProductDetails() {
   const [editingReview, setEditingReview] = useState<{ id: string; description: string; star: number } | null>(null);
   const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [selectedColor
-    , setSelectedColor] = useState<string>(product?.colors[0] || '');
+  const [selectedColor, setSelectedColor] = useState<string>(
+    product?.colors && product?.colors[0]?.color || ''
+  );
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -97,7 +98,15 @@ export default function ProductDetails() {
 
   const handleAddToCart = () => {
     if (!product) return;
+    if(product.colors){
 
+      const hasAvailableColors = product.colors.some(color => color.amount > 0);
+      if (hasAvailableColors && Number(product?.colors?.length) !== 0 && !selectedColor) {
+        
+        showError('Please select a color before adding to cart');
+        return;
+      }
+    }
     addItem({
       _id: product._id,
       title: product.title,
@@ -311,20 +320,26 @@ export default function ProductDetails() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {product.title}
               </h1>
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700">Select Color</label>
-                <div className="flex items-center space-x-2 mt-2">
-                  {product.colors.map((color, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedColor(color)}
-                      className={`inline-block w-6 h-6 rounded-full border-2 ${selectedColor === color ? 'border-indigo-500' : 'border-gray-200'}`}
-                      style={{ backgroundColor: color }}
-                      title={color}
-                    />
-                  ))}
+              {product?.colors.length && product?.colors.some((color: any) => color?.amount > 0) && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700">Select Color</label>
+                  
+                  <div className="flex items-center space-x-2 mt-2">
+                    {product.colors.map((color: any, index: number) => {
+                      const colorButton = (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedColor(color.color)}
+                          className={`inline-block w-6 h-6 rounded-full border-2 ${selectedColor === color.color ? 'border-indigo-500' : 'border-gray-200'}`}
+                          style={{ backgroundColor: color.color }}
+                          title={color.color}
+                        />
+                      )
+                      return color.amount !== 0 ? colorButton : null;
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
               <p className="text-lg text-gray-600 whitespace-pre-wrap">{product.description}</p>
             </div>
 

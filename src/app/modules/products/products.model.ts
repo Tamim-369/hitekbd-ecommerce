@@ -9,7 +9,15 @@ const productsSchema = new Schema<IProducts, ProductsModel>(
     details: { type: [Object], required: true },
     price: { type: Number, required: true },
     discountedPrice: { type: Number, required: true },
-    colors: { type: [String], required: false },
+    colors: {
+      type: [
+        {
+          color: { type: String, required: true },
+          amount: { type: Number, required: true },
+        },
+      ],
+      required: false,
+    },
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     stockAmount: { type: Number, required: true },
   },

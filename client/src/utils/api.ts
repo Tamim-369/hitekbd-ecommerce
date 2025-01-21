@@ -19,7 +19,12 @@ export interface Product {
   discountedPrice: number | null;
   category: string;
   stockAmount: number | null;
-  colors: string[];
+  colors: [
+    {
+      color: '';
+      amount: 0;
+    }
+  ];
   image: string[];
   details: ProductDetail[];
 }

@@ -20,7 +20,9 @@ const createProductsZodSchema = z.object({
   category: z.string({
     required_error: 'category is required',
   }),
-  colors: z.array(z.string()).optional(),
+  colors: z
+    .array(z.object({ color: z.string(), amount: z.number() }))
+    .optional(),
 });
 
 const updateProductsZodSchema = z.object({
@@ -32,7 +34,9 @@ const updateProductsZodSchema = z.object({
   discountedPrice: z.number().optional(),
   stockAmount: z.number().optional(),
   category: z.string().optional(),
-  colors: z.array(z.string()).optional(),
+  colors: z
+    .array(z.object({ color: z.string(), amount: z.number() }))
+    .optional(),
 });
 
 export const ProductsValidation = {

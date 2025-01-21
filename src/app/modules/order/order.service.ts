@@ -3,8 +3,27 @@ import ApiError from '../../../errors/ApiError';
 import { Order } from './order.model';
 import { IOrder } from './order.interface';
 import { STATUS } from '../../../enums/order';
+import { Products } from '../products/products.model';
 
 const createOrder = async (payload: IOrder): Promise<IOrder> => {
+  const productArray = payload.items;
+  await Promise.all(
+    productArray.map(async (item: any) => {
+      const product = await Products.findById(item.productId);
+      if (product) {
+        product.stockAmount -= item.quantity;
+        if (product.colors) {
+          const colorIndex = product?.colors?.findIndex(
+            (color: any) => color.color === item.color
+          );
+          if (colorIndex !== -1) {
+            product.colors![colorIndex].amount -= item.quantity;
+          }
+        }
+        await product.save();
+      }
+    })
+  );
   const result = await Order.create(payload);
   if (!result) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create order!');
@@ -21,7 +40,10 @@ const getAllOrders = async () => {
 
     return orders;
   } catch (error) {
-    throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to fetch orders');
+    throw new ApiError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      'Failed to fetch orders'
+    );
   }
 };
 
@@ -45,15 +67,12 @@ const updateOrder = async (
     throw new ApiError(StatusCodes.NOT_FOUND, 'Order not found!');
   }
 
-  const result = await Order.findByIdAndUpdate(
-    id, 
-    payload,
-    { 
-      new: true,
-      runValidators: true
-    }
-  ).populate('user', 'name email')
-   .populate('product');
+  const result = await Order.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  })
+    .populate('user', 'name email')
+    .populate('product');
 
   if (!result) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to update order!');
@@ -74,7 +93,10 @@ const deleteOrder = async (id: string): Promise<IOrder | null> => {
   return result;
 };
 
-const updateOrderStatus = async (id: string, status: keyof typeof STATUS): Promise<IOrder> => {
+const updateOrderStatus = async (
+  id: string,
+  status: keyof typeof STATUS
+): Promise<IOrder> => {
   //@ts-ignore
   if (!Object.values(STATUS).includes(status)) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid status');
@@ -83,12 +105,13 @@ const updateOrderStatus = async (id: string, status: keyof typeof STATUS): Promi
   const order = await Order.findByIdAndUpdate(
     id,
     { status },
-    { 
+    {
       new: true,
-      runValidators: true 
+      runValidators: true,
     }
-  ).populate('user', 'name email')
-   .populate('product');
+  )
+    .populate('user', 'name email')
+    .populate('product');
 
   if (!order) {
     throw new ApiError(StatusCodes.NOT_FOUND, 'Order not found');
@@ -100,7 +123,7 @@ const updateOrderStatus = async (id: string, status: keyof typeof STATUS): Promi
 const getMyOrdersFromDB = async (id: string) => {
   const orders = await Order.find({ user: id }).populate('product user');
   return orders;
-};  
+};
 
 export const OrderService = {
   createOrder,
@@ -109,5 +132,5 @@ export const OrderService = {
   updateOrder,
   deleteOrder,
   updateOrderStatus,
-  getMyOrdersFromDB
+  getMyOrdersFromDB,
 };

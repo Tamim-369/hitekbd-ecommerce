@@ -87,7 +87,7 @@ export default function Checkout() {
           price: item.price,
           quantity: item.quantity,
           image: item.image[0],
-          color: item.color || '',
+          color: item.color?.toString() || '',
         })),
       };
       //@ts-ignore

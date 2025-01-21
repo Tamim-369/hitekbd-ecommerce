@@ -54,7 +54,12 @@ export default function ProductModal({
         discountedPrice: null,
         category: '',
         stockAmount: null,
-        colors: [],
+        colors: [
+          {
+            color: '',
+            amount: 0
+          }
+        ],
         image: [],
         details: []
       });
@@ -303,7 +308,7 @@ export default function ProductModal({
               <label className="block text-sm font-medium text-gray-700">Color Variants</label>
               <button
                 type="button"
-                onClick={() => setFormData(prev => ({
+                onClick={() => setFormData((prev:any) => ({
                   ...prev,
                   colors: [...(prev.colors || []), '#000000']
                 }))}
@@ -314,31 +319,40 @@ export default function ProductModal({
               </button>
             </div>
             <div className="space-y-3">
-              {formData.colors?.map((color, index) => (
+              {formData.colors?.map((colorObj, index) => (
                 <div key={index} className="flex items-center gap-4">
                   <div className="flex items-center gap-4 flex-1">
                     <div
                       className="w-8 h-8 rounded-full border border-gray-300 cursor-pointer"
-                      style={{ backgroundColor: color }}
+                      style={{ backgroundColor: colorObj.color }}
                       onClick={() => document.getElementById(`color-picker-${index}`)?.click()}
                     />
                     <input
                       id={`color-picker-${index}`}
                       type="color"
-                      value={color}
-                      onChange={(e) => setFormData(prev => ({
+                      value={colorObj.color}
+                      onChange={(e) => setFormData((prev:any) => ({
                         ...prev,
-                        colors: prev.colors?.map((c, i) => i === index ? e.target.value : c)
+                        colors: prev.colors?.map((c:any, i:number) => i === index ? { color: e.target.value, amount: c.amount } : c)
                       }))}
                       className="hidden"
                     />
-                    <span className="text-sm text-gray-700">{color}</span>
+                    <span className="text-sm text-gray-700">{colorObj.color}</span>
+                    <input
+                      type="number"
+                      value={colorObj.amount}
+                      onChange={(e) => setFormData((prev:any) => ({
+                        ...prev,
+                        colors: prev.colors?.map((c:any, i:number) => i === index ? { color: c.color, amount: Number(e.target.value) } : c)
+                      }))}
+                      className="w-24 p-1 focus:outline-none text-sm text-gray-700 border border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-0 focus:bg-white transition-all rounded-md duration-200"
+                    />
                   </div>
                   <button
                     type="button"
-                    onClick={() => setFormData(prev => ({
+                    onClick={() => setFormData((prev:any) => ({
                       ...prev,
-                      colors: prev.colors?.filter((_, i) => i !== index)
+                      colors: prev.colors?.filter((_:any, i:number) => i !== index)
                     }))}
                     className="p-2 text-red-600 hover:text-red-800"
                   >
