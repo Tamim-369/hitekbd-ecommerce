@@ -11,6 +11,8 @@ interface ProductFiltersProps {
   onBrandChange: (brand: string) => void;
   onPriceChange: (range: [number, number]) => void;
   onClearFilters: () => void;
+  openFilter: boolean;
+  setOpenFilter: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ProductFilters({
@@ -23,12 +25,14 @@ export default function ProductFilters({
   onBrandChange,
   onPriceChange,
   onClearFilters,
+  openFilter,
+  setOpenFilter
 }: ProductFiltersProps) {
   console.log(categories);
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <h3 onClick={() => setOpenFilter(!openFilter)} className="text-lg cursor-pointer font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <SlidersHorizontal className="w-5 h-5" />
           Filters
         </h3>

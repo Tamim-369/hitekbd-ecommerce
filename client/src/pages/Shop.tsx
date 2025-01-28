@@ -9,6 +9,7 @@ import { Product } from '../utils/api';
 import { Category } from '../types/category';
 import SEO from '../components/SEO';
 import { useSearchParams } from 'react-router-dom';
+import { SlidersHorizontal } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -21,7 +22,7 @@ export default function Shop() {
   const [currentPage, setCurrentPage] = useState(1);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [maxPrice, setMaxPrice] = useState(0);
-
+  const [openFilter, setOpenFilter] = useState(false);
   const categories: Category[] = [...allCategorys];
 
   const getAllProductData = async () => {
@@ -104,7 +105,7 @@ export default function Shop() {
         description="Browse our wide selection of premium products at HitekBD"
       />
       <div className="lg:grid lg:grid-cols-5 lg:gap-8">
-        <div className="hidden lg:block">
+        <div className={`${openFilter ? " block" : "hidden lg:block"} `}>
           <ProductFilters
             categories={categories}
             selectedCategory={selectedCategory}
@@ -115,12 +116,18 @@ export default function Shop() {
             onBrandChange={setSelectedBrand}
             onPriceChange={setPriceRange}
             onClearFilters={handleClearFilters}
+            openFilter={openFilter}
+            setOpenFilter={setOpenFilter}
           />
         </div>
 
         <div className="lg:col-span-4">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            <h3 onClick={() => setOpenFilter(!openFilter)} className={` ${openFilter ? "hidden" : ""} text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 lg:hidden cursor-pointer`}>
+              <SlidersHorizontal className="w-5 h-5" />
+              Filters
+            </h3>
+            <h1 className="hidden lg:block text-xl sm:text-2xl font-bold text-gray-900">
               All Products ({filteredProducts.length})
             </h1>
             <ProductSort sortBy={sortBy} onSortChange={setSortBy} />
