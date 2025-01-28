@@ -98,11 +98,11 @@ export default function ProductDetails() {
 
   const handleAddToCart = () => {
     if (!product) return;
-    if(product.colors){
+    if (product.colors) {
 
       const hasAvailableColors = product.colors.some(color => color.amount > 0);
       if (hasAvailableColors && Number(product?.colors?.length) !== 0 && !selectedColor) {
-        
+
         showError('Please select a color before adding to cart');
         return;
       }
@@ -268,7 +268,7 @@ export default function ProductDetails() {
                 alt={product.title}
                 className="w-full h-full object-cover"
               />
-              {product.image.length > 1 && (
+              {product.image.length > 1 ? (
                 <>
                   {/* Previous Button */}
                   <button
@@ -285,7 +285,7 @@ export default function ProductDetails() {
                     <ChevronRight className="h-6 w-6 text-gray-800" />
                   </button>
                 </>
-              )}
+              ) : ""}
             </div>
 
             {/* Thumbnail Navigation */}
@@ -320,10 +320,26 @@ export default function ProductDetails() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {product.title}
               </h1>
-              {product?.colors.length && product?.colors.some((color: any) => color?.amount > 0) && (
+              {/* Price */}
+              <div className="flex my-4 items-baseline gap-4 sm:flex-nowrap flex-wrap">
+                <span className="text-xl font-bold text-gray-900">
+                  ৳{parseFloat(product.discountedPrice!.toString()).toFixed(2)}
+                </span>
+                {discountPercentage > 0 && (
+                  <>
+                    <span className="text-xl text-gray-500 line-through">
+                      ৳{parseFloat(product.price!.toString()).toFixed(2)}
+                    </span>
+                    <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm  font-bold ">
+                      {discountPercentage}% OFF
+                    </span>
+                  </>
+                )}
+              </div>
+              {product?.colors.length ? product?.colors.some((color: any) => color?.amount > 0) && (
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700">Select Color</label>
-                  
+
                   <div className="flex items-center space-x-2 mt-2">
                     {product.colors.map((color: any, index: number) => {
                       const colorButton = (
@@ -339,26 +355,11 @@ export default function ProductDetails() {
                     })}
                   </div>
                 </div>
-              )}
+              ) : ""}
               <p className="text-lg text-gray-600 whitespace-pre-wrap">{product.description}</p>
             </div>
 
-            {/* Price */}
-            <div className="flex items-baseline gap-4 sm:flex-nowrap flex-wrap">
-              <span className="text-3xl font-bold text-gray-900">
-                ৳{parseFloat(product.discountedPrice!.toString()).toFixed(2)}
-              </span>
-              {discountPercentage > 0 && (
-                <>
-                  <span className="text-xl text-gray-500 line-through">
-                    ৳{parseFloat(product.price!.toString()).toFixed(2)}
-                  </span>
-                  <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
-                    {discountPercentage}% OFF
-                  </span>
-                </>
-              )}
-            </div>
+
 
             {/* Stock Status */}
             <div className="flex items-center gap-2">
@@ -387,7 +388,7 @@ export default function ProductDetails() {
                 : 'Add to Cart'}
             </button>
             {/* Product Details */}
-            {product.details.length > 0 && (
+            {/* {product.details.length > 0 && (
               <div className="border-t border-gray-200 pt-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
                   Product Details
@@ -405,7 +406,7 @@ export default function ProductDetails() {
                   )}
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
