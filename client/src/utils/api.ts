@@ -329,6 +329,14 @@ export const api = {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
+    update: (data: any, id: string) =>
+      request<Category>(`/category/${id}`, {
+        method: 'PATCH',
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
     delete: (id: string) =>
       request<void>(`/category/${id}`, {
         method: 'DELETE',
