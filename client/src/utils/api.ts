@@ -321,7 +321,7 @@ export const api = {
   },
   categorys: {
     getAll: () => request<Category[]>('/category'),
-    create: (data: { name: string }) =>
+    create: (data: any) =>
       request<Category>('/category/create', {
         method: 'POST',
         data,
