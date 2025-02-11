@@ -37,7 +37,7 @@ export default function VerifyEmail() {
     setIsSubmitting(true);
     try {
       const response = await verifyEmail(email, parseInt(code));
-      console.log('Verification response:', response);
+      // console.log('Verification response:', response);
       if (response) {
         localStorage.setItem('resetToken', response);
         showSuccess('Email verified successfully');
@@ -81,9 +81,8 @@ export default function VerifyEmail() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 button-gradient ${
-                isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
-              }`}
+              className={`w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 button-gradient ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
             >
               {isSubmitting ? 'Verifying...' : 'Verify Email'}
             </button>

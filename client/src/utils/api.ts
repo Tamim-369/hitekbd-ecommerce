@@ -115,7 +115,7 @@ async function request<T = any>(
     const response = await fetch(`${API_URL}${endpoint}`, config);
     const responseData = await response.json();
 
-    console.log('Response:', responseData);
+    // console.log('Response:', responseData);
 
     if (!response.ok) {
       throw new ApiError(responseData);
