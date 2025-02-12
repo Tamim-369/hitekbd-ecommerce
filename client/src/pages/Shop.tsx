@@ -8,7 +8,7 @@ import ShopProductContainer from '../components/ShopProductContainer';
 import { Product } from '../utils/api';
 import { Category } from '../types/category';
 import SEO from '../components/SEO';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SlidersHorizontal } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 8;
@@ -28,7 +28,8 @@ export default function Shop() {
   const getAllProductData = async () => {
     try {
       const searchTerm = searchParams.get('search') || '';
-      const allProductData = await getAllProducts(searchTerm);
+      const category = searchParams.get('category') || '';
+      const allProductData = await getAllProducts(searchTerm, category);
       setAllProducts(allProductData);
 
       // Calculate max price after products are loaded
@@ -89,13 +90,15 @@ export default function Shop() {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-
+  const navigate = useNavigate()
   const handleClearFilters = () => {
     setSelectedCategory(null);
     setSelectedBrand('');
     setPriceRange([0, maxPrice]);
     setSortBy('featured');
+
     setCurrentPage(1);
+    navigate("/shop")
   };
 
   return (

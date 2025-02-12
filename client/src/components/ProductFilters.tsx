@@ -1,5 +1,6 @@
 import { SlidersHorizontal } from 'lucide-react';
 import { Category } from '../types/category';
+import { useNavigate } from 'react-router-dom';
 
 interface ProductFiltersProps {
   categories: Category[];
@@ -28,6 +29,7 @@ export default function ProductFilters({
   openFilter,
   setOpenFilter
 }: ProductFiltersProps) {
+  const navigate = useNavigate();
   console.log(categories);
   return (
     <div className="space-y-6">
@@ -62,7 +64,7 @@ export default function ProductFilters({
             </label>
           </div>
           {categories.map((category: Category) => (
-            <div key={category._id} className="flex items-center">
+            <div key={category._id} onClick={() => navigate(`/shop?category=${category._id}`)} className="flex items-center">
               <input
                 id={category._id}
                 type="radio"

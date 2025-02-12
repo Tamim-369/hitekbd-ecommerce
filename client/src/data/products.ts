@@ -28,10 +28,12 @@ const getLatestProducts = async () => {
   }
 };
 
-export const getAllProducts = async (search?: string) => {
+export const getAllProducts = async (search?: string, category?: string) => {
   try {
     const response = await fetch(
-      `${ApiURL}/products?page=1&limit=20${search ? `&search=${search}` : ''}`
+      `${ApiURL}/products?page=1&limit=20${search ? `&search=${search}` : ''}${
+        category ? `&category=${category}` : ''
+      }`
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
