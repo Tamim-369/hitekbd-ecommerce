@@ -1,7 +1,7 @@
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
-import { ShoppingCart, Heart, ArrowBigRight, ArrowBigRightDashIcon, ArrowBigRightDash } from 'lucide-react';
+import { ShoppingCart, Heart, ArrowBigRight, ArrowBigRightDashIcon, ArrowBigRightDash, Eye } from 'lucide-react';
 import { ImageURL } from '../data/baseApi';
 import { Link } from 'react-router-dom';
 import { OptimizedImage } from './OptimizedImage';
@@ -119,7 +119,7 @@ export default function ProductCard({
         </div>
       </div>
 
-      {isInCart(_id) ? (
+      {/* {isInCart(_id) ? (
         <Link
           to="/cart"
           className="mt-2 w-full py-1 rounded-lg flex items-center justify-center gap-2 min-[680px]:text-sm min-[680px]:font-normal text-xs font-bold transition-all duration-200 bg-gradient-to-r from-[#37acfa] to-[#c937fb] text-white ring-[#dadada] ring-2"
@@ -135,7 +135,14 @@ export default function ProductCard({
           <ShoppingCart size={18} />
           Add to Cart
         </button>
-      )}
+      )} */}
+      <Link
+        to={`/product/${_id}`}
+        className="mt-2 w-full py-2 rounded-lg button-gradient flex items-center justify-center gap-2 min-[680px]:text-sm min-[680px]:font-normal text-xs font-bold"
+      >
+        <Eye size={18} className='mb-0.5' />
+        View Details
+      </Link>
     </div>
   );
 }
