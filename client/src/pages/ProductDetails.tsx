@@ -8,6 +8,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Star,
+  Plus,
+  Minus,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { api, Product } from '../utils/api';
@@ -32,7 +34,8 @@ interface Review {
 
 export default function ProductDetails() {
   const { id } = useParams();
-  const { addItem } = useCart();
+  const { addItem, updateQuantity,
+    removeItem, isInCart, getItemQuantity } = useCart();
   const { user } = useAuth();
   const { showSuccess, showError } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
@@ -52,6 +55,19 @@ export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState<string>(
     product?.colors && product?.colors[0]?.color || ''
   );
+  const [quantity, setQuantity] = useState(1);
+
+
+  // Add these new functions for quantity control
+  const incrementQuantity = () => {
+    const itemQuantity = getItemQuantity(product?._id!);
+    updateQuantity(product?._id!, itemQuantity + 1);
+  };
+
+  const decrementQuantity = () => {
+    const itemQuantity = getItemQuantity(product?._id!);
+    updateQuantity(product?._id!, itemQuantity - 1);
+  };
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -98,15 +114,15 @@ export default function ProductDetails() {
 
   const handleAddToCart = () => {
     if (!product) return;
-    if (product.colors) {
 
+    if (product.colors) {
       const hasAvailableColors = product.colors.some(color => color.amount > 0);
       if (hasAvailableColors && Number(product?.colors?.length) !== 0 && !selectedColor) {
-
         showError('Please select a color before adding to cart');
         return;
       }
     }
+
     addItem({
       _id: product._id,
       title: product.title,
@@ -114,9 +130,11 @@ export default function ProductDetails() {
         ? parseFloat(product.discountedPrice.toString())
         : parseFloat(product.price!.toString()),
       image: product.image,
-      color: selectedColor
+      color: selectedColor,
+      quantity: quantity
     });
   };
+
 
   const nextImage = () => {
     if (!product) return;
@@ -362,51 +380,63 @@ export default function ProductDetails() {
 
 
             {/* Stock Status */}
-            <div className="flex items-center gap-2">
-              {parseInt(product.stockAmount!.toString()) > 0 ? (
-                <>
+            {parseInt(product.stockAmount!.toString()) > 0 ? (
+              <>
+                <div className='flex items-center gap-2'>
+
                   <Check className="h-5 w-5 text-green-500" />
                   <span className="text-green-600 font-medium">
                     In Stock ({product.stockAmount} available)
                   </span>
-                </>
-              ) : (
-                <>
-                  <Package className="h-5 w-5 text-red-500" />
-                  <span className="text-red-600 font-medium">Out of Stock</span>
-                </>
-              )}
-            </div>
+                </div>
+                <div className="mt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  {/* Quantity Controls */}
+                  <div className="mt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    {/* Quantity Controls */}
+                    <div className="flex items-center border border-gray-200 rounded-lg shadow-sm">
+                      <button
+                        onClick={decrementQuantity}
+                        className="p-2 hover:bg-gray-50 transition-colors"
+                        disabled={getItemQuantity(product?._id!) <= 1}
+                      >
+                        <Minus
+                          size={16}
+                          className={getItemQuantity(product?._id!) <= 1 ? 'text-gray-300' : 'text-gray-600'}
+                        />
+                      </button>
+                      <span className="w-12 text-center py-2 text-sm font-medium text-gray-900">
+                        {getItemQuantity(product?._id!)}
+                      </span>
+                      <button
+                        onClick={incrementQuantity}
+                        className="p-2 hover:bg-gray-50 transition-colors"
+                        disabled={product && getItemQuantity(product?._id!) >= parseInt(product.stockAmount!.toString())}
+                      >
+                        <Plus size={16} className="text-gray-600" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <Package className="h-5 w-5 text-red-500" />
+                <span className="text-red-600 font-medium">Out of Stock</span>
+              </>
+            )}
+
+
             <button
               onClick={handleAddToCart}
-              disabled={parseInt(product.stockAmount!.toString()) === 0}
               className="w-full md:w-auto px-6 py-2 rounded-lg font-semibold flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed button-gradient"
+              disabled={parseInt(product?.stockAmount?.toString() || '0') === Number(getItemQuantity(product?._id!))}
             >
               <ShoppingCart className="h-5 w-5" />
-              {parseInt(product.stockAmount!.toString()) === 0
+              {parseInt(product?.stockAmount?.toString() || '0') === 0
                 ? 'Out of Stock'
                 : 'Add to Cart'}
             </button>
-            {/* Product Details */}
-            {/* {product.details.length > 0 && (
-              <div className="border-t border-gray-200 pt-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  Product Details
-                </h3>
-                <div className="prose prose-sm text-gray-600">
-                  {Array.isArray(product.details) ? (
-                    product.details.map((detail: any, index: number) => (
-                      <div key={index} className="flex gap-2 mb-2">
-                        <span className="font-medium">{detail.name}:</span>
-                        <span>{detail.value}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <p>No details available</p>
-                  )}
-                </div>
-              </div>
-            )} */}
+
           </div>
         </div>
       </div>
