@@ -4,6 +4,7 @@ import {
   Package,
   Settings,
   Heart,
+  LogOut,
 } from 'lucide-react';
 import EditProfileForm from '../components/EditProfileForm';
 import { api } from '../utils/api';
@@ -11,6 +12,7 @@ import { STATUS } from '../enums/order';
 import Orders from './profile/Orders';
 import WishList from './profile/WishList';
 import ProfileSettings from './profile/ProfileSettings';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Order {
   _id: string;
@@ -200,7 +202,7 @@ export default function Profile() {
       setWishlistLoading(false);
     }
   };
-
+  const { logout } = useAuth()
   const renderContent = () => {
     switch (activeTab) {
       case 'profile':
@@ -248,6 +250,8 @@ export default function Profile() {
             isChangingPassword={isChangingPassword}
           />
         );
+
+
     }
   };
 
@@ -297,6 +301,13 @@ export default function Profile() {
                 >
                   <Settings className="w-5 h-5" />
                   Settings
+                </button>
+                <button
+                  onClick={() => logout()}
+                  className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50"
+                >
+                  <LogOut size={20} />
+                  Logout
                 </button>
               </nav>
             </div>
