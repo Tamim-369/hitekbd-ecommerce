@@ -235,9 +235,39 @@ export default function Checkout() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full button-gradient text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative w-full py-3.5 rounded-xl overflow-hidden group bg-gradient-to-r from-[#37c3fa] to-[#ce62f2] transition-all duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                {loading ? 'Placing Order...' : 'Place Order'}
+                {/* Button content with icon */}
+                <div className="relative flex items-center justify-center gap-2 text-white font-medium">
+                  {loading ? (
+                    <>
+                      <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Placing Order...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M14 5l7 7m0 0l-7 7m7-7H3"
+                        />
+                      </svg>
+                      <span>Place Order</span>
+                    </>
+                  )}
+                </div>
+
+                {/* Shine effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
+                  <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000" />
+                </div>
               </button>
             </div>
           </form>
