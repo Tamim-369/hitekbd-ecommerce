@@ -80,10 +80,17 @@ export default function Navbar() {
             ) : (
               <Link
                 to="/login"
-                className="text-gray-600 hover:text-indigo-600 flex items-center gap-1"
+                className="relative group flex items-center gap-2 px-2.5 py-2.5 sm:px-4 sm:py-2 rounded-full sm:rounded-xl font-medium text-white transition-all duration-300 bg-gradient-to-r from-[#37c3fa] to-[#ce62f2]  hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-105 active:scale-95"
               >
-                <User size={20} />
-                <span>Login</span>
+                <div className="relative flex items-center">
+                  <User
+                    size={24}
+                    className="group-hover:rotate-6 transition-transform duration-200"
+                  />
+                </div>
+                <span className="text-sm sm:block hidden">LogIn</span>
+
+                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 blur-xl -z-10" />
               </Link>
             )}
             <div className="md:hidden">
