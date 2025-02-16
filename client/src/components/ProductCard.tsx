@@ -70,77 +70,72 @@ export default function ProductCard({
   };
 
   return (
-    <div className={`group relative`}>
-      <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
+    <div className="group relative bg-white rounded-2xl p-3 transition-all duration-300 hover:shadow-xl hover:shadow-[#37c3fa]/10">
+      {/* Main image container */}
+      <div className="relative aspect-square overflow-hidden rounded-xl bg-gray-100">
         <Link to={`/product/${_id}`}>
-          {' '}
-          <OptimizedImage
+          <img
             src={`${ImageURL}/${image[0]}`}
             alt={title}
-            className="h-full w-full object-cover object-center group-hover:opacity-75 transition-opacity"
+            className="h-full w-full object-cover object-center transform transition-transform duration-500 group-hover:scale-110"
           />
+
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </Link>
+
+        {/* Discount badge */}
         {discountedPrice && (
-          <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-semibold">
-            -{price - discountedPrice} ৳
+          <div className="absolute top-1 sm:top-3 right-0 sm:right-3 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#37c3fa] to-[#ce62f2] text-white text-xs sm:text-sm font-medium transform -rotate-12 shadow-lg sm:scale-100 scale-75 ">
+            -{price - discountedPrice}৳
           </div>
         )}
+
+        {/* Wishlist button */}
         {isAuthenticated && (
           <button
             onClick={handleWishlist}
-            className={`absolute top-2 left-2 p-1.5 sm:p-2 rounded-full ${isInWishlist ? 'bg-red-500 text-white' : 'bg-white text-gray-600'
-              } hover:scale-110 transition-all duration-200 shadow-md`}
+            className={`absolute top-3 left-3 p-2 sm:p-2.5 rounded-full transition-all duration-300 
+              ${isInWishlist
+                ? 'bg-gradient-to-r from-[#37c3fa] to-[#ce62f2] text-white scale-110'
+                : 'bg-white/90 text-gray-600 hover:scale-110 hover:shadow-lg'}`}
           >
             <Heart
               size={16}
-              className="sm:w-5 sm:h-5"
+              className="transition-transform duration-300 w-3 h-3 sm:w-[18px] sm:h-[18px]"
               fill={isInWishlist ? 'currentColor' : 'none'}
             />
           </button>
         )}
       </div>
-      <div className="mt-4 flex justify-between">
-        <div>
-          <h3 className="text-sm text-gray-700 font-medium">
-            {title.toString().length > 47
-              ? title.substring(1, 47) + '...'
-              : title}
-          </h3>
-          <div className="flex items-center gap-2">
-            <p className="text-lg font-semibold text-gray-900">
-              ৳{discountedPrice ? discountedPrice : price.toFixed(2)}
+
+      {/* Product info */}
+      <div className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2">
+        <h3 className="text-xs sm:text-sm font-medium text-gray-800 line-clamp-2 min-h-[32px] sm:min-h-[40px]">
+          {title}
+        </h3>
+
+        <div className="flex items-baseline gap-2">
+          <p className="text-base sm:text-lg font-bold bg-gradient-to-r from-[#37c3fa] to-[#ce62f2] bg-clip-text text-transparent">
+            ৳{discountedPrice ? discountedPrice : price.toFixed(2)}
+          </p>
+          {discountedPrice && (
+            <p className="text-xs sm:text-sm text-gray-400 line-through">
+              ৳{price.toFixed(2)}
             </p>
-            {discountedPrice && (
-              <p className="text-sm text-gray-500 line-through">
-                ৳{price.toFixed(2)}
-              </p>
-            )}
-          </div>
+          )}
         </div>
       </div>
 
-      {/* {isInCart(_id) ? (
-        <Link
-          to="/cart"
-          className="mt-2 w-full py-1 rounded-lg flex items-center justify-center gap-2 min-[680px]:text-sm min-[680px]:font-normal text-xs font-bold transition-all duration-200 bg-gradient-to-r from-[#37acfa] to-[#c937fb] text-white ring-[#dadada] ring-2"
-        >
-          View Cart
-          <ArrowBigRight size={25} />
-        </Link>
-      ) : (
-        <button
-          onClick={handleAddToCart}
-          className="mt-2 w-full py-2 rounded-lg button-gradient flex items-center justify-center gap-2 min-[680px]:text-sm min-[680px]:font-normal text-xs font-bold"
-        >
-          <ShoppingCart size={18} />
-          Add to Cart
-        </button>
-      )} */}
+      {/* View details button */}
       <Link
         to={`/product/${_id}`}
-        className="mt-2 w-full py-2 rounded-lg button-gradient flex items-center justify-center gap-2 min-[680px]:text-sm min-[680px]:font-normal text-xs font-bold"
+        className="mt-2 sm:mt-4 w-full py-1.5 sm:py-2.5 rounded-lg bg-gradient-to-r from-[#37c3fa] to-[#ce62f2] text-white flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#37c3fa]/20 group-hover:scale-[1.02]"
       >
-        <Eye size={18} className='mb-0.5' />
+        <Eye
+          size={14}
+          className="transition-transform duration-300 group-hover:scale-110 sm:w-[18px] sm:h-[18px]"
+        />
         View Details
       </Link>
     </div>
