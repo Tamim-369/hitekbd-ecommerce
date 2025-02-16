@@ -42,12 +42,12 @@ export default function Login() {
   };
 
   const token = localStorage.getItem('token')
-  if(token){
+  if (token) {
     return <Navigate to="/profile" />
   }
   return (
     <AuthLayout
-      title="Sign in to your account"
+      title="Log In to your account"
       subtitle={
         <>
           Don't have an account?{' '}
@@ -55,7 +55,7 @@ export default function Login() {
             href="/signup"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
-            Sign up
+            Create Account
           </a>
         </>
       }
@@ -98,11 +98,10 @@ export default function Login() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 button-gradient ${
-                isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
-              }`}
+              className={`w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 button-gradient ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
             >
-              {isSubmitting ? 'Signing in...' : 'Sign in'}
+              {isSubmitting ? 'Logging in...' : 'Log in'}
             </button>
           </div>
         </form>

@@ -77,7 +77,7 @@ export default function ResetPassword() {
             href="/login"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
-            Sign in
+
           </a>
         </>
       }
@@ -110,9 +110,8 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 button-gradient ${
-                isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
-              }`}
+              className={`w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 button-gradient ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
             >
               {isSubmitting ? 'Resetting...' : 'Reset Password'}
             </button>

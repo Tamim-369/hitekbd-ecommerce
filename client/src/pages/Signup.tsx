@@ -40,7 +40,7 @@ export default function Signup() {
   };
 
   const token = localStorage.getItem('token')
-  if(token){
+  if (token) {
     return <Navigate to="/profile" />
   }
   return (
@@ -54,7 +54,7 @@ export default function Signup() {
               href="/login"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Sign in
+              Log In
             </a>
           </>
         }
