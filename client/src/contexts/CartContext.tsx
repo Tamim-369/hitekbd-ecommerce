@@ -2,10 +2,10 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface CartItem {
   _id: string;
-  title: string;
+  title?: string;
   price: number;
   image: string[];
-  quantity: number;
+  quantity?: number;
   color?: string;
 }
 
@@ -30,7 +30,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems(currentItems => {
       const existingItem = currentItems.find(item => item._id === product._id);
       if (existingItem) {
-        return currentItems.map(item =>
+        return currentItems.map((item: any) =>
           item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
@@ -58,9 +58,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems([]);
   };
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = items.reduce((sum, item: any) => sum + item?.quantity, 0);
   const totalPrice = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item: any) => sum + item.price * item?.quantity,
     0
   );
 

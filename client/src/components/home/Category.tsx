@@ -56,7 +56,7 @@ const Category: React.FC = () => {
 
     const fetchCategories = useCallback(async () => {
         try {
-            const response = await api.categorys.getAll();
+            const response: any = await api.categorys.getAll();
             setCategories(response);
         } catch (error) {
             console.error('Failed to fetch categories:', error);

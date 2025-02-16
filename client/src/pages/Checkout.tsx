@@ -43,7 +43,7 @@ export default function Checkout() {
 
   // Calculate totals
   const subtotal = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item: any) => sum + item.price * item.quantity,
     0
   );
   const shipping = totalItems > 0 ? 110.0 : 0;
@@ -121,7 +121,7 @@ export default function Checkout() {
               Order Summary
             </h2>
             <div className="space-y-4">
-              {items.map(item => (
+              {items.map((item: any) => (
                 <div
                   key={item._id}
                   className="flex items-center justify-between py-2"
@@ -142,7 +142,7 @@ export default function Checkout() {
                     </div>
                   </div>
                   <p className="text-sm font-medium text-gray-900">
-                    ৳{(item.price * item.quantity).toFixed(2)}
+                    ৳{(item.price * item?.quantity).toFixed(2)}
                   </p>
                 </div>
               ))}
