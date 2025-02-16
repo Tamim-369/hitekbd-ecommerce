@@ -1,4 +1,16 @@
+import { useEffect, useState } from "react";
+import { api } from "../utils/api";
+import { Category } from "../types/category";
+
 export default function Footer() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  useEffect(() => {
+    (async () => {
+      const response = await api.categorys.getAll();
+      setCategories(response.slice(0, 4));
+    })()
+
+  }, [])
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
@@ -32,29 +44,16 @@ export default function Footer() {
           </div>
           <div>
             <h4 className="text-white text-sm font-semibold mb-4">
-              Customer Service
+              Categorys
             </h4>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a href="/contact" className="hover:text-white">
-                  Contact Us
-                </a>
-              </li>
-              <li>
-                <a href="/shipping" className="hover:text-white">
-                  Shipping Policy
-                </a>
-              </li>
-              <li>
-                <a href="/returns" className="hover:text-white">
-                  Returns & Exchanges
-                </a>
-              </li>
-              <li>
-                <a href="/faq" className="hover:text-white">
-                  FAQs
-                </a>
-              </li>
+              {categories.map((category) => (
+                <li key={category._id}>
+                  <a href={`/shop?category=${category._id}`} className="hover:text-white">
+                    {category.name}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -66,3 +65,4 @@ export default function Footer() {
     </footer>
   );
 }
+
