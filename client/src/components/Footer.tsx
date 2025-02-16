@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-white text-lg font-semibold mb-4">HitekBD</h3>
-            <p className="text-sm">Your one-stop shop for premium products.</p>
+            <p className="text-sm">Your one-stop shop for premium products. Get the best product at best price. </p>
           </div>
           <div>
             <h4 className="text-white text-sm font-semibold mb-4">
@@ -23,15 +23,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/" className="hover:text-white">
+                <a href="/shop" className="hover:text-white">
                   Categories
                 </a>
               </li>
-              <li>
-                <a href="/" className="hover:text-white">
-                  About Us
-                </a>
-              </li>
+
             </ul>
           </div>
           <div>
