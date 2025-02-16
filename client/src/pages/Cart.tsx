@@ -9,7 +9,7 @@ export default function Cart() {
   const navigate = useNavigate();
 
   const subtotal = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item: any) => sum + item.price * item.quantity,
     0
   );
   const shipping = totalItems > 0 ? 110.0 : 0;

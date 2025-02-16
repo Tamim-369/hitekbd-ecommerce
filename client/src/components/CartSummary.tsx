@@ -26,7 +26,7 @@ export default function CartSummary({
           <span className="text-gray-600">Shipping</span>
           <span className="text-gray-900">৳{shipping.toFixed(2)}</span>
         </div>
-     
+
         <div className="border-t border-gray-200 pt-4">
           <div className="flex justify-between">
             <span className="text-lg font-semibold text-gray-900">Total</span>
@@ -39,7 +39,11 @@ export default function CartSummary({
       <div className="mt-6">
         <button
           onClick={() => navigate('/checkout')}
-          className="w-full  button-gradient text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+          className="w-full px-6 py-3 rounded-xl font-semibold text-white
+    bg-gradient-to-r from-[#37c3fa] to-[#c937fb]
+    shadow-lg hover:shadow-xl hover:opacity-95
+    transform transition-all duration-200 hover:-translate-y-0.5
+    focus:outline-none focus:ring-2 focus:ring-[#37c3fa] focus:ring-opacity-50"
         >
           Proceed to Checkout
         </button>
