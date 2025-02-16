@@ -10,6 +10,7 @@ export interface Product {
   discountedPrice: number;
   category: string;
   brand: string | null;
+  stockAmount: number;
   rating: number | null;
   details: {};
 }
@@ -21,7 +22,9 @@ const getLatestProducts = async () => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    return data.data;
+    const allData = data.data.filter((item: Product) => item.stockAmount > 0);
+
+    return allData;
   } catch (error) {
     console.error('Error fetching latest products:', error);
     return [];
@@ -39,7 +42,8 @@ export const getAllProducts = async (search?: string, category?: string) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    return data.data;
+    const allData = data.data.filter((item: Product) => item.stockAmount > 0);
+    return allData;
   } catch (error) {
     console.error('Error fetching all products:', error);
     return [];
