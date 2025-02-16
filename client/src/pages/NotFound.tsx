@@ -14,7 +14,7 @@ const NotFound: React.FC = () => {
         </p>
         <button
           onClick={() => navigate('/')}
-          className="bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
+          className="bg-primary hover:bg-primary/90  font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 text-black"
         >
           Back to Home
         </button>
