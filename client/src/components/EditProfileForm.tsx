@@ -104,7 +104,13 @@ export default function EditProfileForm({
       <div className="flex justify-end space-x-4">
         <button
           type="submit"
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+          className="px-6 py-3 rounded-xl font-semibold text-white
+    bg-gradient-to-r from-[#37c3fa] to-[#c937fb]
+    shadow-lg hover:shadow-xl
+    transform transition-all duration-200
+    hover:-translate-y-0.5 hover:opacity-95
+    focus:outline-none focus:ring-2 focus:ring-[#37c3fa] focus:ring-opacity-50
+    active:opacity-90"
         >
           Update Changes
         </button>
