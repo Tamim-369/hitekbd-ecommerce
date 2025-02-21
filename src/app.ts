@@ -33,6 +33,7 @@ app.use(
       'https://hitekbd.com',
       'http://103.240.4.37:4173',
       'http://localhost:4173',
+      'http://192.168.0.105:4173/',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],

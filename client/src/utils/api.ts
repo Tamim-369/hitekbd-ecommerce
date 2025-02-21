@@ -72,6 +72,10 @@ class ApiError extends Error {
     this.errorMessages = response.errorMessages;
   }
 }
+type Banner = {
+  _id: string;
+  image: string[];
+};
 
 async function request<T = any>(
   endpoint: string,
@@ -339,6 +343,32 @@ export const api = {
       }),
     delete: (id: string) =>
       request<void>(`/category/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+  },
+  banners: {
+    getAll: () => request<Banner[]>('/banners'),
+    create: (data: any) =>
+      request<Banner>('/banners/create', {
+        method: 'POST',
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    update: (data: any, id: string) =>
+      request<Banner>(`/banners/${id}`, {
+        method: 'PATCH',
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    delete: (id: string) =>
+      request<void>(`/banners/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,

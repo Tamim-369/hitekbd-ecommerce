@@ -5,9 +5,14 @@ import ProductContainer from '../components/ProductContainer';
 import { featuredProducts, latestProducts, Product } from '../data/products';
 import SEO from '../components/SEO';
 import Category from '../components/home/Category';
+import { useEffect } from 'react';
+import { api } from '../utils/api';
 
 export default function Home() {
-  console.log(featuredProducts);
+  useEffect(() => {
+    const banners = api.banners.getAll();
+    console.log(banners)
+  }, [])
   return (
     <div>
       <SEO

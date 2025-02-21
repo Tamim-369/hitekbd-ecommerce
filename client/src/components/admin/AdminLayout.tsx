@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  ShoppingBag, 
-  Users, 
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Users,
   Settings,
   Menu,
   X,
-  Package
+  Package,
+  Settings2
 } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 
@@ -25,6 +26,11 @@ export default function AdminLayout() {
       path: '/admin/products',
       icon: <ShoppingBag size={20} />,
       label: 'Products'
+    },
+    {
+      path: '/admin/banners',
+      icon: <Settings2 size={20} />,
+      label: 'Banners'
     },
     {
       path: '/admin/orders',
@@ -46,11 +52,12 @@ export default function AdminLayout() {
       icon: <Settings size={20} />,
       label: 'Settings'
     },
- 
+
+
   ];
 
-  const token = jwtDecode(localStorage.getItem('token')!);
-  if(token.role !== 'ADMIN'){
+  const token: any = jwtDecode(localStorage.getItem('token')!);
+  if (token.role !== 'ADMIN') {
     return <Navigate to="/login" />
   }
   return (
