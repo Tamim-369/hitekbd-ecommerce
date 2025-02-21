@@ -25,7 +25,7 @@ export default function HeroBanner() {
 
   return (
     <div className="p-2 sm:p-4 max-w-[2000px] mx-auto">
-      <div className="relative w-full overflow-hidden min-[450px]:rounded-2xl shadow-xl">
+      <div className="relative w-full overflow-hidden rounded-2xl shadow-xl">
         <div className="absolute inset-0 bg-gradient-to-r from-[#37c3fa]/80 to-[#c937fb]/80 
           mix-blend-multiply transition-opacity duration-300 hover:opacity-75" />
 
