@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Upload, Plus, Minus } from 'lucide-react';
+import { X, Upload, Plus, Minus, GripVertical } from 'lucide-react';
 import { Product } from '../../utils/api';
 import { Category } from '../../types/category';
 import { useProducts } from '../../contexts/ProductContext';
@@ -19,13 +19,24 @@ interface ProductDetail {
   value: string;
 }
 
+interface ImageItem {
+  url: string;
+  file?: File;
+  order: number;
+}
+
+interface ColorVariant {
+  color: string;
+  amount: number;
+}
+
 export default function ProductModal({
   isOpen,
   onClose,
   product,
   onSuccess,
 }: ProductModalProps) {
-  const [formData, setFormData] = useState<Partial<Product>>({
+  const [formData, setFormData] = useState<Partial<any>>({
     title: '',
     description: '',
     price: null,
@@ -33,11 +44,12 @@ export default function ProductModal({
     category: '',
     stockAmount: null,
     image: [],
-    details: []
+    details: [],
+    colors: []
   });
 
-  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [images, setImages] = useState<ImageItem[]>([]);
+  const [draggedItem, setDraggedItem] = useState<number | null>(null);
   const { createProduct, updateProduct } = useProducts();
   const { showSuccess, showError } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -45,7 +57,11 @@ export default function ProductModal({
   useEffect(() => {
     if (product) {
       setFormData(product);
-      setPreviewUrls(product.image.map(img => `${ImageURL}/${img}`));
+      const existingImages = product.image.map((img, index) => ({
+        url: `${ImageURL}/${img}`,
+        order: index,
+      }));
+      setImages(existingImages);
     } else {
       setFormData({
         title: '',
@@ -56,14 +72,14 @@ export default function ProductModal({
         stockAmount: null,
         colors: [
           {
-            color: '',
+            color: '#000000',
             amount: 0
           }
         ],
         image: [],
         details: []
       });
-      setPreviewUrls([]);
+      setImages([]);
     }
   }, [product]);
 
@@ -82,10 +98,48 @@ export default function ProductModal({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setSelectedFiles(files);
-      const urls = Array.from(files).map(file => URL.createObjectURL(file));
-      setPreviewUrls(urls);
+      const newImages = Array.from(files).map((file, index) => ({
+        url: URL.createObjectURL(file),
+        file: file,
+        order: images.length + index,
+      }));
+      setImages([...images, ...newImages]);
     }
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedItem(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedItem === null) return;
+
+    const items = [...images];
+    const draggedItemContent = items[draggedItem];
+
+    items.splice(draggedItem, 1);
+    items.splice(index, 0, draggedItemContent);
+
+    const reorderedItems = items.map((item, idx) => ({
+      ...item,
+      order: idx,
+    }));
+
+    setImages(reorderedItems);
+    setDraggedItem(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedItem(null);
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = images.filter((_, idx) => idx !== index).map((img, idx) => ({
+      ...img,
+      order: idx,
+    }));
+    setImages(newImages);
   };
 
   const handleAddDetail = () => {
@@ -98,14 +152,14 @@ export default function ProductModal({
   const handleRemoveDetail = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      details: prev.details?.filter((_, i) => i !== index)
+      details: prev.details?.filter((_: any, i: any) => i !== index)
     }));
   };
 
   const handleDetailChange = (index: number, field: 'name' | 'value', value: string) => {
     setFormData(prev => ({
       ...prev,
-      details: prev.details?.map((detail, i) =>
+      details: prev.details?.map((detail: any, i: any) =>
         i === index ? { ...detail, [field]: value } : detail
       )
     }));
@@ -116,58 +170,48 @@ export default function ProductModal({
     try {
       const form = new FormData();
 
+      // Basic fields
+      form.append('title', formData.title || '');
+      form.append('description', formData.description || '');
+      form.append('price', String(formData.price || 0));
+      form.append('discountedPrice', String(formData.discountedPrice || 0));
+      form.append('category', formData.category || '');
+      form.append('stockAmount', String(formData.stockAmount || 0));
+      form.append('colors', JSON.stringify(formData.colors || []));
+      form.append('details', JSON.stringify(formData.details || []));
+
+      // Handle images
+      const orderedImages = [...images].sort((a, b) => a.order - b.order);
+
       if (product) {
-        // For update, send all fields
-        form.append('title', formData.title || '');
-        form.append('description', formData.description || '');
-        form.append('price', String(formData.price || 0));
-        form.append('discountedPrice', String(formData.discountedPrice || 0));
-        form.append('category', formData.category || '');
-        form.append('stockAmount', String(formData.stockAmount || 0));
-        form.append('colors', JSON.stringify(formData.colors || []));
+        // Update existing product
+        const existingImages = orderedImages
+          .filter(img => !img.file)
+          .map(img => img.url.replace(`${ImageURL}/`, ''));
 
-        // Always send the complete details array
-        const details = formData.details || [];
-        form.append('details', JSON.stringify(details));
+        const newFiles = orderedImages
+          .filter(img => img.file)
+          .map(img => img.file);
 
-        // Only append new images if they are selected
-        if (selectedFiles && selectedFiles.length > 0) {
-          Array.from(selectedFiles).forEach(file => {
-            form.append('image', file);
-          });
-        } else {
-          // If no new images, send the existing image array
-          form.append('image', JSON.stringify(formData.image));
-        }
+        form.append('existingImages', JSON.stringify(existingImages));
+        newFiles.forEach(file => {
+          if (file) form.append('image', file);
+        });
 
         await updateProduct(product._id, form);
         showSuccess('Product updated successfully');
       } else {
-        // For create, send all fields
-        form.append('title', formData.title || '');
-        form.append('description', formData.description || '');
-        form.append('price', String(formData.price || 0));
-        form.append('discountedPrice', String(formData.discountedPrice || 0));
-        form.append('category', formData.category || '');
-        form.append('stockAmount', String(formData.stockAmount || 0));
-        form.append('colors', JSON.stringify(formData.colors || []));
-
-        // Convert details array to JSON string
-        const detailsString = JSON.stringify(formData.details || []);
-        form.append('details', detailsString);
-
-        // Append images
-        if (selectedFiles) {
-          Array.from(selectedFiles).forEach(file => {
-            form.append('image', file);
-          });
-        }
+        // Create new product
+        orderedImages.forEach(img => {
+          if (img.file) form.append('image', img.file);
+        });
 
         await createProduct(form);
         showSuccess('Product created successfully');
       }
 
       onSuccess();
+      onClose();
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       showError(product ? 'Failed to update product' : 'Failed to create product');
@@ -260,7 +304,7 @@ export default function ProductModal({
                 type="number"
                 value={formData.stockAmount || ''}
                 onChange={(e) => setFormData({ ...formData, stockAmount: Number(e.target.value) })}
-                className="mt-1 p-2  block w-full rounded-md border border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-0 focus:bg-white transition-all duration-200"
+                className="mt-1 p-2 block w-full rounded-md border border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-0 focus:bg-white transition-all duration-200"
                 required
               />
             </div>
@@ -288,29 +332,53 @@ export default function ProductModal({
                 <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
               </div>
             </div>
-            {previewUrls.length > 0 && (
-              <div className="mt-4 flex gap-2">
-                {previewUrls.map((url, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={url}
-                      alt={`Preview ${index + 1}`}
-                      className="h-24 w-24 object-cover rounded-lg"
-                    />
-                  </div>
-                ))}
+
+            {/* Image Preview and Ordering */}
+            {images.length > 0 && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-500 mb-2">Drag images to reorder. First image will be the main product image.</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {images.map((image, index) => (
+                    <div
+                      key={index}
+                      draggable
+                      onDragStart={() => handleDragStart(index)}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDragEnd={handleDragEnd}
+                      className="relative group border border-gray-200 rounded-lg p-2 cursor-move"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <GripVertical className="text-gray-400" size={16} />
+                        <span className="text-sm text-gray-500">Position: {image.order + 1}</span>
+                      </div>
+                      <img
+                        src={image.url}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
+
           {/* Color Variants */}
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="block text-sm font-medium text-gray-700">Color Variants</label>
               <button
                 type="button"
-                onClick={() => setFormData((prev:any) => ({
+                onClick={() => setFormData((prev: any) => ({
                   ...prev,
-                  colors: [...(prev.colors || []), '#000000']
+                  colors: [...(prev.colors || []), { color: '#000000', amount: 0 }]
                 }))}
                 className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-indigo-100 hover:bg-indigo-200"
               >
@@ -331,29 +399,32 @@ export default function ProductModal({
                       id={`color-picker-${index}`}
                       type="color"
                       value={colorObj.color}
-                      onChange={(e) => setFormData((prev:any) => ({
-                        ...prev,
-                        colors: prev.colors?.map((c:any, i:number) => i === index ? { color: e.target.value, amount: c.amount } : c)
-                      }))}
+                      onChange={(e) => {
+                        const newColors = [...(formData.colors || [])];
+                        newColors[index] = { ...colorObj, color: e.target.value };
+                        setFormData({ ...formData, colors: newColors });
+                      }}
                       className="hidden"
                     />
                     <span className="text-sm text-gray-700">{colorObj.color}</span>
                     <input
                       type="number"
                       value={colorObj.amount}
-                      onChange={(e) => setFormData((prev:any) => ({
-                        ...prev,
-                        colors: prev.colors?.map((c:any, i:number) => i === index ? { color: c.color, amount: Number(e.target.value) } : c)
-                      }))}
+                      onChange={(e) => {
+                        const newColors = [...(formData.colors || [])];
+                        newColors[index] = { ...colorObj, amount: Number(e.target.value) };
+                        setFormData({ ...formData, colors: newColors });
+                      }}
+                      placeholder="Amount"
                       className="w-24 p-1 focus:outline-none text-sm text-gray-700 border border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-0 focus:bg-white transition-all rounded-md duration-200"
                     />
                   </div>
                   <button
                     type="button"
-                    onClick={() => setFormData((prev:any) => ({
-                      ...prev,
-                      colors: prev.colors?.filter((_:any, i:number) => i !== index)
-                    }))}
+                    onClick={() => {
+                      const newColors = formData.colors?.filter((_, i) => i !== index);
+                      setFormData({ ...formData, colors: newColors });
+                    }}
                     className="p-2 text-red-600 hover:text-red-800"
                   >
                     <Minus size={16} />
@@ -362,6 +433,7 @@ export default function ProductModal({
               ))}
             </div>
           </div>
+
           {/* Product Details */}
           <div>
             <div className="flex justify-between items-center mb-2">
@@ -404,6 +476,7 @@ export default function ProductModal({
             </div>
           </div>
 
+          {/* Form Actions */}
           <div className="flex justify-end space-x-3 pt-4">
             <button
               type="button"
@@ -423,4 +496,4 @@ export default function ProductModal({
       </div>
     </div>
   );
-} 
+}
