@@ -114,7 +114,6 @@ export default function EditProfileForm({
         name="address"
         value={formData.address}
         onChange={handleChange}
-        error={errors.address}
       />
       <div className="flex justify-end space-x-4">
         <button
