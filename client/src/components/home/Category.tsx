@@ -76,7 +76,7 @@ const Category: React.FC = () => {
 
             {/* Section header */}
             <div className="relative mb-12">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-[#37c3fa] to-[#ce62f2] bg-clip-text text-transparent inline-block">
+                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#37c3fa] to-[#ce62f2] bg-clip-text text-transparent inline-block">
                     Featured Categories
                 </h1>
                 <div className="absolute -bottom-2 left-0 h-1 w-24 bg-gradient-to-r from-[#37c3fa] to-[#ce62f2]" />
