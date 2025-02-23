@@ -19,11 +19,13 @@ export default function AdminProducts() {
   const { showSuccess, showError } = useToast();
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page
 
   useEffect(() => {
-    loadProducts();
+    loadProducts(currentPage, itemsPerPage);
     fetchCategories();
-  }, [loadProducts]);
+  }, [currentPage, itemsPerPage, loadProducts]);
 
   const fetchCategories = async () => {
     try {
@@ -39,7 +41,7 @@ export default function AdminProducts() {
     try {
       await api.products.delete(selectedProduct._id);
       showSuccess('Product deleted successfully');
-      loadProducts();
+      loadProducts(currentPage, itemsPerPage);
       setIsDeleteModalOpen(false);
     } catch (error) {
       showError('Failed to delete product');
@@ -49,6 +51,15 @@ export default function AdminProducts() {
   const filteredProducts = products.filter(product =>
     product.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1); // Reset to the first page when changing items per page
+  };
 
   if (loading) return <DashboardSkeleton />;
 
@@ -144,6 +155,42 @@ export default function AdminProducts() {
         ))}
       </div>
 
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6">
+        <div className="flex items-center gap-2">
+          <span>Items per page:</span>
+          <select
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
+            className="px-2 py-1 border border-gray-300 rounded"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 border border-gray-300 rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2">
+            Page {currentPage}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={filteredProducts.length < itemsPerPage}
+            className="px-4 py-2 border border-gray-300 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
       {/* Product Modal */}
       <ProductModal
         isOpen={isModalOpen}
@@ -151,7 +198,7 @@ export default function AdminProducts() {
         product={selectedProduct}
         onSuccess={() => {
           setIsModalOpen(false);
-          loadProducts();
+          loadProducts(currentPage, itemsPerPage);
         }}
       />
 
@@ -173,4 +220,4 @@ export default function AdminProducts() {
       />
     </div>
   );
-} 
+}

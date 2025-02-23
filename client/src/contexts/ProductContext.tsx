@@ -25,11 +25,12 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadProducts = useCallback(async (): Promise<Product[]> => {
+  const loadProducts = useCallback(async (currentPage = 1
+    , itemsPerPage = 20): Promise<Product[]> => {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.products.getAll();
+      const data = await api.products.getAll({ page: currentPage, limit: itemsPerPage });
       console.log('Loaded products:', data);
       setProducts(data);
       return data;
