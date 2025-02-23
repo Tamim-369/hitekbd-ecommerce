@@ -23,12 +23,12 @@ export default function Checkout() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await api.user.getProfile();
+        const response: any = await api.user.getProfile();
         setProfileData(response);
         setFormData(prev => ({
           ...prev,
           phone: response.phone || '',
-          address: response.address || '',
+          address: `${response.city}, ${response.state}, ${response.address}`,
         }));
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -128,7 +128,7 @@ export default function Checkout() {
                 >
                   <div className="flex items-center">
                     <img
-                      src={`${ImageURL}/${item.image[0]}`}
+                      src={`${ImageURL} / ${item.image[0]}`}
                       alt={item.title}
                       className="w-16 h-16 object-cover rounded"
                     />
