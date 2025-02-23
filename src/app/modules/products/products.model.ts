@@ -12,8 +12,8 @@ const productsSchema = new Schema<IProducts, ProductsModel>(
     colors: {
       type: [
         {
-          color: { type: String, required: true },
-          amount: { type: Number, required: true },
+          color: { type: String, required: false },
+          amount: { type: Number, default: 0, required: false },
         },
       ],
       required: false,
