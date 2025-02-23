@@ -103,14 +103,14 @@ export default function EditProfileForm({
       />
 
       <Input
-        label="District"
+        label="District (জেলা)"
         name="district"
         value={formData.district}
         onChange={handleChange}
         error={errors.district}
       />
       <Input
-        label="Sub District"
+        label="Sub District (থানা)"
         name="subDistrict"
         value={formData.subDistrict}
         onChange={handleChange}
