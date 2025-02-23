@@ -44,7 +44,7 @@ export default function Home() {
         </section>
 
         {/* Promotional Banner */}
-        <section className="mb-16">
+        {/* <section className="mb-16">
           <div className="relative rounded-xl overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-600/90 to-indigo-600/90" />
             <div className="relative h-[200px] flex items-center">
@@ -62,7 +62,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Latest Products */}
         <section>
