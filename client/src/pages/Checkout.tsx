@@ -28,7 +28,7 @@ export default function Checkout() {
         setFormData(prev => ({
           ...prev,
           phone: response.phone || '',
-          address: `${response.city}, ${response.state}, ${response.address}`,
+          address: `${response.city || ''}, ${response.state || ''}, ${response.address}`,
         }));
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -195,7 +195,7 @@ export default function Checkout() {
                     htmlFor="address"
                     className="block text-sm font-medium text-gray-600"
                   >
-                    Delivery Address
+                    Delivery Address (Write full address including district, subDistrict etc)
                   </label>
                   <input
                     id="address"
