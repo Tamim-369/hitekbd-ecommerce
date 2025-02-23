@@ -35,7 +35,7 @@ export default function HeroBanner() {
               key={index}
               src={`${ImageURL}/${banner.image}`}
               alt="Hero Banner"
-              className={`w-full h-[150px] min-[400px]:h-[180px] sm:h-[300px] md:h-[400px] lg:h-[500px] 
+              className={`w-full h-[13=50px] min-[450px]:h-[180px] sm:h-[300px] md:h-[400px] lg:h-[500px] 
                 object-cover sm:object-cover transition-transform duration-700 hover:scale-105 
                 ${index === currentIndex ? "block" : "hidden"}`}
               style={{
