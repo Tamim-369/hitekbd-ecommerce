@@ -117,7 +117,7 @@ export default function EditProfileForm({
         error={errors.subDistrict}
       />
       <Input
-        label="Address"
+        label="Address (ঠিকানা)"
         name="address"
         value={formData.address}
         onChange={handleChange}
