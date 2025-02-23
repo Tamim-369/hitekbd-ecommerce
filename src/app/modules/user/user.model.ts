@@ -31,6 +31,14 @@ const userSchema = new Schema<IUser, UserModal>(
       type: String,
       required: true,
     },
+    subDistrict: {
+      type: String,
+      required: false,
+    },
+    district: {
+      type: String,
+      required: false,
+    },
     password: {
       type: String,
       required: true,

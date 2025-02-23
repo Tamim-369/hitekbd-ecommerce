@@ -387,7 +387,7 @@ export default function ProductModal({
               </button>
             </div>
             <div className="space-y-3">
-              {formData.colors?.map((colorObj, index) => (
+              {formData.colors?.map((colorObj: any, index: any) => (
                 <div key={index} className="flex items-center gap-4">
                   <div className="flex items-center gap-4 flex-1">
                     <div

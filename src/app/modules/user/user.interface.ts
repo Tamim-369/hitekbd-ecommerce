@@ -11,6 +11,8 @@ export type IUser = {
   profile?: string;
   status: 'active' | 'delete';
   verified: boolean;
+  district?: string;
+  subDistrict?: string;
   wishlist: Types.ObjectId[];
   authentication?: {
     isResetPassword: boolean;

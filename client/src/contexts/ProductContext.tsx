@@ -25,8 +25,8 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadProducts = useCallback(async (currentPage = 1
-    , itemsPerPage = 20): Promise<Product[]> => {
+  const loadProducts = useCallback(async (currentPage: number = 1
+    , itemsPerPage: number = 20): Promise<Product[]> => {
     setLoading(true);
     setError(null);
     try {
@@ -72,7 +72,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const deleteProduct = async (id: string) => {
     try {
       await api.products.delete(id);
-      setProducts(products.filter(product => product.id !== id));
+      setProducts(products.filter((product: any) => product.id !== id));
     } catch (err) {
       throw new Error('Failed to delete product');
     }
