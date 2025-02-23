@@ -57,12 +57,7 @@ export default function EditProfileForm({
     if (!formData.address.trim()) {
       newErrors.address = 'Address is required';
     }
-    if (!formData.district.trim()) {
-      newErrors.district = 'District is required';
-    }
-    if (!formData.subDistrict.trim()) {
-      newErrors.subDistrict = 'Sub District is required';
-    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -107,14 +102,12 @@ export default function EditProfileForm({
         name="district"
         value={formData.district}
         onChange={handleChange}
-        error={errors.district}
       />
       <Input
         label="Sub District (থানা)"
         name="subDistrict"
         value={formData.subDistrict}
         onChange={handleChange}
-        error={errors.subDistrict}
       />
       <Input
         label="Address (ঠিকানা)"
