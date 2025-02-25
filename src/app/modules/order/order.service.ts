@@ -4,6 +4,7 @@ import { Order } from './order.model';
 import { IOrder } from './order.interface';
 import { STATUS } from '../../../enums/order';
 import { Products } from '../products/products.model';
+import { Coupon } from '../coupon/coupon.model';
 
 const createOrder = async (payload: IOrder): Promise<IOrder> => {
   const productArray = payload.items;
@@ -24,6 +25,10 @@ const createOrder = async (payload: IOrder): Promise<IOrder> => {
       }
     })
   );
+  if (payload.coupon.toString().length > 0) {
+    const coupon = await Coupon.findOne({ name: payload.coupon });
+    payload.coupon = `${payload.coupon} ${coupon?.discountPrice} TK OFF`;
+  }
   const result = await Order.create(payload);
   if (!result) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create order!');

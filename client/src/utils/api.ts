@@ -63,7 +63,7 @@ interface RequestOptions extends RequestInit {
 type coupon = {
   _id: string;
   name: string;
-  description: string;
+  discountPrice: number;
 };
 class ApiError extends Error {
   statusCode: number;

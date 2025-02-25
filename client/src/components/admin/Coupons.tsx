@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../utils/api';// Update with your actual api import path
 import toast from 'react-hot-toast';
+import Input from '../Input';
 
 function Coupons() {
     const [coupons, setCoupons] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [formData, setFormData] = useState({ name: '', description: '' });
+    const [formData, setFormData] = useState({ name: '', discountPrice: '' });
     const [editingCoupon, setEditingCoupon] = useState(null);
     const [confirmDelete, setConfirmDelete] = useState(null);
 
@@ -43,7 +44,7 @@ function Coupons() {
                 showToast('Coupon created successfully');
             }
             // Reset form and close modal
-            setFormData({ name: '', description: '' });
+            setFormData({ name: '', discountPrice: '' });
             setModalVisible(false);
             setEditingCoupon(null);
             // Refresh coupons list
@@ -59,7 +60,7 @@ function Coupons() {
         setEditingCoupon(coupon);
         setFormData({
             name: coupon.name,
-            description: coupon.description,
+            discountPrice: coupon.discountPrice,
         });
         setModalVisible(true);
     };
@@ -97,7 +98,7 @@ function Coupons() {
                 <button
                     onClick={() => {
                         setEditingCoupon(null);
-                        setFormData({ name: '', description: '' });
+                        setFormData({ name: '', discountPrice: '' });
                         setModalVisible(true);
                     }}
                     className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md flex items-center"
@@ -116,7 +117,7 @@ function Coupons() {
                         <thead className="bg-gray-50">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Discount Price</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
@@ -138,7 +139,7 @@ function Coupons() {
                                 coupons.map((coupon) => (
                                     <tr key={coupon._id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{coupon.name}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">{coupon.description}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">{coupon.discountPrice}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {new Date(coupon.createdAt).toLocaleDateString()}
                                         </td>
@@ -206,18 +207,19 @@ function Coupons() {
                                 </div>
                                 <div className="mb-4">
                                     <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Description
+                                        Discount Price
                                     </label>
-                                    <textarea
+                                    <Input
                                         id="description"
-                                        name="description"
-                                        value={formData.description}
+                                        name="discountPrice"
+                                        value={formData.discountPrice}
                                         onChange={handleChange}
+                                        type="number"
                                         required
                                         rows="4"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="Enter coupon description"
-                                    ></textarea>
+                                        placeholder="Enter coupon Price"
+                                    />
                                 </div>
                                 <div className="flex justify-end space-x-2 mt-6">
                                     <button
