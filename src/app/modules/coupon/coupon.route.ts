@@ -6,7 +6,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { CouponValidation } from './coupon.validation';
 
 const router = express.Router();
-const rolesOfAccess = [USER_ROLES.ADMIN];
+const rolesOfAccess = [USER_ROLES.ADMIN] // all the user role who you want to give access to create, update and delete route
 router.post(
   '/create',
   auth(...rolesOfAccess),
