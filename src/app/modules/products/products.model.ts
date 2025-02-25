@@ -9,6 +9,7 @@ const productsSchema = new Schema<IProducts, ProductsModel>(
     details: { type: [Object], required: true },
     price: { type: Number, required: true },
     discountedPrice: { type: Number, required: true },
+    freeDelivery: { type: Boolean, required: false, default: false },
     colors: {
       type: [
         {

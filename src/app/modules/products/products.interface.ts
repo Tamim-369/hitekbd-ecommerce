@@ -15,6 +15,7 @@ export type IProducts = {
   colors?: Array<{ name: string; amount: number }>;
   category: Types.ObjectId;
   stockAmount: number;
+  freeDelivery: boolean;
 };
 
 export type ProductsModel = Model<IProducts>;

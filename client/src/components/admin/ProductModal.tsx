@@ -43,6 +43,7 @@ export default function ProductModal({
     discountedPrice: null,
     category: '',
     stockAmount: null,
+    freeDelivery: false,
     image: [],
     details: [],
     colors: []
@@ -70,6 +71,7 @@ export default function ProductModal({
         discountedPrice: null,
         category: '',
         stockAmount: null,
+        freeDelivery: false,
         colors: [
           {
             color: '#000000',
@@ -179,6 +181,7 @@ export default function ProductModal({
       form.append('stockAmount', String(formData.stockAmount || 0));
       form.append('colors', JSON.stringify(formData.colors || []));
       form.append('details', JSON.stringify(formData.details || []));
+      form.append('freeDelivery', formData.freeDelivery || false);
 
       // Handle images
       const orderedImages = [...images].sort((a, b) => a.order - b.order);
@@ -369,7 +372,30 @@ export default function ProductModal({
               </div>
             )}
           </div>
-
+          {/* Free Delivery */}
+          <div className="mt-4">
+            <div className="relative flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="freeDelivery"
+                  aria-describedby="freeDelivery-description"
+                  name="freeDelivery"
+                  type="checkbox"
+                  checked={formData.freeDelivery === true}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, freeDelivery: e.target.checked }))}
+                  className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 accent-indigo-500 rounded-full border-gray-300 "
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor="freeDelivery" className="font-medium text-gray-700">
+                  Free Delivery
+                </label>
+                <p id="freeDelivery-description" className="text-gray-500">
+                  Check this if the product has free delivery
+                </p>
+              </div>
+            </div>
+          </div>
           {/* Color Variants */}
           <div>
             <div className="flex justify-between items-center mb-2">
@@ -422,7 +448,7 @@ export default function ProductModal({
                   <button
                     type="button"
                     onClick={() => {
-                      const newColors = formData.colors?.filter((_, i) => i !== index);
+                      const newColors = formData.colors?.filter((_: any, i: any) => i !== index);
                       setFormData({ ...formData, colors: newColors });
                     }}
                     className="p-2 text-red-600 hover:text-red-800"
@@ -448,7 +474,7 @@ export default function ProductModal({
               </button>
             </div>
             <div className="space-y-3">
-              {formData.details?.map((detail, index) => (
+              {formData.details?.map((detail: any, index: any) => (
                 <div key={index} className="flex items-center gap-4">
                   <input
                     type="text"

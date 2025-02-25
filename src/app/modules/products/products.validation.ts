@@ -34,6 +34,7 @@ const updateProductsZodSchema = z.object({
   discountedPrice: z.number().optional(),
   stockAmount: z.number().optional(),
   category: z.string().optional(),
+  freeDelivery: z.string().optional(),
   colors: z
     .array(z.object({ color: z.string(), amount: z.number() }))
     .optional(),
