@@ -24,6 +24,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import Reviews from './pages/admin/Reviews';
 import Order from './pages/Order';
 import Banners from './components/admin/Banners';
+import Coupons from './components/admin/Coupons';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
               <Route path="settings" element={<AdminSettings />} />
               <Route path='reviews' element={<Reviews />} />
               <Route path='banners' element={<Banners />} />
+              <Route path='coupons' element={<Coupons />} />
             </Route>
           </Routes>
         </Router>

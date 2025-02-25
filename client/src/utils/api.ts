@@ -60,7 +60,11 @@ interface RequestOptions extends RequestInit {
   data?: any;
   body?: any;
 }
-
+type coupon = {
+  _id: string;
+  name: string;
+  description: string;
+};
 class ApiError extends Error {
   statusCode: number;
   errorMessages: { path: string; message: string }[];
@@ -369,6 +373,32 @@ export const api = {
       }),
     delete: (id: string) =>
       request<void>(`/banners/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+  },
+  coupon: {
+    getAll: () => request<coupon[]>('/coupon'),
+    create: (data: any) =>
+      request<coupon>('/coupon/create', {
+        method: 'POST',
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    update: (data: any, id: string) =>
+      request<coupon>(`/coupon/${id}`, {
+        method: 'PATCH',
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }),
+    delete: (id: string) =>
+      request<void>(`/coupon/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,

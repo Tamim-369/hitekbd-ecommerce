@@ -128,7 +128,7 @@ export default function Checkout() {
                 >
                   <div className="flex items-center">
                     <img
-                      src={`${ImageURL} / ${item.image[0]}`}
+                      src={`${ImageURL}/${item.image[0]}`}
                       alt={item.title}
                       className="w-16 h-16 object-cover rounded"
                     />
@@ -161,6 +161,7 @@ export default function Checkout() {
                   <span className="text-gray-900">Total</span>
                   <span className="text-gray-900">৳{total.toFixed(2)}</span>
                 </div>
+
               </div>
             </div>
           </div>

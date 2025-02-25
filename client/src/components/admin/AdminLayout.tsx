@@ -8,7 +8,9 @@ import {
   Menu,
   X,
   Package,
-  Settings2
+  Settings2,
+  Settings2Icon,
+  PackageOpen
 } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 
@@ -36,6 +38,11 @@ export default function AdminLayout() {
       path: '/admin/orders',
       icon: <Package size={20} />,
       label: 'Orders'
+    },
+    {
+      path: '/admin/coupons',
+      icon: <PackageOpen size={20} />,
+      label: 'Coupons'
     },
     {
       path: '/admin/users',

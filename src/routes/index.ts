@@ -8,11 +8,12 @@ import { BannersRoutes } from '../app/modules/banners/banners.route';
 import { CategoryRoutes } from '../app/modules/category/category.route';
 import { ReviewRoutes } from '../app/modules/review/review.route';
 import { BannerRoutes } from '../app/modules/banner/banner.route';
+import { CouponRoutes } from '../app/modules/coupon/coupon.route';
 
 const router = express.Router();
 
 const apiRoutes = [
-  {
+{
     path: '/user',
     route: UserRoutes,
   },
@@ -44,6 +45,10 @@ const apiRoutes = [
   {
     path: '/banners',
     route: BannerRoutes,
+  },
+  {
+    path: '/coupon',
+    route: CouponRoutes,
   },
 ];
 
