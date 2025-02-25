@@ -24,6 +24,7 @@ const orderSchema = new Schema<IOrder>(
     phoneNumber: { type: String, required: true },
     address: { type: String, required: true },
     transactionID: { type: String, required: true },
+    coupon: { type: String, required: false },
     status: {
       type: String,
       enum: Object.values(STATUS),

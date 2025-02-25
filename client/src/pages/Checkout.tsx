@@ -18,6 +18,7 @@ export default function Checkout() {
     phone: '',
     address: '',
     transactionID: '',
+    coupon: '',
   });
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function Checkout() {
           ...prev,
           phone: response.phone || '',
           address: `${response.city || ''}, ${response.state || ''}, ${response.address}`,
+
         }));
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -81,6 +83,7 @@ export default function Checkout() {
         phoneNumber: formData.phone,
         address: formData.address,
         transactionID: formData.transactionID,
+        coupon: formData.coupon,
         items: items.map(item => ({
           productId: item._id,
           title: item.title,
@@ -190,7 +193,23 @@ export default function Checkout() {
                     className="mt-1 block w-full px-4 py-2 bg-gray-50 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors"
                   />
                 </div>
-
+                <div>
+                  <label
+                    htmlFor="coupon"
+                    className="block text-sm font-medium text-gray-600"
+                  >
+                    Coupon
+                  </label>
+                  <input
+                    type="tel"
+                    id="coupon"
+                    name="coupon"
+                    value={formData.coupon}
+                    onChange={handleInputChange}
+                    required
+                    className="mt-1 block w-full px-4 py-2 bg-gray-50 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors"
+                  />
+                </div>
                 <div>
                   <label
                     htmlFor="address"

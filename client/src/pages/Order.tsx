@@ -60,6 +60,9 @@ function Order() {
                                 <div className="bg-gray-50 p-4 rounded-lg">
                                     <p className="text-gray-700">Order ID: <span className="font-semibold">{order._id}</span></p>
                                 </div>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-gray-700">Coupons: <span className="font-semibold">{order.coupon}</span></p>
+                                </div>
                             </div>
 
                             <div>

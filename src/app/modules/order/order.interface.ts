@@ -21,6 +21,7 @@ export interface IOrder {
   _id: Types.ObjectId;
   user: Types.ObjectId;
   items: IOrderItem[];
+  coupon: string;
   phoneNumber: string;
   amountPaid: number;
   product: [Types.ObjectId];
